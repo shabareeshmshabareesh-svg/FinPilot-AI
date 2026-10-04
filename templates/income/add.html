@@ -1,0 +1,848 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | Add Income
+{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   FINPILOT AI — ADD INCOME
+   Step 26F
+========================================================= */
+
+.fp-income-page{
+    min-height:calc(100vh - 74px);
+    position:relative;
+    overflow:hidden;
+    padding:36px 0 60px;
+    color:#eef7ff;
+    background:
+        radial-gradient(circle at 8% 8%,rgba(53,230,162,.10),transparent 25%),
+        radial-gradient(circle at 92% 20%,rgba(93,231,255,.11),transparent 27%),
+        radial-gradient(circle at 50% 100%,rgba(108,124,255,.09),transparent 32%),
+        #050816;
+}
+
+.fp-income-page::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom,black,transparent 92%);
+}
+
+.fp-income-orb{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    filter:blur(3px);
+    opacity:.45;
+}
+
+.fp-income-orb.one{
+    width:300px;
+    height:300px;
+    right:-130px;
+    top:120px;
+    background:rgba(53,230,162,.08);
+    animation:fpIncomeFloat 8s ease-in-out infinite;
+}
+
+.fp-income-orb.two{
+    width:240px;
+    height:240px;
+    left:-120px;
+    bottom:100px;
+    background:rgba(93,231,255,.08);
+    animation:fpIncomeFloat 10s ease-in-out infinite reverse;
+}
+
+.fp-income-page .container{
+    position:relative;
+    z-index:2;
+}
+
+.fp-income-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:25px;
+    margin-bottom:25px;
+}
+
+.fp-income-eyebrow{
+    margin:0 0 8px;
+    color:#5de7ff;
+    font-size:.7rem;
+    font-weight:850;
+    letter-spacing:.16em;
+}
+
+.fp-income-title{
+    margin:0;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:900;
+    letter-spacing:-.045em;
+}
+
+.fp-income-subtitle{
+    margin:9px 0 0;
+    max-width:650px;
+    color:#8ea5bd;
+    font-size:.88rem;
+    line-height:1.7;
+}
+
+.fp-income-back{
+    border:1px solid rgba(93,231,255,.25)!important;
+    color:#5de7ff!important;
+    background:rgba(93,231,255,.045)!important;
+    border-radius:13px!important;
+    font-weight:750!important;
+    padding:10px 16px!important;
+    transition:.25s!important;
+}
+
+.fp-income-back:hover{
+    transform:translateY(-2px);
+    background:rgba(93,231,255,.09)!important;
+    box-shadow:0 0 20px rgba(93,231,255,.13);
+}
+
+.fp-income-layout{
+    align-items:stretch;
+}
+
+.fp-income-form-card,
+.fp-income-side-card,
+.fp-income-source-card{
+    background:linear-gradient(145deg,rgba(17,27,53,.84),rgba(7,14,30,.76));
+    border:1px solid rgba(93,231,255,.15);
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+.fp-income-form-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:24px;
+    padding:28px;
+}
+
+.fp-income-form-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:8%;
+    right:8%;
+    height:1px;
+    background:linear-gradient(90deg,transparent,#5de7ff,transparent);
+    box-shadow:0 0 14px rgba(93,231,255,.45);
+}
+
+.fp-income-card-heading{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:25px;
+}
+
+.fp-income-form-icon{
+    width:54px;
+    height:54px;
+    flex:0 0 54px;
+    display:grid;
+    place-items:center;
+    border-radius:17px;
+    font-size:25px;
+    background:linear-gradient(135deg,rgba(53,230,162,.13),rgba(93,231,255,.10));
+    border:1px solid rgba(53,230,162,.18);
+    box-shadow:0 0 28px rgba(53,230,162,.08);
+    animation:fpIncomePulse 3s ease-in-out infinite;
+}
+
+.fp-income-card-heading h2{
+    margin:0;
+    font-size:1.25rem;
+    font-weight:850;
+}
+
+.fp-income-card-heading p{
+    margin:4px 0 0;
+    color:#7189a2;
+    font-size:.77rem;
+}
+
+.fp-income-label{
+    display:block;
+    margin-bottom:8px;
+    color:#b7c9da;
+    font-size:.78rem;
+    font-weight:750;
+}
+
+.fp-income-required{
+    color:#5de7ff;
+}
+
+.fp-income-field-wrap{
+    position:relative;
+}
+
+.fp-income-currency{
+    position:absolute;
+    left:15px;
+    top:50%;
+    z-index:2;
+    transform:translateY(-50%);
+    color:#35e6a2;
+    font-size:1.1rem;
+    font-weight:900;
+    pointer-events:none;
+}
+
+.fp-income-page .form-control,
+.fp-income-page .form-select{
+    min-height:50px;
+    color:#eef7ff!important;
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+    border-radius:13px!important;
+    box-shadow:none!important;
+    transition:.25s ease;
+}
+
+.fp-income-page .form-control::placeholder{
+    color:#607891;
+}
+
+.fp-income-page .form-control:focus,
+.fp-income-page .form-select:focus{
+    border-color:rgba(93,231,255,.62)!important;
+    background:rgba(93,231,255,.045)!important;
+    box-shadow:
+        0 0 0 3px rgba(93,231,255,.07),
+        0 0 24px rgba(93,231,255,.08)!important;
+}
+
+.fp-income-page .form-select option{
+    color:#101827;
+    background:#ffffff;
+}
+
+.fp-income-amount{
+    padding-left:42px!important;
+    font-size:1.1rem!important;
+    font-weight:800;
+}
+
+.fp-income-description{
+    resize:vertical;
+    min-height:110px!important;
+}
+
+.fp-income-error{
+    margin-top:7px;
+    padding:7px 10px;
+    color:#ff8da0;
+    background:rgba(255,95,122,.06);
+    border:1px solid rgba(255,95,122,.14);
+    border-radius:9px;
+    font-size:.72rem;
+}
+
+.fp-income-field-help{
+    margin-top:6px;
+    color:#617991;
+    font-size:.68rem;
+}
+
+.fp-income-submit-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:11px;
+    margin-top:25px;
+}
+
+.fp-income-cancel,
+.fp-income-submit{
+    min-height:51px;
+    border-radius:13px!important;
+    font-weight:800!important;
+    transition:.25s!important;
+}
+
+.fp-income-cancel{
+    color:#9bb0c4!important;
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+}
+
+.fp-income-cancel:hover{
+    color:#ffffff!important;
+    background:rgba(255,255,255,.07)!important;
+    transform:translateY(-2px);
+}
+
+.fp-income-submit{
+    border:0!important;
+    color:#02110d!important;
+    background:linear-gradient(90deg,#35e6a2,#5de7ff)!important;
+    box-shadow:0 10px 30px rgba(53,230,162,.17);
+}
+
+.fp-income-submit:hover{
+    color:#02110d!important;
+    transform:translateY(-2px);
+    box-shadow:0 14px 35px rgba(53,230,162,.28);
+}
+
+.fp-income-submit:active{
+    transform:translateY(0);
+}
+
+.fp-income-side-card{
+    height:100%;
+    border-radius:24px;
+    padding:24px;
+}
+
+.fp-income-side-label{
+    color:#5de7ff;
+    font-size:.67rem;
+    font-weight:850;
+    letter-spacing:.14em;
+}
+
+.fp-income-side-card h3{
+    margin:8px 0;
+    font-size:1.15rem;
+    font-weight:850;
+}
+
+.fp-income-side-card > p{
+    color:#7f96ad;
+    font-size:.78rem;
+    line-height:1.7;
+}
+
+.fp-income-mini-stat{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:13px;
+    margin-top:10px;
+    border-radius:14px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.065);
+}
+
+.fp-income-mini-icon{
+    width:39px;
+    height:39px;
+    flex:0 0 39px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    background:rgba(93,231,255,.06);
+}
+
+.fp-income-mini-stat strong{
+    display:block;
+    font-size:.76rem;
+}
+
+.fp-income-mini-stat span{
+    display:block;
+    margin-top:3px;
+    color:#687f98;
+    font-size:.66rem;
+}
+
+.fp-income-tip{
+    margin-top:18px;
+    padding:15px;
+    border-radius:15px;
+    background:rgba(53,230,162,.045);
+    border:1px solid rgba(53,230,162,.11);
+}
+
+.fp-income-tip strong{
+    font-size:.74rem;
+}
+
+.fp-income-tip p{
+    margin:5px 0 0;
+    color:#7c93aa;
+    font-size:.68rem;
+    line-height:1.55;
+}
+
+.fp-income-sources-title{
+    margin:30px 0 12px;
+    color:#5de7ff;
+    font-size:.69rem;
+    font-weight:850;
+    letter-spacing:.13em;
+}
+
+.fp-income-source-card{
+    height:100%;
+    padding:16px;
+    border-radius:17px;
+    transition:.28s ease;
+}
+
+.fp-income-source-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(93,231,255,.28);
+    box-shadow:0 18px 45px rgba(0,0,0,.25),0 0 25px rgba(93,231,255,.06);
+}
+
+.fp-income-source-icon{
+    width:42px;
+    height:42px;
+    display:grid;
+    place-items:center;
+    margin-bottom:12px;
+    border-radius:13px;
+    background:rgba(255,255,255,.045);
+    font-size:20px;
+}
+
+.fp-income-source-card strong{
+    display:block;
+    font-size:.78rem;
+}
+
+.fp-income-source-card span{
+    display:block;
+    margin-top:4px;
+    color:#7189a2;
+    font-size:.67rem;
+}
+
+@keyframes fpIncomeFloat{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-14px,13px) scale(1.06)}
+}
+
+@keyframes fpIncomePulse{
+    0%,100%{transform:translateY(0);box-shadow:0 0 28px rgba(53,230,162,.08)}
+    50%{transform:translateY(-3px);box-shadow:0 0 35px rgba(53,230,162,.16)}
+}
+
+@media(max-width:768px){
+    .fp-income-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .fp-income-back{
+        width:100%;
+    }
+
+    .fp-income-form-card,
+    .fp-income-side-card{
+        padding:20px;
+    }
+}
+
+@media(max-width:500px){
+    .fp-income-page{
+        padding-top:25px;
+    }
+
+    .fp-income-submit-row{
+        grid-template-columns:1fr;
+    }
+
+    .fp-income-title{
+        font-size:2rem;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.01ms!important;
+    }
+}
+</style>
+
+<div class="fp-income-page">
+
+    <div class="fp-income-orb one"></div>
+    <div class="fp-income-orb two"></div>
+
+    <div class="container">
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="fp-income-header">
+
+            <div>
+                <p class="fp-income-eyebrow">
+                    💰 FINPILOT AI · INCOME CENTER
+                </p>
+
+                <h1 class="fp-income-title">
+                    Add Income
+                </h1>
+
+                <p class="fp-income-subtitle">
+                    Track the money you receive and keep your
+                    financial picture accurate and up to date.
+                </p>
+            </div>
+
+            <a
+                href="{{ url_for('income.income_list') }}"
+                class="btn fp-income-back"
+            >
+                ← View Income
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             MAIN AREA
+        ================================================== -->
+
+        <div class="row g-4 fp-income-layout">
+
+            <!-- FORM -->
+
+            <div class="col-lg-8">
+
+                <div class="fp-income-form-card">
+
+                    <div class="fp-income-card-heading">
+
+                        <div class="fp-income-form-icon">
+                            💰
+                        </div>
+
+                        <div>
+                            <h2>Record New Income</h2>
+                            <p>Add money you've received from any source.</p>
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('income.add_income') }}"
+                        novalidate
+                    >
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- AMOUNT -->
+
+                        <div class="mb-4">
+
+                            <label
+                                for="{{ form.amount.id }}"
+                                class="fp-income-label"
+                            >
+                                Amount <span class="fp-income-required">*</span>
+                            </label>
+
+                            <div class="fp-income-field-wrap">
+
+                                <span class="fp-income-currency">
+                                    ₹
+                                </span>
+
+                                {{ form.amount(
+                                    id=form.amount.id,
+                                    class="form-control form-control-lg fp-income-amount",
+                                    placeholder="0.00",
+                                    inputmode="decimal",
+                                    autocomplete="off"
+                                ) }}
+
+                            </div>
+
+                            {% if form.amount.errors %}
+                                <div class="fp-income-error">
+                                    {% for error in form.amount.errors %}
+                                        <div>⚠️ {{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="fp-income-field-help">
+                                    Enter the exact amount you received.
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- SOURCE -->
+
+                        <div class="mb-4">
+
+                            <label
+                                for="{{ form.source.id }}"
+                                class="fp-income-label"
+                            >
+                                Income Source <span class="fp-income-required">*</span>
+                            </label>
+
+                            {{ form.source(
+                                id=form.source.id,
+                                class="form-select form-select-lg"
+                            ) }}
+
+                            {% if form.source.errors %}
+                                <div class="fp-income-error">
+                                    {% for error in form.source.errors %}
+                                        <div>⚠️ {{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="fp-income-field-help">
+                                    Choose where this income came from.
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="mb-4">
+
+                            <label
+                                for="{{ form.description.id }}"
+                                class="fp-income-label"
+                            >
+                                Description
+                            </label>
+
+                            {{ form.description(
+                                id=form.description.id,
+                                class="form-control fp-income-description",
+                                rows="4",
+                                placeholder="Example: August pocket money"
+                            ) }}
+
+                            {% if form.description.errors %}
+                                <div class="fp-income-error">
+                                    {% for error in form.description.errors %}
+                                        <div>⚠️ {{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="fp-income-field-help">
+                                    Add a short note so you can identify this income later.
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- DATE -->
+
+                        <div class="mb-4">
+
+                            <label
+                                for="{{ form.date.id }}"
+                                class="fp-income-label"
+                            >
+                                Date <span class="fp-income-required">*</span>
+                            </label>
+
+                            {{ form.date(
+                                id=form.date.id,
+                                class="form-control form-control-lg"
+                            ) }}
+
+                            {% if form.date.errors %}
+                                <div class="fp-income-error">
+                                    {% for error in form.date.errors %}
+                                        <div>⚠️ {{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="fp-income-field-help">
+                                    FinPilot automatically selects today's date when left empty.
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+
+                        <div class="fp-income-submit-row">
+
+                            <a
+                                href="{{ url_for('dashboard.dashboard_home') }}"
+                                class="btn btn-lg fp-income-cancel"
+                            >
+                                Cancel
+                            </a>
+
+                            {{ form.submit(
+                                class="btn btn-lg fp-income-submit"
+                            ) }}
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- SIDE PANEL -->
+
+            <div class="col-lg-4">
+
+                <div class="fp-income-side-card">
+
+                    <span class="fp-income-side-label">
+                        MONEY TRACKING
+                    </span>
+
+                    <h3>
+                        Build a complete financial picture.
+                    </h3>
+
+                    <p>
+                        Every income entry helps FinPilot understand
+                        your cash flow, savings rate and spending capacity.
+                    </p>
+
+
+                    <div class="fp-income-mini-stat">
+
+                        <div class="fp-income-mini-icon">
+                            📊
+                        </div>
+
+                        <div>
+                            <strong>Better Analytics</strong>
+                            <span>More accurate monthly insights</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-income-mini-stat">
+
+                        <div class="fp-income-mini-icon">
+                            💵
+                        </div>
+
+                        <div>
+                            <strong>Track Savings</strong>
+                            <span>See how much you keep each month</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-income-mini-stat">
+
+                        <div class="fp-income-mini-icon">
+                            🤖
+                        </div>
+
+                        <div>
+                            <strong>AI Guidance</strong>
+                            <span>FinPilot can analyze your cash flow</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-income-tip">
+
+                        <strong>
+                            💡 FinPilot Tip
+                        </strong>
+
+                        <p>
+                            Record income as soon as you receive it.
+                            Keeping your entries current makes your
+                            dashboard and AI insights more useful.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             COMMON SOURCES
+        ================================================== -->
+
+        <p class="fp-income-sources-title">
+            COMMON INCOME SOURCES
+        </p>
+
+        <div class="row g-3">
+
+            <div class="col-6 col-md-3">
+                <div class="fp-income-source-card">
+                    <div class="fp-income-source-icon">💵</div>
+                    <strong>Pocket Money</strong>
+                    <span>Family support</span>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="fp-income-source-card">
+                    <div class="fp-income-source-icon">🎓</div>
+                    <strong>Scholarship</strong>
+                    <span>Education support</span>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="fp-income-source-card">
+                    <div class="fp-income-source-icon">💼</div>
+                    <strong>Salary</strong>
+                    <span>Job income</span>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="fp-income-source-card">
+                    <div class="fp-income-source-icon">💻</div>
+                    <strong>Freelancing</strong>
+                    <span>Side income</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

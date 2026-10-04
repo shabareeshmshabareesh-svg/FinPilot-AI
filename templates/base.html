@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- =====================================================
+         BASIC META
+    ====================================================== -->
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="FinPilot AI — Smart personal finance management powered by AI."
+    >
+
+    <meta
+        name="theme-color"
+        content="#1769ff"
+    >
+
+
+    <!-- =====================================================
+         CSRF TOKEN
+         Read by static/js/script.js for AJAX POST calls.
+    ====================================================== -->
+
+    <meta
+        name="csrf-token"
+        content="{{ csrf_token() }}"
+    >
+
+
+    <!-- =====================================================
+         TITLE
+    ====================================================== -->
+
+    <title>
+        {% block title %}
+        FinPilot AI
+        {% endblock %}
+    </title>
+
+
+    <!-- =====================================================
+         GOOGLE FONT
+    ====================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         BOOTSTRAP CSS
+    ====================================================== -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         BOOTSTRAP ICONS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    >
+
+
+    <!-- =====================================================
+         FINPILOT CUSTOM CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+
+    <!-- =====================================================
+         PAGE-SPECIFIC HEAD
+    ====================================================== -->
+
+    {% block head %}{% endblock %}
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    {% include 'components/navbar.html' %}
+
+
+
+    <!-- =====================================================
+         FLASH MESSAGES
+    ====================================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            <div
+                class="container mt-3"
+                id="flash-messages"
+            >
+
+                {% for category, message in messages %}
+
+                    <div
+                        class="alert alert-{{ category }} alert-dismissible fade show shadow-sm"
+                        role="alert"
+                    >
+
+                        {{ message }}
+
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"
+                        ></button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+
+    <!-- =====================================================
+         MAIN FINPILOT CONTENT
+    ====================================================== -->
+
+    <main
+        id="main-content"
+        class="finpilot-main"
+    >
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    {% include 'components/footer.html' %}
+
+
+
+    <!-- =====================================================
+         FINPILOT AI
+         GLOBAL FLOATING ASSISTANT
+    ====================================================== -->
+
+    <div
+        class="finpilot-ai-widget"
+        id="finpilot-ai-widget"
+    >
+
+
+        <!-- ================================================
+             FLOATING AI BUTTON
+        ================================================= -->
+
+        <button
+            type="button"
+            id="finpilot-ai-toggle"
+            class="finpilot-ai-toggle"
+            aria-label="Open FinPilot AI Assistant"
+            title="Ask FinPilot AI"
+        >
+
+            <span class="finpilot-ai-robot">
+                🤖
+            </span>
+
+            <span class="finpilot-ai-pulse"></span>
+
+        </button>
+
+
+
+        <!-- ================================================
+             AI CHAT PANEL
+        ================================================= -->
+
+        <div
+            id="finpilot-ai-panel"
+            class="finpilot-ai-panel"
+            aria-hidden="true"
+        >
+
+
+            <!-- ============================================
+                 AI HEADER
+            ============================================= -->
+
+            <div class="finpilot-ai-header">
+
+
+                <div class="finpilot-ai-header-left">
+
+
+                    <!-- AI AVATAR -->
+
+                    <div class="finpilot-ai-avatar">
+                        🤖
+                    </div>
+
+
+                    <!-- AI TITLE -->
+
+                    <div>
+
+                        <strong>
+                            FinPilot AI
+                        </strong>
+
+                        <span>
+                            Your personal money assistant
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- CLOSE BUTTON -->
+
+                <button
+                    type="button"
+                    id="finpilot-ai-close"
+                    class="finpilot-ai-close"
+                    aria-label="Close FinPilot AI"
+                    title="Close"
+                >
+                    ×
+                </button>
+
+
+            </div>
+
+
+
+            <!-- ============================================
+                 CHAT MESSAGES
+            ============================================= -->
+
+            <div
+                id="finpilot-ai-messages"
+                class="finpilot-ai-messages"
+            >
+
+
+                <!-- ========================================
+                     INITIAL AI MESSAGE
+                ========================================= -->
+
+                <div
+                    class="finpilot-message finpilot-message-ai"
+                >
+
+
+                    <div class="finpilot-message-avatar">
+                        🤖
+                    </div>
+
+
+                    <div class="finpilot-message-content">
+
+                        <strong>
+                            Hi! I'm FinPilot 👋
+                        </strong>
+
+
+                        <p>
+                            Ask me about your budget,
+                            spending, savings, or goals.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- ========================================
+                     QUICK QUESTIONS
+                ========================================= -->
+
+                <div
+                    id="finpilot-ai-quick"
+                    class="finpilot-ai-quick"
+                >
+
+
+                    <!-- QUESTION 1 -->
+
+                    <button
+                        type="button"
+                        class="finpilot-quick-btn"
+                        data-question="Can I spend ₹500 today?"
+                    >
+                        💸 Can I spend ₹500 today?
+                    </button>
+
+
+                    <!-- QUESTION 2 -->
+
+                    <button
+                        type="button"
+                        class="finpilot-quick-btn"
+                        data-question="How much can I safely spend today?"
+                    >
+                        🛡️ Safe spending limit
+                    </button>
+
+
+                    <!-- QUESTION 3 -->
+
+                    <button
+                        type="button"
+                        class="finpilot-quick-btn"
+                        data-question="How am I doing with my budget?"
+                    >
+                        🎯 Check my budget
+                    </button>
+
+
+                    <!-- QUESTION 4 -->
+
+                    <button
+                        type="button"
+                        class="finpilot-quick-btn"
+                        data-question="How can I save more money?"
+                    >
+                        💰 How can I save more?
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ============================================
+                 AI INPUT FORM
+            ============================================= -->
+
+            <form
+                id="finpilot-ai-form"
+                class="finpilot-ai-form"
+                autocomplete="off"
+            >
+
+
+                <!-- =================================================
+                     CSRF TOKEN
+                     Same hidden field pattern as the other
+                     project POST forms (see coach/coach.html).
+                     Read by static/js/script.js for the
+                     /analytics/ask request body.
+                ====================================================== -->
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <div
+                    class="finpilot-ai-input-wrapper"
+                >
+
+
+                    <!-- INPUT -->
+
+                    <input
+                        type="text"
+                        id="finpilot-ai-input"
+                        name="question"
+                        class="finpilot-ai-input"
+                        placeholder="Ask FinPilot anything..."
+                        autocomplete="off"
+                        maxlength="500"
+                    >
+
+
+                    <!-- SEND -->
+
+                    <button
+                        type="submit"
+                        id="finpilot-ai-send"
+                        class="finpilot-ai-send"
+                        aria-label="Send question"
+                        title="Send"
+                    >
+                        ➤
+                    </button>
+
+
+                </div>
+
+
+                <!-- AI DESCRIPTION -->
+
+                <small>
+                    FinPilot uses your current financial activity
+                    to personalize answers.
+                </small>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         BOOTSTRAP JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+
+
+    <!-- =====================================================
+         FINPILOT CUSTOM JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        src="{{ url_for('static', filename='js/script.js') }}"
+    ></script>
+
+
+    <!-- =====================================================
+         PAGE-SPECIFIC JAVASCRIPT
+    ====================================================== -->
+
+    {% block scripts %}{% endblock %}
+
+
+</body>
+
+</html>

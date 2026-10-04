@@ -1,0 +1,1095 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login | FinPilot AI
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =====================================================
+       PREMIUM DARK FINPILOT AUTHENTICATION THEME
+    ===================================================== */
+
+    :root {
+        --fp-bg-base: #06090e;
+        --fp-card-bg: rgba(13, 19, 32, 0.75);
+        --fp-card-border: rgba(56, 189, 248, 0.18);
+        --fp-card-border-glow: rgba(0, 229, 255, 0.45);
+        --fp-accent-cyan: #00e5ff;
+        --fp-accent-blue: #2563eb;
+        --fp-accent-glow: rgba(0, 229, 255, 0.25);
+        --fp-text-primary: #f8fafc;
+        --fp-text-secondary: #94a3b8;
+        --fp-text-muted: #64748b;
+        --fp-input-bg: rgba(15, 23, 42, 0.65);
+        --fp-input-border: rgba(148, 163, 184, 0.18);
+        --fp-input-border-focus: #00e5ff;
+    }
+
+    .fp-auth-page {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        position: relative;
+        overflow: hidden;
+        background-color: var(--fp-bg-base);
+        background-image:
+            radial-gradient(circle at 50% 0%, rgba(0, 229, 255, 0.08), transparent 45%),
+            radial-gradient(circle at 10% 90%, rgba(37, 99, 235, 0.08), transparent 40%),
+            radial-gradient(circle at 90% 85%, rgba(16, 185, 129, 0.05), transparent 35%);
+    }
+
+    /* Ambient animated luminous orbs */
+    .fp-auth-page::before,
+    .fp-auth-page::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(90px);
+        pointer-events: none;
+        z-index: 0;
+        animation: fpFloatOrb 10s ease-in-out infinite alternate;
+    }
+
+    .fp-auth-page::before {
+        width: 320px;
+        height: 320px;
+        background: radial-gradient(circle, rgba(0, 229, 255, 0.12), rgba(37, 99, 235, 0.03));
+        top: 10%;
+        left: 15%;
+    }
+
+    .fp-auth-page::after {
+        width: 380px;
+        height: 380px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.1), rgba(0, 229, 255, 0.02));
+        bottom: 5%;
+        right: 12%;
+        animation-delay: -5s;
+    }
+
+    @keyframes fpFloatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, -20px) scale(1.08); }
+        100% { transform: translate(-20px, 25px) scale(0.95); }
+    }
+
+    .fp-auth-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+        mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+        -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+    }
+
+    .fp-auth-wrapper {
+        width: 100%;
+        max-width: 450px;
+        position: relative;
+        z-index: 2;
+    }
+
+
+
+    /* =====================================================
+       LOGIN CARD
+    ===================================================== */
+
+    .fp-login-card {
+        position: relative;
+        padding: 44px 38px;
+        border-radius: 24px;
+        background: var(--fp-card-bg);
+        border: 1px solid var(--fp-card-border);
+        box-shadow:
+            0 20px 50px -10px rgba(0, 0, 0, 0.7),
+            0 0 0 1px rgba(255, 255, 255, 0.04),
+            0 0 40px -10px var(--fp-accent-glow);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        animation: fpCardEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .fp-login-card:hover {
+        border-color: var(--fp-card-border-glow);
+        box-shadow:
+            0 24px 60px -8px rgba(0, 0, 0, 0.8),
+            0 0 0 1px rgba(0, 229, 255, 0.25),
+            0 0 50px -5px rgba(0, 229, 255, 0.28);
+    }
+
+    @keyframes fpCardEntrance {
+        from {
+            opacity: 0;
+            transform: translateY(24px) scale(0.97);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .fp-login-card::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: 20%;
+        right: 20%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--fp-accent-cyan), #3b82f6, transparent);
+        border-radius: 2px;
+        box-shadow: 0 0 14px var(--fp-accent-cyan);
+    }
+
+    /* =====================================================
+       BRANDING & ORBIT DECORATION
+    ===================================================== */
+
+    .fp-brand-header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+    .fp-logo-orbit-wrapper {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fp-orbit-ring {
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        border: 1px dashed rgba(0, 229, 255, 0.35);
+        animation: fpSpinOrbit 16s linear infinite;
+        pointer-events: none;
+    }
+
+    .fp-orbit-ring::after {
+        content: "";
+        position: absolute;
+        top: -3px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #00e5ff;
+        box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff;
+    }
+
+    .fp-brand-badge {
+        width: 66px;
+        height: 66px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(37, 99, 235, 0.22));
+        border: 1px solid rgba(0, 229, 255, 0.4);
+        box-shadow:
+            inset 0 0 18px rgba(0, 229, 255, 0.15),
+            0 8px 20px -4px rgba(0, 229, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #ffffff;
+        backdrop-filter: blur(8px);
+        transition: transform 0.3s ease;
+    }
+
+    .fp-brand-badge:hover {
+        transform: scale(1.05) rotate(4deg);
+    }
+
+    @keyframes fpSpinOrbit {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .fp-brand-title {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--fp-text-primary);
+        line-height: 1.2;
+    }
+
+    .fp-brand-title span {
+        background: linear-gradient(120deg, #00e5ff, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .fp-brand-tagline {
+        margin: 8px 0 0;
+        font-size: 13.5px;
+        color: var(--fp-text-secondary);
+        font-weight: 400;
+        letter-spacing: -0.1px;
+    }
+
+
+    /* =====================================================
+       FORM CONTROLS
+    ===================================================== */
+
+    .fp-form-group {
+        margin-bottom: 20px;
+    }
+
+    .fp-form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #cbd5e1;
+        letter-spacing: 0.1px;
+    }
+
+    .fp-input-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .fp-input-icon {
+        position: absolute;
+        left: 16px;
+        color: var(--fp-text-muted);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        transition: color 0.25s ease;
+        z-index: 2;
+    }
+
+    .fp-input-field {
+        width: 100%;
+        height: 50px;
+        padding: 0 45px 0 46px;
+        background: var(--fp-input-bg);
+        border: 1px solid var(--fp-input-border);
+        border-radius: 14px;
+        color: var(--fp-text-primary);
+        font-size: 14.5px;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.25s ease;
+    }
+
+    .fp-input-field::placeholder {
+        color: #64748b;
+        font-size: 13.5px;
+    }
+
+    .fp-input-field:hover {
+        border-color: rgba(0, 229, 255, 0.4);
+        background: rgba(15, 23, 42, 0.85);
+    }
+
+    .fp-input-field:focus {
+        border-color: var(--fp-input-border-focus);
+        background: rgba(15, 23, 42, 0.95);
+        box-shadow:
+            0 0 0 3px rgba(0, 229, 255, 0.15),
+            0 0 20px -3px rgba(0, 229, 255, 0.2);
+    }
+
+    .fp-input-box:focus-within .fp-input-icon {
+        color: var(--fp-accent-cyan);
+    }
+
+    /* Password visibility toggle button */
+    .fp-password-toggle-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--fp-text-muted);
+        padding: 6px 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: color 0.2s ease, background-color 0.2s ease;
+        z-index: 2;
+    }
+
+    .fp-password-toggle-btn:hover {
+        color: var(--fp-accent-cyan);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .fp-password-toggle-btn:focus-visible {
+        outline: 2px solid var(--fp-accent-cyan);
+        color: var(--fp-accent-cyan);
+    }
+
+
+    /* =====================================================
+       LOGIN MARKUP COMPLETION
+       Styles for the classes actually used by the
+       login template markup below (logo, title,
+       subtitle, fields, inputs, errors, options row).
+    ===================================================== */
+
+    /* Header: logo, title, subtitle */
+
+    .fp-login-logo {
+        width: 66px;
+        height: 66px;
+        margin: 0 auto 18px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(37, 99, 235, 0.22));
+        border: 1px solid rgba(0, 229, 255, 0.4);
+        box-shadow:
+            inset 0 0 18px rgba(0, 229, 255, 0.15),
+            0 8px 20px -4px rgba(0, 229, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        transition: transform 0.3s ease;
+    }
+
+    .fp-login-logo:hover {
+        transform: scale(1.05) rotate(4deg);
+    }
+
+    .fp-login-title {
+        margin: 0;
+        text-align: center;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--fp-text-primary);
+        line-height: 1.2;
+    }
+
+    .fp-login-title span {
+        background: linear-gradient(120deg, #00e5ff, #60a5fa);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .fp-login-subtitle {
+        margin: 8px 0 28px;
+        text-align: center;
+        font-size: 13.5px;
+        color: var(--fp-text-secondary);
+        font-weight: 400;
+        letter-spacing: -0.1px;
+    }
+
+    /* Fields */
+
+    .fp-field {
+        margin-bottom: 20px;
+    }
+
+    .fp-field label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #cbd5e1;
+        letter-spacing: 0.1px;
+    }
+
+    .fp-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .fp-input-wrapper:focus-within .fp-input-icon {
+        color: var(--fp-accent-cyan);
+    }
+
+    .fp-login-input {
+        width: 100%;
+        height: 50px;
+        padding: 0 45px 0 46px;
+        background: var(--fp-input-bg);
+        border: 1px solid var(--fp-input-border);
+        border-radius: 14px;
+        color: var(--fp-text-primary);
+        font-size: 14.5px;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.25s ease;
+    }
+
+    .fp-login-input::placeholder {
+        color: #64748b;
+        font-size: 13.5px;
+    }
+
+    .fp-login-input:hover {
+        border-color: rgba(0, 229, 255, 0.4);
+        background: rgba(15, 23, 42, 0.85);
+    }
+
+    .fp-login-input:focus {
+        border-color: var(--fp-input-border-focus);
+        background: rgba(15, 23, 42, 0.95);
+        box-shadow:
+            0 0 0 3px rgba(0, 229, 255, 0.15),
+            0 0 20px -3px rgba(0, 229, 255, 0.2);
+    }
+
+    /* Validation errors */
+
+    .fp-error {
+        display: block;
+        margin-top: 6px;
+        color: #f87171;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    /* Remember & forgot row */
+
+    .fp-login-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 14px 0 24px;
+        font-size: 13px;
+    }
+
+    .fp-remember {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--fp-text-secondary);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .fp-remember input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 17px;
+        height: 17px;
+        border-radius: 5px;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid var(--fp-input-border);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+        display: grid;
+        place-content: center;
+    }
+
+    .fp-remember input[type="checkbox"]:checked {
+        background: var(--fp-accent-cyan);
+        border-color: var(--fp-accent-cyan);
+    }
+
+    .fp-remember input[type="checkbox"]:checked::before {
+        content: "";
+        width: 9px;
+        height: 5px;
+        border-left: 2px solid #06090e;
+        border-bottom: 2px solid #06090e;
+        transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+    .fp-remember input[type="checkbox"]:focus-visible {
+        outline: 2px solid var(--fp-accent-cyan);
+        outline-offset: 2px;
+    }
+
+    .fp-forgot {
+        color: var(--fp-accent-cyan);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+
+    .fp-forgot:hover {
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+    }
+
+
+    /* Field errors */
+    .fp-field-error {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        color: #f87171;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    /* =====================================================
+       REMEMBER & FORGOT PASSWORD ROW
+    ===================================================== */
+
+    .fp-options-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 14px 0 24px;
+        font-size: 13px;
+    }
+
+    .fp-remember-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--fp-text-secondary);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .fp-remember-label input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 17px;
+        height: 17px;
+        border-radius: 5px;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid var(--fp-input-border);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+        display: grid;
+        place-content: center;
+    }
+
+    .fp-remember-label input[type="checkbox"]:checked {
+        background: var(--fp-accent-cyan);
+        border-color: var(--fp-accent-cyan);
+    }
+
+    .fp-remember-label input[type="checkbox"]:checked::before {
+        content: "";
+        width: 9px;
+        height: 5px;
+        border-left: 2px solid #06090e;
+        border-bottom: 2px solid #06090e;
+        transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+    .fp-remember-label input[type="checkbox"]:focus-visible {
+        outline: 2px solid var(--fp-accent-cyan);
+        outline-offset: 2px;
+    }
+
+    .fp-forgot-link {
+        color: var(--fp-accent-cyan);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+
+    .fp-forgot-link:hover {
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+    }
+
+
+    /* =====================================================
+       LOGIN BUTTON
+    ===================================================== */
+
+    .fp-login-button {
+        position: relative;
+
+        width: 100%;
+
+        min-height: 54px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        color: #001015;
+
+        background:
+            linear-gradient(
+                90deg,
+                #00eaff,
+                #00b7ff,
+                #00eaff
+            );
+
+        background-size: 200% auto;
+
+        font-size: 15px;
+        font-weight: 800;
+
+        letter-spacing: 0.4px;
+
+        cursor: pointer;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 0 15px rgba(0, 238, 255, 0.35);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+
+        animation: fpButtonGradient 3s linear infinite;
+    }
+
+
+    @keyframes fpButtonGradient {
+        0% {
+            background-position: 0% center;
+        }
+
+        100% {
+            background-position: 200% center;
+        }
+    }
+
+
+    .fp-login-button::before {
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: -120%;
+
+        width: 70%;
+        height: 100%;
+
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.5),
+            transparent
+        );
+
+        transform: skewX(-20deg);
+
+        transition: left 0.6s ease;
+    }
+
+
+    .fp-login-button:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 0 20px rgba(0, 238, 255, 0.6),
+            0 0 45px rgba(0, 238, 255, 0.2);
+    }
+
+
+    .fp-login-button:hover::before {
+        left: 140%;
+    }
+
+
+    .fp-login-button:active {
+        transform: translateY(0);
+    }
+
+
+    /* =====================================================
+       REGISTER AREA
+    ===================================================== */
+
+    .fp-register-area {
+        margin-top: 27px;
+
+        padding-top: 23px;
+
+        border-top:
+            1px solid
+            rgba(255, 255, 255, 0.08);
+
+        text-align: center;
+
+        color: rgba(255, 255, 255, 0.55);
+
+        font-size: 13px;
+    }
+
+
+    .fp-register-area a {
+        color: #00eeff;
+
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition: 0.25s ease;
+    }
+
+
+    .fp-register-area a:hover {
+        color: #ffffff;
+
+        text-shadow:
+            0 0 10px rgba(0, 238, 255, 0.8);
+    }
+
+
+    /* =====================================================
+       SECURITY FOOTER
+    ===================================================== */
+
+    .fp-security {
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-top: 22px;
+
+        color: rgba(255, 255, 255, 0.35);
+
+        font-size: 11px;
+    }
+
+
+    .fp-security-dot {
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: #00ee88;
+
+        box-shadow:
+            0 0 8px #00ee88;
+
+        animation: fpSecurityPulse 1.8s infinite;
+    }
+
+
+    @keyframes fpSecurityPulse {
+        0%,
+        100% {
+            opacity: 0.5;
+        }
+
+        50% {
+            opacity: 1;
+        }
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 576px) {
+
+        .fp-auth-page {
+            padding: 40px 15px;
+        }
+
+        .fp-login-card {
+            padding: 34px 23px;
+            border-radius: 16px;
+        }
+
+        .fp-login-title {
+            font-size: 30px;
+        }
+
+        .fp-login-options {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+    }
+
+
+    /* =====================================================
+       REDUCED MOTION
+    ===================================================== */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .fp-login-card,
+        .fp-login-logo,
+        .fp-login-button,
+        .fp-auth-page::before,
+        .fp-auth-page::after,
+        .fp-security-dot {
+            animation: none;
+        }
+
+    }
+
+
+    /* =====================================================
+       LOGIN INTERACTIVE STATES
+       Completes the states the login markup relies on but
+       that were not yet styled. Visual only - no markup,
+       form or request behaviour is changed.
+    ===================================================== */
+
+    /* -----------------------------------------------
+       Dark-theme autofill fix
+       Chrome / Edge / Firefox autofill would otherwise
+       paint the email and password fields with a light
+       background and dark text.
+    ------------------------------------------------ */
+
+    .fp-login-input:-webkit-autofill,
+    .fp-login-input:-webkit-autofill:hover,
+    .fp-login-input:-webkit-autofill:focus,
+    .fp-login-input:-webkit-autofill:active,
+    .fp-login-input:autofill {
+        -webkit-text-fill-color: var(--fp-text-primary);
+        -webkit-box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.95) inset;
+        box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.95) inset;
+        caret-color: var(--fp-text-primary);
+        transition:
+            background-color 9999s ease-out 0s,
+            color 9999s ease-out 0s;
+    }
+
+    /* -----------------------------------------------
+       Keyboard focus rings
+    ------------------------------------------------ */
+
+    .fp-login-button:focus-visible {
+        outline: 2px solid var(--fp-accent-cyan);
+        outline-offset: 3px;
+    }
+
+    .fp-forgot:focus-visible,
+    .fp-register-area a:focus-visible {
+        outline: 2px solid var(--fp-accent-cyan);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+</style>
+
+
+<!-- =====================================================
+     AUTH PAGE
+====================================================== -->
+
+<section class="fp-auth-page">
+
+    <div class="fp-auth-wrapper">
+
+        <div class="fp-login-card">
+
+
+            <!-- =================================================
+                 LOGO
+            ================================================== -->
+
+            <div class="fp-login-logo">
+                🚀
+            </div>
+
+
+            <!-- =================================================
+                 TITLE
+            ================================================== -->
+
+            <h1 class="fp-login-title">
+
+                Welcome to
+                <span>FinPilot</span>
+
+            </h1>
+
+
+            <p class="fp-login-subtitle">
+
+                Your AI-powered personal finance command center.
+
+            </p>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
+
+            <form
+                method="POST"
+                novalidate
+            >
+
+                {{ form.hidden_tag() }}
+
+
+                <!-- =============================================
+                     EMAIL
+                ============================================== -->
+
+                <div class="fp-field">
+
+                    {{ form.email.label }}
+
+                    <div class="fp-input-wrapper">
+
+                        <span class="fp-input-icon">
+                            ✉
+                        </span>
+
+                        {{ form.email(
+                            class="fp-login-input",
+                            placeholder="Enter your email",
+                            autocomplete="email"
+                        ) }}
+
+                    </div>
+
+
+                    {% for error in form.email.errors %}
+
+                        <span class="fp-error">
+                            {{ error }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- =============================================
+                     PASSWORD
+                ============================================== -->
+
+                <div class="fp-field">
+
+                    {{ form.password.label }}
+
+                    <div class="fp-input-wrapper">
+
+                        <span class="fp-input-icon">
+                            🔒
+                        </span>
+
+                        {{ form.password(
+                            class="fp-login-input",
+                            placeholder="Enter your password",
+                            autocomplete="current-password"
+                        ) }}
+
+                    </div>
+
+
+                    {% for error in form.password.errors %}
+
+                        <span class="fp-error">
+                            {{ error }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- =============================================
+                     OPTIONS
+                ============================================== -->
+
+                <div class="fp-login-options">
+
+                    <label class="fp-remember">
+
+                        <input
+                            type="checkbox"
+                            name="remember"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+
+                    <a
+                        href="#"
+                        class="fp-forgot"
+                        onclick="return false;"
+                    >
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <!-- =============================================
+                     SUBMIT
+                ============================================== -->
+
+                {{ form.submit(
+                    class="fp-login-button",
+                    value="Login to FinPilot AI"
+                ) }}
+
+            </form>
+
+
+            <!-- =================================================
+                 REGISTER
+            ================================================== -->
+
+            <div class="fp-register-area">
+
+                Don't have a FinPilot AI account?
+
+                <a
+                    href="{{ url_for('auth.register') }}"
+                >
+                    Create one
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 SECURITY
+            ================================================== -->
+
+            <div class="fp-security">
+
+                <span class="fp-security-dot"></span>
+
+                <span>
+                    Secure FinPilot AI authentication
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

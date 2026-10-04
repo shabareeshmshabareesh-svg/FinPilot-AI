@@ -1,0 +1,2632 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | Analytics
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   FINPILOT ANALYTICS
+   DASHBOARD-MATCHED DARK NEON DESIGN
+========================================================= */
+
+.analytics-page {
+    min-height: 100vh;
+    color: #f3f7ff;
+    background:
+        radial-gradient(
+            circle at 10% 15%,
+            rgba(23, 105, 255, .14),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(118, 87, 255, .12),
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #07101f 0%,
+            #0b1428 50%,
+            #080e1d 100%
+        );
+    position: relative;
+    overflow: hidden;
+}
+
+.analytics-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 229, 255, .025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 229, 255, .025) 1px,
+            transparent 1px
+        );
+
+    background-size: 48px 48px;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.analytics-page > .container {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.analytics-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+.analytics-eyebrow {
+    margin-bottom: 10px;
+
+    color: #00e5ff;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.analytics-title {
+    margin: 0;
+
+    color: #f4f8ff;
+
+    font-size: clamp(2.5rem, 5vw, 4.3rem);
+    font-weight: 850;
+
+    letter-spacing: -.045em;
+}
+
+.analytics-subtitle {
+    margin-top: 12px;
+    margin-bottom: 0;
+
+    color: #8fa3bf;
+
+    font-size: 1.05rem;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.analytics-add-btn {
+    border: 0;
+
+    padding: 13px 21px;
+
+    border-radius: 12px;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1769ff,
+            #7657ff
+        );
+
+    box-shadow:
+        0 12px 30px
+        rgba(23, 105, 255, .28);
+
+    transition: .25s ease;
+}
+
+.analytics-add-btn:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 18px 40px
+        rgba(23, 105, 255, .4);
+}
+
+
+/* =========================================================
+   COMMON CARD
+========================================================= */
+
+.finance-card,
+.dashboard-panel,
+.ai-insight-panel {
+    position: relative;
+
+    color: #f3f7ff;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(14, 29, 53, .94),
+            rgba(7, 17, 34, .94)
+        );
+
+    border:
+        1px solid
+        rgba(0, 229, 255, .13);
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 18px 50px
+        rgba(0, 0, 0, .24);
+
+    overflow: hidden;
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.finance-card:hover,
+.dashboard-panel:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(0, 229, 255, .28);
+
+    box-shadow:
+        0 25px 60px
+        rgba(0, 0, 0, .35),
+        0 0 30px
+        rgba(0, 229, 255, .04);
+}
+
+
+/* =========================================================
+   STAT CARDS
+========================================================= */
+
+.analytics-stat-card {
+    min-height: 220px;
+
+    padding: 28px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.analytics-stat-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    right: -70px;
+    bottom: -70px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, .025);
+}
+
+.finance-card-icon {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 22px;
+
+    border-radius: 16px;
+
+    font-size: 25px;
+
+    background:
+        rgba(23, 105, 255, .13);
+
+    border:
+        1px solid
+        rgba(0, 229, 255, .14);
+}
+
+.finance-card-icon.purple {
+    background:
+        rgba(118, 87, 255, .16);
+}
+
+.finance-card-icon.blue {
+    background:
+        rgba(23, 105, 255, .16);
+}
+
+.finance-card-icon.green {
+    background:
+        rgba(66, 232, 161, .12);
+}
+
+.analytics-stat-card p {
+    margin: 0 0 6px;
+
+    color: #8fa3bf;
+
+    font-size: .9rem;
+}
+
+.analytics-stat-card h2 {
+    margin: 0;
+
+    color: #f5f9ff;
+
+    font-size: 2rem;
+    font-weight: 850;
+}
+
+.analytics-stat-card > span {
+    margin-top: 7px;
+
+    color: #7186a5;
+
+    font-size: .82rem;
+}
+
+
+/* =========================================================
+   PANEL HEADER
+========================================================= */
+
+.panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+.panel-header h3 {
+    margin: 0;
+
+    color: #f4f8ff;
+
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.panel-header p {
+    margin: 7px 0 0;
+
+    color: #7f94b1;
+
+    font-size: .9rem;
+}
+
+.analytics-panel-icon,
+.analytics-chart-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 14px;
+
+    background:
+        rgba(23, 105, 255, .12);
+
+    border:
+        1px solid
+        rgba(0, 229, 255, .12);
+}
+
+
+/* =========================================================
+   CATEGORY PANEL
+========================================================= */
+
+.analytics-category-panel {
+    padding: 28px;
+}
+
+.analytics-category-row {
+    margin-bottom: 21px;
+}
+
+.analytics-category-row:last-child {
+    margin-bottom: 0;
+}
+
+.analytics-category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 9px;
+
+    color: #dfe9f8;
+}
+
+.analytics-category-header strong {
+    font-weight: 750;
+}
+
+.analytics-category-header > span {
+    color: #91a4c0;
+}
+
+.category-divider {
+    margin: 0 5px;
+    color: #51647e;
+}
+
+.analytics-progress {
+    height: 10px;
+
+    overflow: hidden;
+
+    background:
+        rgba(255,255,255,.07);
+
+    border-radius: 999px;
+}
+
+.analytics-progress-bar {
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #1769ff,
+            #00e5ff,
+            #7657ff
+        );
+
+    box-shadow:
+        0 0 12px
+        rgba(23, 105, 255, .25);
+}
+
+
+/* =========================================================
+   CHART PANELS
+========================================================= */
+
+.analytics-chart-panel {
+    padding: 28px;
+}
+
+.analytics-doughnut-wrapper {
+    height: 310px;
+
+    position: relative;
+}
+
+.analytics-bar-wrapper {
+    height: 310px;
+
+    position: relative;
+}
+
+.analytics-trend-wrapper {
+    height: 330px;
+
+    position: relative;
+}
+
+.analytics-chart-panel canvas {
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   EMPTY STATES
+========================================================= */
+
+.analytics-empty,
+.chart-empty {
+    min-height: 250px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.analytics-empty-icon,
+.chart-empty span {
+    font-size: 42px;
+
+    margin-bottom: 15px;
+}
+
+.analytics-empty h4 {
+    color: #f3f7ff;
+    font-weight: 800;
+}
+
+.analytics-empty p,
+.chart-empty p {
+    color: #8195b2;
+}
+
+
+/* =========================================================
+   COMPARISON CARDS
+========================================================= */
+
+.comparison-card {
+    min-height: 180px;
+
+    padding: 27px;
+}
+
+.comparison-label {
+    display: inline-block;
+
+    color: #00dfff;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: .13em;
+}
+
+.comparison-card h2 {
+    margin:
+        16px 0 5px;
+
+    color: #f4f8ff;
+
+    font-size: 1.8rem;
+    font-weight: 850;
+}
+
+.comparison-card p {
+    margin: 0;
+
+    color: #8195b2;
+}
+
+
+/* =========================================================
+   BUDGET
+========================================================= */
+
+.budget-analytics-panel {
+    padding: 30px;
+}
+
+.budget-analytics-numbers {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+
+    margin-bottom: 28px;
+}
+
+.budget-analytics-numbers > div {
+    padding: 18px;
+
+    border-radius: 15px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        rgba(0,229,255,.07);
+}
+
+.budget-analytics-numbers span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #8195b2;
+
+    font-size: .8rem;
+}
+
+.budget-analytics-numbers strong {
+    color: #f3f8ff;
+
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.budget-analytics-progress {
+    margin-bottom: 24px;
+}
+
+.budget-progress-label {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 9px;
+
+    color: #8195b2;
+}
+
+.budget-progress-label strong {
+    color: #00e5ff;
+}
+
+.modern-budget-progress {
+    height: 13px;
+
+    background:
+        rgba(255,255,255,.07);
+
+    border-radius: 999px;
+
+    overflow: hidden;
+}
+
+.modern-budget-progress .progress-bar {
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #1769ff,
+            #7657ff
+        );
+
+    box-shadow:
+        0 0 18px
+        rgba(23,105,255,.3);
+}
+
+
+/* =========================================================
+   BUDGET STATUS
+========================================================= */
+
+.budget-status {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 14px;
+
+    padding: 18px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+}
+
+.budget-status > span {
+    font-size: 23px;
+}
+
+.budget-status strong {
+    color: #edf5ff;
+}
+
+.budget-status p {
+    margin:
+        5px 0 0;
+
+    color: #8195b2;
+}
+
+.budget-status.safe {
+    border-color:
+        rgba(66,232,161,.2);
+}
+
+.budget-status.warning {
+    border-color:
+        rgba(255,193,7,.2);
+}
+
+.budget-status.danger {
+    border-color:
+        rgba(255,75,95,.25);
+}
+
+.budget-not-set {
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255,255,255,.035);
+}
+
+.budget-not-set-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 16px;
+
+    background:
+        rgba(23,105,255,.13);
+
+    font-size: 26px;
+}
+
+.budget-not-set h4 {
+    margin: 0 0 6px;
+
+    color: #f3f8ff;
+    font-weight: 800;
+}
+
+.budget-not-set p {
+    color: #8195b2;
+}
+
+
+/* =========================================================
+   SMART COACH
+========================================================= */
+
+.smart-coach-panel {
+    position: relative;
+
+    padding: 30px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(13, 28, 52, .98),
+            rgba(24, 24, 69, .96)
+        );
+
+    border:
+        1px solid
+        rgba(0,229,255,.17);
+
+    box-shadow:
+        0 22px 55px
+        rgba(0,0,0,.28);
+
+    overflow: hidden;
+}
+
+.smart-coach-panel::before {
+    content: "";
+
+    position: absolute;
+
+    width: 240px;
+    height: 240px;
+
+    right: -100px;
+    top: -110px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(0,229,255,.12);
+}
+
+.smart-coach-header {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+}
+
+.smart-coach-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 17px;
+
+    background:
+        rgba(0,229,255,.08);
+
+    font-size: 27px;
+}
+
+.smart-coach-eyebrow {
+    color: #00e5ff;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: .13em;
+}
+
+.smart-coach-title {
+    margin:
+        5px 0 0;
+
+    color: white;
+
+    font-size: 1.65rem;
+    font-weight: 850;
+}
+
+.smart-coach-message {
+    margin:
+        22px 0;
+
+    color: #a8bad2;
+
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
+.smart-coach-footer {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #7f94b1;
+
+    font-size: .8rem;
+}
+
+.smart-coach-status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #42e8a1;
+
+    box-shadow:
+        0 0 10px
+        rgba(66,232,161,.7);
+}
+
+
+/* =========================================================
+   HIGHEST DAY
+========================================================= */
+
+.highest-day-card {
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 28px;
+}
+
+.highest-day-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 18px;
+
+    background:
+        rgba(255,174,66,.08);
+
+    font-size: 29px;
+}
+
+.highest-day-card h3 {
+    margin:
+        8px 0 5px;
+
+    color: #f3f8ff;
+
+    font-size: 1.7rem;
+    font-weight: 850;
+}
+
+.highest-day-card p {
+    margin: 0;
+
+    color: #8195b2;
+}
+
+
+/* =========================================================
+   AI INSIGHT
+========================================================= */
+
+.analytics-insight {
+    padding: 34px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111936,
+            #242365,
+            #303080
+        );
+
+    border:
+        1px solid
+        rgba(118,87,255,.25);
+}
+
+.analytics-insight::after {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    right: -100px;
+    top: -120px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(0,229,255,.12);
+}
+
+.ai-spark {
+    font-size: 30px;
+
+    margin-bottom: 14px;
+}
+
+.ai-label {
+    color: #00aaff;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: .14em;
+}
+
+.analytics-insight h3 {
+    margin:
+        12px 0 10px;
+
+    color: white;
+
+    font-size: 1.6rem;
+    font-weight: 850;
+}
+
+.analytics-insight p {
+    max-width: 800px;
+
+    margin: 0;
+
+    color: #b4c1d7;
+
+    line-height: 1.7;
+}
+
+.analytics-insight strong {
+    color: white;
+}
+
+.ai-pulse {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 25px;
+
+    color: #b1c0d6;
+
+    font-size: .8rem;
+}
+
+.ai-pulse span {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #42e8a1;
+
+    box-shadow:
+        0 0 12px
+        rgba(66,232,161,.7);
+}
+
+
+/* =========================================================
+   BUTTONS INSIDE
+========================================================= */
+
+.analytics-page .btn-primary {
+    border: 0;
+
+    border-radius: 11px;
+
+    font-weight: 750;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1769ff,
+            #7657ff
+        );
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .analytics-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .analytics-add-btn {
+        align-self: flex-start;
+    }
+
+    .budget-analytics-numbers {
+        grid-template-columns:
+            1fr;
+    }
+}
+
+
+@media (max-width: 767px) {
+
+    .analytics-page > .container {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .analytics-title {
+        font-size: 2.6rem;
+    }
+
+    .analytics-stat-card {
+        min-height: 190px;
+    }
+
+    .analytics-category-panel,
+    .analytics-chart-panel,
+    .budget-analytics-panel,
+    .smart-coach-panel,
+    .analytics-insight {
+        padding: 22px;
+    }
+
+    .analytics-doughnut-wrapper,
+    .analytics-bar-wrapper {
+        height: 270px;
+    }
+
+    .analytics-trend-wrapper {
+        height: 280px;
+    }
+
+    .highest-day-card {
+        align-items: flex-start;
+    }
+
+    .budget-not-set {
+        align-items: flex-start;
+    }
+
+    .smart-coach-title {
+        font-size: 1.3rem;
+    }
+}
+
+</style>
+
+
+<div class="analytics-page">
+
+    <div class="container py-5">
+
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div class="analytics-header mb-4">
+
+            <div>
+
+                <p class="analytics-eyebrow">
+                    📊 FINPILOT AI · ANALYTICS
+                </p>
+
+                <h1 class="analytics-title">
+                    Spending Analytics
+                </h1>
+
+                <p class="analytics-subtitle">
+                    Understand where your money is going this month.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('expense.add_expense') }}"
+                class="btn btn-primary analytics-add-btn"
+            >
+                ＋ Add Expense
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             MAIN STATS
+        ====================================================== -->
+
+        <div class="row g-4 mb-4">
+
+
+            <!-- TOTAL -->
+
+            <div class="col-md-4">
+
+                <div class="finance-card analytics-stat-card">
+
+                    <div class="finance-card-icon purple">
+                        💸
+                    </div>
+
+                    <p>
+                        Total Spending
+                    </p>
+
+                    <h2>
+                        ₹{{ "%.2f"|format(total_spending) }}
+                    </h2>
+
+                    <span>
+                        This month
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- TRANSACTIONS -->
+
+            <div class="col-md-4">
+
+                <div class="finance-card analytics-stat-card">
+
+                    <div class="finance-card-icon blue">
+                        🧾
+                    </div>
+
+                    <p>
+                        Transactions
+                    </p>
+
+                    <h2>
+                        {{ expense_count }}
+                    </h2>
+
+                    <span>
+                        This month
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- AVERAGE -->
+
+            <div class="col-md-4">
+
+                <div class="finance-card analytics-stat-card">
+
+                    <div class="finance-card-icon green">
+                        📊
+                    </div>
+
+                    <p>
+                        Average Expense
+                    </p>
+
+                    <h2>
+                        ₹{{ "%.2f"|format(average_expense) }}
+                    </h2>
+
+                    <span>
+                        Per transaction
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CATEGORY SPENDING
+        ====================================================== -->
+
+        <div class="dashboard-panel analytics-category-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Spending by Category
+                    </h3>
+
+                    <p>
+                        See which categories consume most of your budget.
+                    </p>
+
+                </div>
+
+                <div class="analytics-panel-icon">
+                    🏷️
+                </div>
+
+            </div>
+
+
+            {% if category_totals %}
+
+                {% for category, amount in category_totals.items() %}
+
+                    <div class="analytics-category-row">
+
+                        <div class="analytics-category-header">
+
+                            <strong>
+                                {{ category }}
+                            </strong>
+
+                            <span>
+
+                                ₹{{ "%.2f"|format(amount) }}
+
+                                <span class="category-divider">
+                                    ·
+                                </span>
+
+                                {{ "%.1f"|format(
+                                    category_percentages[category]
+                                ) }}%
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="progress analytics-progress"
+                            role="progressbar"
+                        >
+
+                            <div
+                                class="progress-bar analytics-progress-bar"
+                                style="width: {{ category_percentages[category] }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="analytics-empty">
+
+                    <div class="analytics-empty-icon">
+                        📊
+                    </div>
+
+                    <h4>
+                        No spending data yet
+                    </h4>
+
+                    <p>
+                        Add some expenses to see your analytics.
+                    </p>
+
+                    <a
+                        href="{{ url_for('expense.add_expense') }}"
+                        class="btn btn-primary"
+                    >
+                        Add Expense
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =====================================================
+             CHARTS
+        ====================================================== -->
+
+        <div class="row g-4 mt-1">
+
+
+            <!-- DOUGHNUT -->
+
+            <div class="col-lg-5">
+
+                <div class="dashboard-panel analytics-chart-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>
+                                Spending Breakdown
+                            </h3>
+
+                            <p>
+                                Where your money is going.
+                            </p>
+
+                        </div>
+
+                        <span class="analytics-chart-icon">
+                            🍩
+                        </span>
+
+                    </div>
+
+
+                    {% if category_totals %}
+
+                        <div class="analytics-doughnut-wrapper">
+
+                            <canvas
+                                id="categoryDoughnutChart"
+                            ></canvas>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="chart-empty">
+
+                            <span>
+                                📊
+                            </span>
+
+                            <p>
+                                Add expenses to see your
+                                spending breakdown.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- BAR -->
+
+            <div class="col-lg-7">
+
+                <div class="dashboard-panel analytics-chart-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>
+                                Category Comparison
+                            </h3>
+
+                            <p>
+                                Compare your spending categories.
+                            </p>
+
+                        </div>
+
+                        <span class="analytics-chart-icon">
+                            📊
+                        </span>
+
+                    </div>
+
+
+                    {% if category_totals %}
+
+                        <div class="analytics-bar-wrapper">
+
+                            <canvas
+                                id="categoryBarChart"
+                            ></canvas>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="chart-empty">
+
+                            <span>
+                                📈
+                            </span>
+
+                            <p>
+                                Your category comparison
+                                will appear here.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             DAILY TREND
+        ====================================================== -->
+
+        <div class="dashboard-panel analytics-chart-panel mt-4">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        📈 Daily Spending Trend
+                    </h3>
+
+                    <p>
+                        Track how your spending changes throughout the month.
+                    </p>
+
+                </div>
+
+                <span class="analytics-chart-icon">
+                    📈
+                </span>
+
+            </div>
+
+
+            <div class="analytics-trend-wrapper">
+
+                {% if daily_labels %}
+
+                    <canvas
+                        id="dailySpendingChart"
+                    ></canvas>
+
+                {% else %}
+
+                    <div class="chart-empty">
+
+                        <span>
+                            📈
+                        </span>
+
+                        <p>
+                            Add expenses to see your
+                            daily spending trend.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             MONTH COMPARISON
+        ====================================================== -->
+
+        <div class="row g-4 mt-1">
+
+
+            <div class="col-md-4">
+
+                <div class="dashboard-panel comparison-card">
+
+                    <span class="comparison-label">
+                        THIS MONTH
+                    </span>
+
+                    <h2>
+                        ₹{{ "%.2f"|format(total_spending) }}
+                    </h2>
+
+                    <p>
+                        Total spending
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="dashboard-panel comparison-card">
+
+                    <span class="comparison-label">
+                        LAST MONTH
+                    </span>
+
+                    <h2>
+                        ₹{{ "%.2f"|format(previous_month_spending) }}
+                    </h2>
+
+                    <p>
+                        Total spending
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="dashboard-panel comparison-card">
+
+                    <span class="comparison-label">
+                        MONTHLY CHANGE
+                    </span>
+
+                    <h2>
+
+                        {% if spending_change_percent > 0 %}
+
+                            ↑ {{ "%.1f"|format(
+                                spending_change_percent
+                            ) }}%
+
+                        {% elif spending_change_percent < 0 %}
+
+                            ↓ {{ "%.1f"|format(
+                                spending_change_percent|abs
+                            ) }}%
+
+                        {% else %}
+
+                            0%
+
+                        {% endif %}
+
+                    </h2>
+
+                    <p>
+
+                        {% if spending_change_label == "higher" %}
+
+                            Spending is higher than last month.
+
+                        {% elif spending_change_label == "lower" %}
+
+                            Spending is lower than last month. 🎉
+
+                        {% else %}
+
+                            Spending is unchanged.
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             BUDGET VS ACTUAL
+        ====================================================== -->
+
+        <div class="dashboard-panel budget-analytics-panel mt-4">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        🎯 Budget vs Actual
+                    </h3>
+
+                    <p>
+                        See how much of your monthly budget you've used.
+                    </p>
+
+                </div>
+
+                <span class="analytics-chart-icon">
+                    🎯
+                </span>
+
+            </div>
+
+
+            {% if monthly_budget > 0 %}
+
+
+                <div class="budget-analytics-numbers">
+
+
+                    <div>
+
+                        <span>
+                            Monthly Budget
+                        </span>
+
+                        <strong>
+                            ₹{{ "%.2f"|format(monthly_budget) }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Spent
+                        </span>
+
+                        <strong>
+                            ₹{{ "%.2f"|format(total_spending) }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+
+                            {% if budget_remaining >= 0 %}
+                                Remaining
+                            {% else %}
+                                Over Budget
+                            {% endif %}
+
+                        </span>
+
+                        <strong>
+
+                            {% if budget_remaining >= 0 %}
+
+                                ₹{{ "%.2f"|format(
+                                    budget_remaining
+                                ) }}
+
+                            {% else %}
+
+                                ₹{{ "%.2f"|format(
+                                    budget_remaining|abs
+                                ) }}
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="budget-analytics-progress">
+
+                    <div class="budget-progress-label">
+
+                        <span>
+                            Budget Used
+                        </span>
+
+                        <strong>
+                            {{ "%.1f"|format(
+                                budget_percent
+                            ) }}%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="progress modern-budget-progress">
+
+                        <div
+                            class="progress-bar"
+                            style="width: {{ budget_percent }}%;"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                {% if budget_status == "safe" %}
+
+                    <div class="budget-status safe">
+
+                        <span>
+                            🟢
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                You're within budget
+                            </strong>
+
+                            <p>
+                                You still have
+                                ₹{{ "%.2f"|format(
+                                    budget_remaining
+                                ) }}
+                                available this month.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                {% elif budget_status == "warning" %}
+
+                    <div class="budget-status warning">
+
+                        <span>
+                            ⚠️
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                You're getting close to your budget
+                            </strong>
+
+                            <p>
+                                You've already used
+                                {{ "%.1f"|format(
+                                    budget_percent
+                                ) }}%
+                                of your monthly budget.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                {% elif budget_status == "exceeded" %}
+
+                    <div class="budget-status danger">
+
+                        <span>
+                            🔴
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Budget exceeded
+                            </strong>
+
+                            <p>
+                                You've spent
+                                ₹{{ "%.2f"|format(
+                                    budget_difference
+                                ) }}
+                                more than your monthly budget.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+            {% else %}
+
+
+                <div class="budget-not-set">
+
+                    <div class="budget-not-set-icon">
+                        🎯
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            Set your monthly budget
+                        </h4>
+
+                        <p>
+                            Add a monthly budget to track your
+                            spending progress.
+                        </p>
+
+                        <a
+                            href="{{ url_for('budget.set_budget') }}"
+                            class="btn btn-primary"
+                        >
+                            Set Budget
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =====================================================
+             SMART COACH
+        ====================================================== -->
+
+        {% if smart_coach %}
+
+            {% set coach_type = smart_coach.type|default("info") %}
+            {% set coach_icon = smart_coach.icon|default("🧠") %}
+            {% set coach_title = smart_coach.title|default("FinPilot Smart Coach") %}
+            {% set coach_message = smart_coach.message|default("Keep tracking your finances to receive personalized guidance.") %}
+
+
+            <div class="smart-coach-panel mt-4
+                {% if coach_type == 'danger' %}
+                    smart-coach-danger
+                {% elif coach_type == 'warning' %}
+                    smart-coach-warning
+                {% elif coach_type == 'success' %}
+                    smart-coach-success
+                {% else %}
+                    smart-coach-info
+                {% endif %}
+            ">
+
+
+                <div class="smart-coach-header">
+
+                    <div class="smart-coach-icon">
+                        {{ coach_icon }}
+                    </div>
+
+                    <div>
+
+                        <span class="smart-coach-eyebrow">
+                            🧠 FINPILOT SMART COACH
+                        </span>
+
+                        <h3 class="smart-coach-title">
+                            {{ coach_title }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <p class="smart-coach-message">
+                    {{ coach_message }}
+                </p>
+
+
+                <div class="smart-coach-footer">
+
+                    <span class="smart-coach-status-dot"></span>
+
+                    <span>
+                        Personalized from your current financial activity
+                    </span>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             HIGHEST SPENDING DAY
+        ====================================================== -->
+
+        {% if highest_spending_day %}
+
+            <div class="dashboard-panel highest-day-card mt-4">
+
+                <div class="highest-day-icon">
+                    🔥
+                </div>
+
+                <div>
+
+                    <span class="comparison-label">
+                        HIGHEST SPENDING DAY
+                    </span>
+
+                    <h3>
+                        {{ highest_spending_day.strftime(
+                            "%d %B %Y"
+                        ) }}
+                    </h3>
+
+                    <p>
+
+                        You spent
+
+                        <strong>
+                            ₹{{ "%.2f"|format(
+                                highest_spending_day_amount
+                            ) }}
+                        </strong>
+
+                        on this day.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             SPENDING INSIGHT
+        ====================================================== -->
+
+        {% if category_totals %}
+
+            <div class="ai-insight-panel analytics-insight mt-4">
+
+                <div class="ai-spark">
+                    🔥
+                </div>
+
+                <span class="ai-label">
+                    SPENDING INSIGHT
+                </span>
+
+                <h3>
+                    {{ top_category }} is your biggest expense.
+                </h3>
+
+                <p>
+
+                    You spent
+
+                    <strong>
+                        ₹{{ "%.2f"|format(
+                            top_category_amount
+                        ) }}
+                    </strong>
+
+                    on {{ top_category }} this month.
+
+                    That's
+
+                    <strong>
+                        {{ "%.1f"|format(
+                            category_percentages[top_category]
+                        ) }}%
+                    </strong>
+
+                    of your total spending.
+
+                </p>
+
+
+                <div class="ai-pulse">
+
+                    <span></span>
+
+                    FinPilot is learning your spending patterns
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =====================================================
+           DATA
+        ===================================================== */
+
+        const categoryLabels =
+            {{ category_totals.keys() | list | tojson }};
+
+        const categoryValues =
+            {{ category_totals.values() | list | tojson }};
+
+
+        /* =====================================================
+           CHART DEFAULTS
+        ===================================================== */
+
+        Chart.defaults.color = "#8fa3bf";
+
+        Chart.defaults.font.family =
+            "Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+
+
+        /* =====================================================
+           DOUGHNUT
+        ===================================================== */
+
+        const doughnutCanvas =
+            document.getElementById(
+                "categoryDoughnutChart"
+            );
+
+
+        if (
+            doughnutCanvas &&
+            categoryLabels.length > 0
+        ) {
+
+            new Chart(
+                doughnutCanvas,
+                {
+
+                    type: "doughnut",
+
+                    data: {
+
+                        labels:
+                            categoryLabels,
+
+                        datasets: [
+
+                            {
+
+                                data:
+                                    categoryValues,
+
+                                backgroundColor: [
+
+                                    "#1769ff",
+                                    "#00dfff",
+                                    "#7657ff",
+                                    "#42e8a1",
+                                    "#ffb84d",
+                                    "#ff5c7a",
+                                    "#8b7cff",
+                                    "#4dc3ff"
+
+                                ],
+
+                                borderColor:
+                                    "#0b1428",
+
+                                borderWidth:
+                                    4,
+
+                                borderRadius:
+                                    8,
+
+                                spacing:
+                                    3
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive:
+                            true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        cutout:
+                            "68%",
+
+                        animation: {
+
+                            animateRotate:
+                                true,
+
+                            animateScale:
+                                true,
+
+                            duration:
+                                1200
+
+                        },
+
+
+                        plugins: {
+
+                            legend: {
+
+                                position:
+                                    "bottom",
+
+                                labels: {
+
+                                    color:
+                                        "#9db0ca",
+
+                                    padding:
+                                        18,
+
+                                    usePointStyle:
+                                        true,
+
+                                    font: {
+
+                                        size:
+                                            12
+
+                                    }
+
+                                }
+
+                            },
+
+
+                            tooltip: {
+
+                                backgroundColor:
+                                    "#101c34",
+
+                                borderColor:
+                                    "rgba(0,229,255,.2)",
+
+                                borderWidth:
+                                    1,
+
+                                titleColor:
+                                    "#ffffff",
+
+                                bodyColor:
+                                    "#b7c6da",
+
+                                callbacks: {
+
+                                    label:
+                                        function(context) {
+
+                                            const value =
+                                                context.raw;
+
+                                            return " ₹" +
+                                                value.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                        minimumFractionDigits:
+                                                            2
+                                                    }
+                                                );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           BAR CHART
+        ===================================================== */
+
+        const barCanvas =
+            document.getElementById(
+                "categoryBarChart"
+            );
+
+
+        if (
+            barCanvas &&
+            categoryLabels.length > 0
+        ) {
+
+            new Chart(
+                barCanvas,
+                {
+
+                    type:
+                        "bar",
+
+                    data: {
+
+                        labels:
+                            categoryLabels,
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Spending",
+
+                                data:
+                                    categoryValues,
+
+                                backgroundColor:
+                                    "#1769ff",
+
+                                hoverBackgroundColor:
+                                    "#00dfff",
+
+                                borderRadius:
+                                    8,
+
+                                borderSkipped:
+                                    false
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive:
+                            true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        animation: {
+
+                            duration:
+                                1200,
+
+                            easing:
+                                "easeOutQuart"
+
+                        },
+
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero:
+                                    true,
+
+                                grid: {
+
+                                    color:
+                                        "rgba(255,255,255,.055)"
+
+                                },
+
+                                ticks: {
+
+                                    color:
+                                        "#7f94b1",
+
+                                    callback:
+                                        function(value) {
+
+                                            return "₹" +
+                                                value.toLocaleString(
+                                                    "en-IN"
+                                                );
+
+                                        }
+
+                                }
+
+                            },
+
+
+                            x: {
+
+                                grid: {
+
+                                    display:
+                                        false
+
+                                },
+
+                                ticks: {
+
+                                    color:
+                                        "#8fa3bf"
+
+                                }
+
+                            }
+
+                        },
+
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    false
+
+                            },
+
+
+                            tooltip: {
+
+                                backgroundColor:
+                                    "#101c34",
+
+                                borderColor:
+                                    "rgba(0,229,255,.2)",
+
+                                borderWidth:
+                                    1,
+
+                                titleColor:
+                                    "#ffffff",
+
+                                bodyColor:
+                                    "#b7c6da",
+
+                                callbacks: {
+
+                                    label:
+                                        function(context) {
+
+                                            return " ₹" +
+                                                context.raw.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                        minimumFractionDigits:
+                                                            2
+                                                    }
+                                                );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           DAILY SPENDING TREND
+        ===================================================== */
+
+        const dailyCanvas =
+            document.getElementById(
+                "dailySpendingChart"
+            );
+
+
+        const dailyLabels =
+            {{ daily_labels | tojson }};
+
+
+        const dailyValues =
+            {{ daily_values | tojson }};
+
+
+        if (
+            dailyCanvas &&
+            dailyLabels.length > 0
+        ) {
+
+            new Chart(
+                dailyCanvas,
+                {
+
+                    type:
+                        "line",
+
+                    data: {
+
+                        labels:
+                            dailyLabels,
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Daily Spending",
+
+                                data:
+                                    dailyValues,
+
+                                tension:
+                                    0.4,
+
+                                fill:
+                                    true,
+
+                                backgroundColor:
+                                    "rgba(23,105,255,.12)",
+
+                                borderColor:
+                                    "#00dfff",
+
+                                pointBackgroundColor:
+                                    "#00dfff",
+
+                                pointBorderColor:
+                                    "#0b1428",
+
+                                pointBorderWidth:
+                                    3,
+
+                                pointRadius:
+                                    4,
+
+                                pointHoverRadius:
+                                    7,
+
+                                borderWidth:
+                                    3
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive:
+                            true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        animation: {
+
+                            duration:
+                                1200,
+
+                            easing:
+                                "easeOutQuart"
+
+                        },
+
+
+                        interaction: {
+
+                            intersect:
+                                false,
+
+                            mode:
+                                "index"
+
+                        },
+
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero:
+                                    true,
+
+                                grid: {
+
+                                    color:
+                                        "rgba(255,255,255,.055)"
+
+                                },
+
+                                ticks: {
+
+                                    color:
+                                        "#7f94b1",
+
+                                    callback:
+                                        function(value) {
+
+                                            return "₹" +
+                                                value.toLocaleString(
+                                                    "en-IN"
+                                                );
+
+                                        }
+
+                                }
+
+                            },
+
+
+                            x: {
+
+                                grid: {
+
+                                    display:
+                                        false
+
+                                },
+
+                                ticks: {
+
+                                    color:
+                                        "#8fa3bf"
+
+                                }
+
+                            }
+
+                        },
+
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    false
+
+                            },
+
+
+                            tooltip: {
+
+                                backgroundColor:
+                                    "#101c34",
+
+                                borderColor:
+                                    "rgba(0,229,255,.2)",
+
+                                borderWidth:
+                                    1,
+
+                                titleColor:
+                                    "#ffffff",
+
+                                bodyColor:
+                                    "#b7c6da",
+
+                                callbacks: {
+
+                                    label:
+                                        function(context) {
+
+                                            return " ₹" +
+                                                context.raw.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                        minimumFractionDigits:
+                                                            2
+                                                    }
+                                                );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

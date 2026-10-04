@@ -1,0 +1,897 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | Income History
+{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   FINPILOT AI — INCOME HISTORY
+   Step 26G
+========================================================= */
+
+.fp-income-history-page{
+    min-height:calc(100vh - 74px);
+    position:relative;
+    overflow:hidden;
+    padding:36px 0 65px;
+    color:#eef7ff;
+    background:
+        radial-gradient(circle at 7% 8%,rgba(53,230,162,.10),transparent 25%),
+        radial-gradient(circle at 94% 17%,rgba(93,231,255,.10),transparent 28%),
+        radial-gradient(circle at 50% 100%,rgba(108,124,255,.08),transparent 34%),
+        #050816;
+}
+
+.fp-income-history-page::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(255,255,255,.021) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.021) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom,black,transparent 94%);
+}
+
+.fp-history-orb{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    filter:blur(3px);
+    opacity:.42;
+}
+
+.fp-history-orb.one{
+    width:310px;
+    height:310px;
+    right:-145px;
+    top:90px;
+    background:rgba(53,230,162,.08);
+    animation:fpHistoryFloat 9s ease-in-out infinite;
+}
+
+.fp-history-orb.two{
+    width:230px;
+    height:230px;
+    left:-115px;
+    bottom:130px;
+    background:rgba(93,231,255,.07);
+    animation:fpHistoryFloat 11s ease-in-out infinite reverse;
+}
+
+.fp-income-history-page .container{
+    position:relative;
+    z-index:2;
+}
+
+.fp-history-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:25px;
+    margin-bottom:24px;
+}
+
+.fp-history-eyebrow{
+    margin:0 0 7px;
+    color:#5de7ff;
+    font-size:.69rem;
+    font-weight:850;
+    letter-spacing:.16em;
+}
+
+.fp-history-title{
+    margin:0;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:900;
+    letter-spacing:-.045em;
+}
+
+.fp-history-subtitle{
+    max-width:680px;
+    margin:9px 0 0;
+    color:#8299b1;
+    font-size:.86rem;
+    line-height:1.7;
+}
+
+.fp-history-add-btn{
+    min-height:48px;
+    padding:10px 18px!important;
+    border:0!important;
+    border-radius:13px!important;
+    color:#02110d!important;
+    background:linear-gradient(90deg,#35e6a2,#5de7ff)!important;
+    font-weight:850!important;
+    box-shadow:0 10px 28px rgba(53,230,162,.15);
+    transition:.25s!important;
+}
+
+.fp-history-add-btn:hover{
+    color:#02110d!important;
+    transform:translateY(-2px);
+    box-shadow:0 14px 35px rgba(53,230,162,.25);
+}
+
+.fp-history-stat{
+    position:relative;
+    height:100%;
+    padding:21px;
+    overflow:hidden;
+    border-radius:20px;
+    background:linear-gradient(145deg,rgba(17,27,53,.84),rgba(7,14,30,.76));
+    border:1px solid rgba(93,231,255,.13);
+    box-shadow:0 18px 50px rgba(0,0,0,.22);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    transition:.28s ease;
+}
+
+.fp-history-stat:hover{
+    transform:translateY(-4px);
+    border-color:rgba(93,231,255,.24);
+}
+
+.fp-history-stat::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:12%;
+    width:55%;
+    height:1px;
+    background:linear-gradient(90deg,transparent,#5de7ff,transparent);
+    opacity:.55;
+}
+
+.fp-history-stat-icon{
+    width:45px;
+    height:45px;
+    display:grid;
+    place-items:center;
+    margin-bottom:15px;
+    border-radius:14px;
+    font-size:20px;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.07);
+}
+
+.fp-history-stat-icon.green{
+    box-shadow:inset 0 0 20px rgba(53,230,162,.08);
+}
+
+.fp-history-stat-icon.blue{
+    box-shadow:inset 0 0 20px rgba(93,231,255,.08);
+}
+
+.fp-history-stat-icon.purple{
+    box-shadow:inset 0 0 20px rgba(151,119,255,.08);
+}
+
+.fp-history-stat-label{
+    margin:0;
+    color:#7189a2;
+    font-size:.69rem;
+    font-weight:750;
+    letter-spacing:.04em;
+}
+
+.fp-history-stat-value{
+    margin:4px 0 3px;
+    color:#f3f9ff;
+    font-size:clamp(1.35rem,3vw,1.9rem);
+    font-weight:900;
+    letter-spacing:-.035em;
+}
+
+.fp-history-stat-value.green{
+    color:#35e6a2;
+}
+
+.fp-history-stat-value.blue{
+    color:#5de7ff;
+}
+
+.fp-history-stat-value.purple{
+    color:#b19aff;
+}
+
+.fp-history-stat-note{
+    color:#536b84;
+    font-size:.64rem;
+}
+
+.fp-history-panel{
+    margin-top:18px;
+    overflow:hidden;
+    border-radius:23px;
+    background:linear-gradient(145deg,rgba(17,27,53,.84),rgba(7,14,30,.78));
+    border:1px solid rgba(93,231,255,.14);
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+.fp-history-panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:23px 24px;
+    border-bottom:1px solid rgba(255,255,255,.065);
+}
+
+.fp-history-panel-header h2{
+    margin:0;
+    font-size:1.05rem;
+    font-weight:850;
+}
+
+.fp-history-panel-header p{
+    margin:5px 0 0;
+    color:#687f98;
+    font-size:.7rem;
+}
+
+.fp-history-small-add{
+    color:#5de7ff!important;
+    border-color:rgba(93,231,255,.24)!important;
+    background:rgba(93,231,255,.035)!important;
+    border-radius:11px!important;
+    font-size:.72rem!important;
+    font-weight:750!important;
+}
+
+.fp-history-list{
+    padding:7px 0;
+}
+
+.fp-history-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    padding:16px 24px;
+    border-bottom:1px solid rgba(255,255,255,.045);
+    transition:.22s ease;
+}
+
+.fp-history-row:last-child{
+    border-bottom:0;
+}
+
+.fp-history-row:hover{
+    background:rgba(93,231,255,.025);
+}
+
+.fp-history-left{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.fp-history-category-icon{
+    width:47px;
+    height:47px;
+    flex:0 0 47px;
+    display:grid;
+    place-items:center;
+    border-radius:14px;
+    font-size:20px;
+    background:linear-gradient(135deg,rgba(53,230,162,.09),rgba(93,231,255,.055));
+    border:1px solid rgba(53,230,162,.12);
+}
+
+.fp-history-info{
+    min-width:0;
+}
+
+.fp-history-source{
+    display:block;
+    color:#edf6ff;
+    font-size:.8rem;
+    font-weight:800;
+}
+
+.fp-history-description{
+    display:block;
+    max-width:520px;
+    margin-top:4px;
+    overflow:hidden;
+    color:#687f98;
+    font-size:.66rem;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.fp-history-amount{
+    flex:0 0 auto;
+    color:#35e6a2;
+    font-size:.86rem;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.fp-history-actions{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:7px;
+    flex:0 0 auto;
+}
+
+.fp-income-edit-btn,
+.fp-income-delete-btn{
+    width:34px;
+    height:34px;
+    display:grid!important;
+    place-items:center;
+    padding:0!important;
+    border-radius:9px!important;
+    font-size:.76rem!important;
+    transition:.22s ease!important;
+}
+
+.fp-income-edit-btn{
+    color:#5de7ff!important;
+    background:rgba(93,231,255,.035)!important;
+    border:1px solid rgba(93,231,255,.16)!important;
+}
+
+.fp-income-delete-btn{
+    color:#ff7e9a!important;
+    background:rgba(255,126,154,.035)!important;
+    border:1px solid rgba(255,126,154,.16)!important;
+}
+
+.fp-income-edit-btn:hover,
+.fp-income-delete-btn:hover{
+    transform:translateY(-2px);
+    background:rgba(255,255,255,.06)!important;
+}
+
+.fp-income-edit-btn:hover{
+    box-shadow:0 0 18px rgba(93,231,255,.10);
+}
+
+.fp-income-delete-btn:hover{
+    box-shadow:0 0 18px rgba(255,126,154,.10);
+}
+
+.fp-history-empty{
+    padding:60px 25px;
+    text-align:center;
+}
+
+.fp-history-empty-icon{
+    width:68px;
+    height:68px;
+    display:grid;
+    place-items:center;
+    margin:0 auto 15px;
+    border-radius:21px;
+    font-size:30px;
+    background:rgba(53,230,162,.07);
+    border:1px solid rgba(53,230,162,.13);
+    box-shadow:0 0 35px rgba(53,230,162,.06);
+}
+
+.fp-history-empty h3{
+    margin:0;
+    font-size:1rem;
+    font-weight:850;
+}
+
+.fp-history-empty p{
+    max-width:420px;
+    margin:8px auto 18px;
+    color:#7189a2;
+    font-size:.73rem;
+    line-height:1.65;
+}
+
+.fp-history-empty-btn{
+    border:0!important;
+    border-radius:11px!important;
+    color:#02110d!important;
+    background:linear-gradient(90deg,#35e6a2,#5de7ff)!important;
+    font-weight:800!important;
+}
+
+.fp-history-tip{
+    position:relative;
+    margin-top:18px;
+    overflow:hidden;
+    padding:22px 24px;
+    border-radius:21px;
+    background:linear-gradient(135deg,rgba(93,231,255,.06),rgba(53,230,162,.045));
+    border:1px solid rgba(93,231,255,.12);
+}
+
+.fp-history-tip::after{
+    content:"";
+    position:absolute;
+    width:160px;
+    height:160px;
+    right:-80px;
+    top:-95px;
+    border-radius:50%;
+    background:rgba(93,231,255,.07);
+    filter:blur(5px);
+}
+
+.fp-history-tip-icon{
+    display:inline-grid;
+    width:36px;
+    height:36px;
+    place-items:center;
+    margin-bottom:10px;
+    border-radius:11px;
+    background:rgba(93,231,255,.07);
+}
+
+.fp-history-tip-label{
+    display:block;
+    color:#5de7ff;
+    font-size:.64rem;
+    font-weight:850;
+    letter-spacing:.13em;
+}
+
+.fp-history-tip h3{
+    margin:7px 0 5px;
+    font-size:1rem;
+    font-weight:850;
+}
+
+.fp-history-tip p{
+    max-width:750px;
+    margin:0;
+    color:#728aa2;
+    font-size:.71rem;
+    line-height:1.7;
+}
+
+.fp-history-pulse{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:13px;
+    color:#536b84;
+    font-size:.62rem;
+}
+
+.fp-history-pulse span{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#35e6a2;
+    box-shadow:0 0 12px rgba(53,230,162,.65);
+    animation:fpHistoryPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes fpHistoryFloat{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-13px,15px) scale(1.06)}
+}
+
+@keyframes fpHistoryPulse{
+    0%,100%{opacity:.45;transform:scale(.85)}
+    50%{opacity:1;transform:scale(1.2)}
+}
+
+@media(max-width:768px){
+    .fp-history-header{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .fp-history-add-btn{
+        width:100%;
+    }
+
+    .fp-history-panel-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .fp-history-small-add{
+        width:100%;
+    }
+
+    .fp-history-row{
+        align-items:flex-start;
+        padding:15px;
+    }
+
+    .fp-history-actions{
+        gap:5px;
+    }
+
+    .fp-history-amount{
+        font-size:.78rem;
+    }
+
+    .fp-income-edit-btn,
+    .fp-income-delete-btn{
+        width:31px;
+        height:31px;
+        font-size:.7rem!important;
+    }
+
+    .fp-history-description{
+        max-width:45vw;
+    }
+}
+
+@media(max-width:480px){
+    .fp-income-history-page{
+        padding-top:25px;
+    }
+
+    .fp-history-stat{
+        padding:17px;
+    }
+
+    .fp-history-row{
+        gap:10px;
+    }
+
+    .fp-history-category-icon{
+        width:41px;
+        height:41px;
+        flex-basis:41px;
+        font-size:17px;
+    }
+
+    .fp-history-source{
+        font-size:.74rem;
+    }
+
+    .fp-history-description{
+        max-width:43vw;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.01ms!important;
+    }
+}
+</style>
+
+<div class="fp-income-history-page">
+
+    <div class="fp-history-orb one"></div>
+    <div class="fp-history-orb two"></div>
+
+    <div class="container">
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="fp-history-header">
+
+            <div>
+                <p class="fp-history-eyebrow">
+                    💰 FINPILOT AI · INCOME CENTER
+                </p>
+
+                <h1 class="fp-history-title">
+                    Income History
+                </h1>
+
+                <p class="fp-history-subtitle">
+                    Keep track of every source of money you receive
+                    and maintain a complete picture of your cash flow.
+                </p>
+            </div>
+
+            <a
+                href="{{ url_for('income.add_income') }}"
+                class="btn fp-history-add-btn"
+            >
+                ＋ Add Income
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             SUMMARY CARDS
+        ================================================== -->
+
+        {% set total_income = incomes
+            |map(attribute="amount")
+            |sum
+        %}
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+
+                <div class="fp-history-stat">
+
+                    <div class="fp-history-stat-icon green">
+                        💰
+                    </div>
+
+                    <p class="fp-history-stat-label">
+                        TOTAL INCOME
+                    </p>
+
+                    <h2 class="fp-history-stat-value green">
+                        ₹{{ "%.2f"|format(total_income) }}
+                    </h2>
+
+                    <span class="fp-history-stat-note">
+                        All recorded income
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="fp-history-stat">
+
+                    <div class="fp-history-stat-icon blue">
+                        🧾
+                    </div>
+
+                    <p class="fp-history-stat-label">
+                        INCOME ENTRIES
+                    </p>
+
+                    <h2 class="fp-history-stat-value blue">
+                        {{ incomes|length }}
+                    </h2>
+
+                    <span class="fp-history-stat-note">
+                        Recorded transactions
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="fp-history-stat">
+
+                    <div class="fp-history-stat-icon purple">
+                        📅
+                    </div>
+
+                    <p class="fp-history-stat-label">
+                        LATEST INCOME
+                    </p>
+
+                    <h2 class="fp-history-stat-value purple">
+
+                        {% if incomes %}
+                            {{ incomes[0].date.strftime("%d %b") }}
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </h2>
+
+                    <span class="fp-history-stat-note">
+                        Most recent entry
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TRANSACTIONS
+        ================================================== -->
+
+        <div class="fp-history-panel">
+
+            <div class="fp-history-panel-header">
+
+                <div>
+                    <h2>💰 Your Income</h2>
+
+                    <p>
+                        All your recorded income transactions.
+                    </p>
+                </div>
+
+                <a
+                    href="{{ url_for('income.add_income') }}"
+                    class="btn btn-sm btn-outline-primary fp-history-small-add"
+                >
+                    ＋ Add Income
+                </a>
+
+            </div>
+
+
+            {% if incomes %}
+
+                <div class="fp-history-list">
+
+                    {% for income in incomes %}
+
+                        <div class="fp-history-row">
+
+                            <div class="fp-history-left">
+
+                                <div class="fp-history-category-icon">
+
+                                    {% if income.source == "Scholarship" %}
+                                        🎓
+                                    {% elif income.source == "Pocket Money" %}
+                                        💵
+                                    {% elif income.source == "Salary" %}
+                                        💼
+                                    {% elif income.source == "Freelancing" %}
+                                        💻
+                                    {% else %}
+                                        💰
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="fp-history-info">
+
+                                    <span class="fp-history-source">
+                                        {{ income.source }}
+                                    </span>
+
+                                    <span class="fp-history-description">
+
+                                        {% if income.description %}
+                                            {{ income.description }}
+                                        {% else %}
+                                            Income received
+                                        {% endif %}
+
+                                        ·
+                                        {{ income.date.strftime("%d %b %Y") }}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="fp-history-actions">
+
+                                <strong class="fp-history-amount">
+                                    + ₹{{ "%.2f"|format(income.amount) }}
+                                </strong>
+
+                                <a
+                                    href="{{ url_for(
+                                        'income.edit_income',
+                                        income_id=income.id
+                                    ) }}"
+                                    class="btn fp-income-edit-btn"
+                                    title="Edit income"
+                                    aria-label="Edit {{ income.source }} income"
+                                >
+                                    ✏️
+                                </a>
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'income.delete_income',
+                                        income_id=income.id
+                                    ) }}"
+                                    class="m-0"
+                                    onsubmit="return confirm('Delete this income record?');"
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn fp-income-delete-btn"
+                                        title="Delete income"
+                                        aria-label="Delete {{ income.source }} income"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="fp-history-empty">
+
+                    <div class="fp-history-empty-icon">
+                        💰
+                    </div>
+
+                    <h3>
+                        No income recorded yet
+                    </h3>
+
+                    <p>
+                        Add your first income and start tracking
+                        your complete financial picture.
+                    </p>
+
+                    <a
+                        href="{{ url_for('income.add_income') }}"
+                        class="btn fp-history-empty-btn"
+                    >
+                        Add First Income
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             FINPILOT TIP
+        ================================================== -->
+
+        <div class="fp-history-tip">
+
+            <div class="fp-history-tip-icon">
+                ✨
+            </div>
+
+            <span class="fp-history-tip-label">
+                FINPILOT TIP
+            </span>
+
+            <h3>
+                Every rupee has a direction.
+            </h3>
+
+            <p>
+                Recording your income helps FinPilot understand
+                how much money you have available for spending,
+                saving and future goals.
+            </p>
+
+            <div class="fp-history-pulse">
+                <span></span>
+                Building your financial picture
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

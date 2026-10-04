@@ -1,0 +1,2282 @@
+{% extends "base.html" %}
+
+{% block title %}FinPilot AI | Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   FINPILOT — FUTURISTIC DASHBOARD
+   Step 26D
+========================================================= */
+
+:root{
+    --fp-bg:#050816;
+    --fp-panel:rgba(11,18,38,.72);
+    --fp-panel-2:rgba(15,24,48,.82);
+    --fp-border:rgba(93,218,255,.16);
+    --fp-cyan:#5de7ff;
+    --fp-blue:#6c7cff;
+    --fp-green:#35e6a2;
+    --fp-purple:#b77cff;
+    --fp-red:#ff5f7a;
+    --fp-yellow:#ffd166;
+    --fp-text:#eef7ff;
+    --fp-muted:#8ea5bd;
+}
+
+.dashboard-page{
+    min-height:100vh;
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 8% 8%,rgba(93,231,255,.12),transparent 25%),
+        radial-gradient(circle at 90% 15%,rgba(108,124,255,.13),transparent 27%),
+        radial-gradient(circle at 50% 100%,rgba(183,124,255,.08),transparent 30%),
+        var(--fp-bg);
+    color:var(--fp-text);
+}
+
+.dashboard-page::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom,black,transparent 90%);
+}
+
+.dashboard-orb{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    filter:blur(2px);
+    opacity:.45;
+}
+.orb-one{
+    width:300px;height:300px;right:-130px;top:170px;
+    background:rgba(93,231,255,.10);
+    animation:fpFloat 8s ease-in-out infinite;
+}
+.orb-two{
+    width:250px;height:250px;left:-120px;bottom:100px;
+    background:rgba(183,124,255,.09);
+    animation:fpFloat 10s ease-in-out infinite reverse;
+}
+
+.dashboard-page .container{position:relative;z-index:2;}
+
+.dashboard-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:25px;
+    padding:30px 0 20px;
+}
+.dashboard-eyebrow,.alerts-eyebrow,.goal-dashboard-eyebrow{
+    color:var(--fp-cyan);
+    font-size:.72rem;
+    font-weight:800;
+    letter-spacing:.16em;
+    margin:0 0 8px;
+}
+.dashboard-title{
+    font-size:clamp(2rem,4vw,3.2rem);
+    font-weight:900;
+    letter-spacing:-.04em;
+    margin:0;
+    text-shadow:0 0 35px rgba(93,231,255,.14);
+}
+.dashboard-subtitle{color:var(--fp-muted);margin:8px 0 0;}
+.dashboard-actions{display:flex;flex-wrap:wrap;gap:10px;}
+.dashboard-actions .btn{
+    border-radius:14px;
+    border:1px solid var(--fp-border);
+    backdrop-filter:blur(12px);
+    font-weight:700;
+}
+.income-dashboard-btn{background:rgba(53,230,162,.12)!important;color:#8ff8ce!important;}
+.budget-btn{color:var(--fp-cyan)!important;border-color:rgba(93,231,255,.3)!important;}
+.add-expense-btn{background:linear-gradient(135deg,#596cff,#8c5cff)!important;border:0!important;box-shadow:0 10px 30px rgba(108,124,255,.25);}
+
+.finance-card,.dashboard-panel,.ai-insights-card{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(145deg,rgba(17,27,53,.82),rgba(7,14,30,.74));
+    border:1px solid var(--fp-border);
+    border-radius:22px;
+    box-shadow:0 18px 55px rgba(0,0,0,.22);
+    backdrop-filter:blur(18px);
+}
+.finance-card{
+    min-height:185px;
+    padding:22px;
+    transition:.3s ease;
+}
+.finance-card:hover,.dashboard-panel:hover,.ai-insights-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(93,231,255,.34);
+    box-shadow:0 22px 65px rgba(0,0,0,.3),0 0 35px rgba(93,231,255,.06);
+}
+.dashboard-finance-link{text-decoration:none;color:inherit;display:block;}
+.finance-card-icon,.quick-action-icon{
+    width:48px;height:48px;border-radius:15px;
+    display:grid;place-items:center;font-size:22px;
+    margin-bottom:18px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+}
+.finance-card p{margin:0;color:var(--fp-muted);font-size:.82rem;font-weight:700;}
+.finance-card h2{font-size:1.85rem;font-weight:900;margin:5px 0 8px;}
+.finance-card span{font-size:.76rem;color:#7189a2;}
+.green{box-shadow:0 0 28px rgba(53,230,162,.14);}
+.orange{box-shadow:0 0 28px rgba(255,145,77,.13);}
+.purple{box-shadow:0 0 28px rgba(183,124,255,.14);}
+.blue{box-shadow:0 0 28px rgba(93,231,255,.14);}
+.dashboard-positive{color:var(--fp-green)!important;}
+.dashboard-negative{color:var(--fp-red)!important;}
+
+.dashboard-panel{padding:25px;}
+.panel-header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:15px;margin-bottom:20px;
+}
+.panel-header h3{font-size:1.15rem;font-weight:850;margin:0;}
+.panel-header p{margin:5px 0 0;color:var(--fp-muted);font-size:.82rem;}
+.panel-header .btn{border-radius:11px;}
+
+.money-overview-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:15px 0;border-bottom:1px solid rgba(255,255,255,.07);
+}
+.money-overview-row:last-of-type{border-bottom:0;}
+.money-overview-left{display:flex;align-items:center;gap:13px;}
+.overview-icon{
+    width:42px;height:42px;border-radius:13px;
+    display:grid;place-items:center;background:rgba(255,255,255,.05);
+}
+.money-overview-left strong{display:block;font-size:.9rem;}
+.money-overview-left small{display:block;color:var(--fp-muted);margin-top:3px;}
+.overview-income-amount,.overview-savings-amount{color:var(--fp-green);}
+.overview-expense-amount,.overview-danger-amount{color:var(--fp-red);}
+.savings-rate-section{margin-top:20px;}
+.savings-rate-header{display:flex;justify-content:space-between;margin-bottom:8px;font-size:.82rem;}
+.savings-rate-header strong{color:var(--fp-cyan);}
+.progress{background:rgba(255,255,255,.07);height:9px;border-radius:999px;overflow:hidden;}
+.progress-bar{border-radius:999px;background:linear-gradient(90deg,var(--fp-cyan),var(--fp-blue));}
+
+.financial-status-panel{
+    min-height:100%;
+    background:
+        radial-gradient(circle at 90% 10%,rgba(93,231,255,.13),transparent 40%),
+        linear-gradient(145deg,rgba(17,27,53,.9),rgba(7,14,30,.8));
+}
+.ai-spark,.ai-financial-insight-icon,.ai-command-icon{
+    width:55px;height:55px;border-radius:17px;
+    display:grid;place-items:center;font-size:25px;
+    background:linear-gradient(135deg,rgba(93,231,255,.12),rgba(183,124,255,.14));
+    border:1px solid rgba(93,231,255,.16);
+    box-shadow:0 0 35px rgba(93,231,255,.08);
+}
+.ai-label{font-size:.68rem;letter-spacing:.14em;color:var(--fp-cyan);font-weight:800;}
+.financial-status-panel h3{font-size:1.3rem;font-weight:850;margin:16px 0 10px;}
+.financial-status-panel p{color:var(--fp-muted);line-height:1.7;font-size:.88rem;}
+.ai-pulse,.alert-monitor{
+    display:flex;align-items:center;gap:8px;
+    margin-top:18px;color:#7790aa;font-size:.72rem;
+}
+.ai-pulse span,.alert-monitor span,.ai-live-badge span,.ai-command-live span{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--fp-green);
+    box-shadow:0 0 0 5px rgba(53,230,162,.08);
+    animation:fpPulse 1.8s infinite;
+}
+
+.dashboard-chart-wrapper{height:320px;position:relative;}
+
+.budget-percent,.alerts-count{
+    padding:7px 11px;border-radius:999px;
+    color:var(--fp-cyan);background:rgba(93,231,255,.08);
+    border:1px solid rgba(93,231,255,.14);font-size:.75rem;font-weight:800;
+}
+.budget-header-actions{display:flex;align-items:center;gap:10px;}
+.modern-progress{height:13px;}
+.budget-details{display:flex;justify-content:space-between;margin-top:15px;}
+.budget-details span{display:block;color:var(--fp-muted);font-size:.74rem;}
+.budget-details strong{display:block;margin-top:4px;}
+.budget-empty-message,.dashboard-no-goal{
+    margin-top:18px;padding:18px;border-radius:17px;
+    display:flex;align-items:center;gap:15px;
+    background:rgba(93,231,255,.04);
+    border:1px dashed rgba(93,231,255,.18);
+}
+.budget-empty-message p,.dashboard-no-goal p{color:var(--fp-muted);font-size:.8rem;margin:4px 0 10px;}
+
+.ai-insights-card{height:100%;padding:23px;}
+.ai-insights-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.ai-insights-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:rgba(183,124,255,.1);}
+.ai-insights-header h3{margin:3px 0 0;font-size:1.1rem;}
+.smart-insight{
+    display:flex;gap:11px;padding:13px;margin-bottom:9px;
+    border-radius:14px;background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.06);
+}
+.smart-insight-icon{font-size:18px;}
+.smart-insight strong{font-size:.78rem;}
+.smart-insight p{font-size:.73rem;color:var(--fp-muted);line-height:1.5;margin:4px 0 0;}
+.insight-danger{border-color:rgba(255,95,122,.2);}
+.insight-success{border-color:rgba(53,230,162,.18);}
+.insight-warning{border-color:rgba(255,209,102,.18);}
+.ai-no-insights{text-align:center;padding:25px 10px;color:var(--fp-muted);}
+
+.ai-financial-insight-card{
+    background:
+        radial-gradient(circle at 85% 10%,rgba(108,124,255,.14),transparent 35%),
+        linear-gradient(145deg,rgba(17,27,53,.9),rgba(7,14,30,.8));
+}
+.ai-financial-insight-header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.ai-financial-insight-header h3{margin:3px 0;font-size:1.2rem;}
+.ai-financial-insight-header p{margin:0;color:var(--fp-muted);font-size:.8rem;}
+.ai-live-badge{
+    margin-left:auto;display:inline-flex;align-items:center;gap:7px;
+    padding:7px 10px;border-radius:999px;background:rgba(53,230,162,.07);
+    font-size:.68rem;font-weight:800;
+}
+.ai-refresh-button,.ai-command-refresh{
+    border:1px solid rgba(93,231,255,.18);
+    background:rgba(93,231,255,.05);color:var(--fp-cyan);
+    border-radius:999px;padding:8px 13px;font-weight:750;font-size:.75rem;
+}
+.ai-financial-insight-body{
+    display:flex;gap:14px;margin-top:18px;padding:19px;border-radius:17px;
+    background:rgba(93,231,255,.035);border:1px solid rgba(93,231,255,.08);
+}
+.ai-financial-insight-body p{margin:0;line-height:1.75;font-size:.9rem;}
+.ai-financial-insight-footer{display:flex;justify-content:space-between;margin-top:13px;color:#7189a2;font-size:.7rem;}
+
+.ai-command-center-panel{
+    position:relative;overflow:hidden;
+    background:
+        radial-gradient(circle at 90% 5%,rgba(108,124,255,.18),transparent 28%),
+        radial-gradient(circle at 5% 95%,rgba(53,230,162,.08),transparent 30%),
+        linear-gradient(145deg,rgba(17,27,53,.92),rgba(7,14,30,.8));
+}
+.ai-command-header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;}
+.ai-command-brand{display:flex;align-items:center;gap:14px;}
+.ai-command-header h3{margin:3px 0;font-size:1.25rem;}
+.ai-command-header p{margin:0;color:var(--fp-muted);font-size:.8rem;}
+.ai-command-live{display:flex;align-items:center;gap:7px;color:var(--fp-green);font-size:.7rem;font-weight:800;}
+.ai-command-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;}
+.ai-command-stat,.ai-command-goal,.ai-command-priority{
+    padding:16px;border-radius:17px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.07);
+    transition:.25s;
+}
+.ai-command-stat:hover{transform:translateY(-3px);border-color:rgba(93,231,255,.22);}
+.ai-command-stat{display:flex;gap:11px;align-items:center;}
+.ai-command-stat-icon,.ai-command-mini-icon{
+    width:40px;height:40px;flex:0 0 40px;border-radius:12px;
+    display:grid;place-items:center;background:rgba(93,231,255,.06);
+}
+.ai-command-stat-content span{display:block;color:#8198af;font-size:.7rem;}
+.ai-command-stat-content strong{display:block;font-size:.95rem;margin-top:3px;}
+.ai-command-stat-content small{display:block;color:#667e98;font-size:.68rem;margin-top:3px;}
+.ai-command-bottom{display:grid;grid-template-columns:1.1fr .9fr;gap:11px;margin-top:11px;}
+.ai-command-section-heading{display:flex;gap:10px;align-items:center;}
+.ai-command-section-heading strong{display:block;font-size:.82rem;}
+.ai-command-section-heading small{display:block;color:#7189a2;font-size:.68rem;margin-top:2px;}
+.ai-command-goal-progress{display:flex;align-items:center;gap:10px;margin-top:15px;}
+.ai-command-goal-track{height:8px;flex:1;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;}
+.ai-command-goal-fill{height:100%;background:linear-gradient(90deg,var(--fp-cyan),var(--fp-purple));border-radius:999px;transition:width .8s;}
+.ai-command-goal-progress strong{font-size:.72rem;min-width:45px;text-align:right;}
+.ai-command-goal p,.ai-command-priority p{color:var(--fp-muted);font-size:.75rem;line-height:1.6;margin:10px 0 0;}
+.ai-command-footer{display:flex;justify-content:space-between;align-items:center;margin-top:15px;padding-top:13px;border-top:1px solid rgba(255,255,255,.06);color:#7189a2;font-size:.7rem;}
+
+.smart-alert{
+    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;
+    padding:15px;border-radius:16px;margin-bottom:9px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+}
+.smart-alert-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:rgba(255,255,255,.05);font-size:19px;}
+.smart-alert strong{font-size:.8rem;}
+.smart-alert p{margin:4px 0 0;color:var(--fp-muted);font-size:.73rem;}
+.smart-alert-status span{font-size:.65rem;color:#7890a8;}
+.alert-danger{border-color:rgba(255,95,122,.2);}
+.alert-success{border-color:rgba(53,230,162,.18);}
+.alert-warning{border-color:rgba(255,209,102,.18);}
+.smart-alert-empty{text-align:center;padding:30px;color:var(--fp-muted);}
+
+.dashboard-goal-content{display:flex;gap:18px;align-items:flex-start;}
+.dashboard-goal-icon{font-size:35px;}
+.dashboard-goal-main{flex:1;}
+.dashboard-goal-title-row{display:flex;justify-content:space-between;gap:15px;}
+.dashboard-goal-title-row h4{margin:0;font-weight:850;}
+.dashboard-goal-title-row p{margin:4px 0;color:var(--fp-muted);font-size:.78rem;}
+.goal-dashboard-status{padding:7px 10px;border-radius:999px;background:rgba(93,231,255,.07);color:var(--fp-cyan);font-size:.68rem;font-weight:800;}
+.goal-dashboard-status.completed{color:var(--fp-green);background:rgba(53,230,162,.08);}
+.dashboard-goal-amounts{display:flex;gap:9px;align-items:center;margin:15px 0 10px;}
+.dashboard-goal-amounts span{color:#7189a2;font-size:.75rem;}
+.dashboard-goal-progress{height:10px;}
+.dashboard-goal-footer{display:flex;justify-content:space-between;color:#7890a8;font-size:.72rem;margin-top:10px;}
+
+.income-row,.expense-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.income-row:last-child,.expense-row:last-child{border-bottom:0;}
+.income-left,.expense-left{display:flex;align-items:center;gap:11px;min-width:0;}
+.income-category-icon,.expense-category-icon{
+    width:40px;height:40px;flex:0 0 40px;border-radius:12px;
+    display:grid;place-items:center;background:rgba(255,255,255,.045);
+}
+.income-left strong,.expense-left strong{display:block;font-size:.78rem;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.income-left small,.expense-left small{display:block;color:#7189a2;font-size:.68rem;margin-top:3px;}
+.income-amount{color:var(--fp-green);font-size:.8rem;}
+.expense-amount{color:var(--fp-red);font-size:.8rem;}
+.empty-income,.empty-expenses{text-align:center;padding:28px 10px;color:var(--fp-muted);}
+.empty-income-icon{font-size:28px;}
+
+.quick-action-card{
+    display:flex;align-items:center;gap:12px;
+    padding:16px;border-radius:17px;
+    text-decoration:none;color:var(--fp-text);
+    background:linear-gradient(145deg,rgba(17,27,53,.78),rgba(7,14,30,.7));
+    border:1px solid var(--fp-border);
+    transition:.28s;
+}
+.quick-action-card:hover{color:var(--fp-text);transform:translateY(-4px);border-color:rgba(93,231,255,.32);box-shadow:0 16px 40px rgba(0,0,0,.22);}
+.quick-action-icon{margin:0;width:42px;height:42px;flex:0 0 42px;}
+.quick-action-card strong{display:block;font-size:.78rem;}
+.quick-action-card span:not(.quick-arrow){display:block;color:#7189a2;font-size:.68rem;margin-top:3px;}
+.quick-arrow{margin-left:auto;color:var(--fp-cyan);font-size:20px;}
+
+@keyframes fpFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-15px,14px) scale(1.07)}}
+@keyframes fpPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
+
+
+/* =========================================================
+   FINANCIAL HEALTH SCORE
+========================================================= */
+.financial-health-card{
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 85% 15%,rgba(93,231,255,.13),transparent 30%),
+        linear-gradient(145deg,rgba(17,27,53,.92),rgba(7,14,30,.82));
+}
+.financial-health-layout{display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:center;}
+.health-score-wrap{display:flex;justify-content:center;align-items:center;}
+.health-score-ring{
+    --score:0;
+    width:190px;height:190px;border-radius:50%;
+    display:grid;place-items:center;position:relative;
+    background:conic-gradient(var(--fp-cyan) calc(var(--score) * 1%),rgba(255,255,255,.07) 0);
+    box-shadow:0 0 45px rgba(93,231,255,.12);
+}
+.health-score-ring::before{content:"";position:absolute;inset:12px;border-radius:50%;background:#081126;border:1px solid rgba(255,255,255,.07);}
+.health-score-value{position:relative;text-align:center;z-index:1;}
+.health-score-value strong{display:block;font-size:3rem;line-height:1;font-weight:950;letter-spacing:-.06em;}
+.health-score-value span{display:block;margin-top:7px;color:var(--fp-muted);font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;}
+.health-score-heading{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.health-score-heading h3{margin:0;font-size:1.3rem;font-weight:900;}
+.health-score-label{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(53,230,162,.08);border:1px solid rgba(53,230,162,.18);color:var(--fp-green);font-size:.68rem;font-weight:850;}
+.health-score-message{color:var(--fp-muted);font-size:.86rem;line-height:1.7;margin:8px 0 20px;}
+.health-factor{margin-top:13px;}
+.health-factor-head{display:flex;justify-content:space-between;gap:15px;font-size:.75rem;margin-bottom:7px;}
+.health-factor-head span{color:var(--fp-muted);font-weight:700;}
+.health-factor-head strong{color:var(--fp-text);}
+.health-factor-track{height:8px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;}
+.health-factor-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--fp-cyan),var(--fp-blue));transition:width .8s ease;}
+.health-score-foot{display:flex;justify-content:space-between;gap:12px;margin-top:17px;color:#7189a2;font-size:.68rem;}
+@media(max-width:768px){.financial-health-layout{grid-template-columns:1fr;}.health-score-ring{width:165px;height:165px;}.health-score-value strong{font-size:2.6rem;}}
+
+@media(max-width:992px){
+    .dashboard-header{align-items:flex-start;flex-direction:column;}
+    .ai-command-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:768px){
+    .dashboard-page .container{padding-left:16px;padding-right:16px;}
+    .dashboard-panel{padding:18px;}
+    .ai-command-bottom{grid-template-columns:1fr;}
+    .smart-alert{grid-template-columns:auto 1fr;}
+    .smart-alert-status{grid-column:2;}
+}
+@media(max-width:576px){
+    .dashboard-title{font-size:2rem;}
+    .dashboard-actions{width:100%;}
+    .dashboard-actions .btn{width:100%;}
+    .ai-command-grid{grid-template-columns:1fr;}
+    .ai-command-header{align-items:flex-start;}
+    .ai-command-footer,.ai-financial-insight-footer{flex-direction:column;align-items:flex-start;}
+    .dashboard-goal-content{flex-direction:column;}
+    .dashboard-goal-title-row{flex-direction:column;}
+    .panel-header{align-items:flex-start;}
+}
+.fp-whatif-card{
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 92% 8%,rgba(183,124,255,.15),transparent 28%),
+        radial-gradient(circle at 5% 90%,rgba(53,230,162,.08),transparent 30%),
+        linear-gradient(145deg,rgba(17,27,53,.95),rgba(7,14,30,.86));
+    border:1px solid rgba(183,124,255,.20);
+    border-radius:22px;
+    padding:25px;
+    box-shadow:0 20px 65px rgba(0,0,0,.27),0 0 45px rgba(183,124,255,.04);
+}
+.fp-whatif-header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:15px;margin-bottom:22px;
+}
+.fp-whatif-brand{display:flex;align-items:center;gap:13px}
+.fp-whatif-icon{
+    width:50px;height:50px;display:grid;place-items:center;
+    border-radius:15px;font-size:23px;
+    background:linear-gradient(135deg,rgba(183,124,255,.15),rgba(108,124,255,.16));
+    border:1px solid rgba(183,124,255,.18);
+}
+.fp-whatif-eyebrow{
+    margin:0 0 3px;color:var(--fp-purple);
+    font-size:.67rem;font-weight:850;letter-spacing:.14em;
+}
+.fp-whatif-title{margin:0;font-size:1.2rem;font-weight:900}
+.fp-whatif-subtitle{margin:4px 0 0;color:var(--fp-muted);font-size:.76rem}
+.fp-whatif-badge{
+    padding:7px 11px;border-radius:999px;font-size:.66rem;font-weight:850;
+    white-space:nowrap;color:var(--fp-purple);
+    background:rgba(183,124,255,.07);
+    border:1px solid rgba(183,124,255,.15);
+}
+.fp-whatif-layout{
+    display:grid;grid-template-columns:.82fr 1.18fr;gap:13px;
+}
+.fp-whatif-controls,.fp-whatif-results{
+    padding:19px;border-radius:18px;
+    background:rgba(255,255,255,.032);
+    border:1px solid rgba(255,255,255,.065);
+}
+.fp-whatif-section-title{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;margin-bottom:15px;
+}
+.fp-whatif-section-title strong{font-size:.82rem}
+.fp-whatif-section-title span{font-size:.66rem;color:#7189a2}
+.fp-whatif-field{margin-bottom:13px}
+.fp-whatif-field:last-child{margin-bottom:0}
+.fp-whatif-field label{
+    display:flex;justify-content:space-between;gap:10px;
+    color:#a8bad0;font-size:.70rem;font-weight:750;margin-bottom:6px;
+}
+.fp-whatif-field label small{color:#667e98;font-weight:600}
+.fp-whatif-input-wrap{position:relative}
+.fp-whatif-input-wrap span{
+    position:absolute;left:13px;top:50%;transform:translateY(-50%);
+    color:var(--fp-cyan);font-weight:800;font-size:.78rem;pointer-events:none;
+}
+.fp-whatif-input{
+    width:100%;height:43px;padding:0 13px 0 30px;
+    color:var(--fp-text);background:rgba(4,10,24,.72);
+    border:1px solid rgba(255,255,255,.09);border-radius:12px;
+    outline:none;font-weight:700;
+}
+.fp-whatif-input:focus{
+    border-color:rgba(93,231,255,.4);
+    box-shadow:0 0 0 3px rgba(93,231,255,.07);
+}
+.fp-whatif-hint{
+    margin:5px 0 0;color:#637b95;font-size:.62rem;line-height:1.4;
+}
+.fp-whatif-actions{display:flex;gap:8px;margin-top:16px}
+.fp-whatif-run{
+    flex:1;border:0;border-radius:12px;padding:11px 14px;
+    background:linear-gradient(135deg,#6c7cff,#9a5cff);
+    color:white;font-weight:850;
+    box-shadow:0 10px 28px rgba(108,124,255,.22);
+}
+.fp-whatif-reset{
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.035);color:#9bb0c5;
+    border-radius:12px;padding:11px 14px;font-weight:750;
+}
+.fp-whatif-run:disabled{opacity:.65;cursor:not-allowed}
+.fp-whatif-result-top{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:9px;
+}
+.fp-whatif-stat{
+    padding:14px;border-radius:14px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.06);
+}
+.fp-whatif-stat span{display:block;color:#8198af;font-size:.64rem;font-weight:700}
+.fp-whatif-stat strong{display:block;margin-top:5px;font-size:1rem;font-weight:900}
+.fp-whatif-stat small{display:block;margin-top:3px;color:#667e98;font-size:.61rem}
+.fp-whatif-stat-savings strong{color:var(--fp-green)}
+.fp-whatif-health{
+    margin-top:9px;padding:15px;border-radius:15px;
+    display:flex;align-items:center;gap:13px;
+    background:rgba(93,231,255,.035);
+    border:1px solid rgba(93,231,255,.08);
+}
+.fp-whatif-health-ring{
+    width:58px;height:58px;flex:0 0 58px;border-radius:50%;
+    display:grid;place-items:center;
+    background:conic-gradient(var(--fp-cyan) calc(var(--whatif-score) * 1%),rgba(255,255,255,.07) 0);
+    position:relative;
+}
+.fp-whatif-health-ring::before{
+    content:"";position:absolute;inset:6px;border-radius:50%;
+    background:#081126;border:1px solid rgba(255,255,255,.07);
+}
+.fp-whatif-health-score{position:relative;z-index:1;font-size:.76rem;font-weight:900}
+.fp-whatif-health-copy{min-width:0}
+.fp-whatif-health-copy span{display:block;color:#7189a2;font-size:.62rem}
+.fp-whatif-health-copy strong{display:block;margin-top:3px;font-size:.92rem}
+.fp-whatif-health-copy small{display:block;margin-top:3px;color:var(--fp-muted);font-size:.65rem}
+.fp-whatif-impact{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px;
+}
+.fp-whatif-impact-item{
+    padding:12px;border-radius:13px;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.055);
+}
+.fp-whatif-impact-item span{display:block;color:#7189a2;font-size:.61rem}
+.fp-whatif-impact-item strong{display:block;margin-top:4px;font-size:.78rem}
+.fp-whatif-positive{color:var(--fp-green)!important}
+.fp-whatif-negative{color:var(--fp-red)!important}
+.fp-whatif-neutral{color:var(--fp-yellow)!important}
+.fp-whatif-recommendation{
+    margin-top:9px;padding:14px;border-radius:14px;
+    display:flex;gap:10px;align-items:flex-start;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+}
+.fp-whatif-recommendation-icon{font-size:19px;line-height:1}
+.fp-whatif-recommendation strong{display:block;font-size:.74rem}
+.fp-whatif-recommendation p{
+    margin:4px 0 0;color:var(--fp-muted);font-size:.68rem;line-height:1.55;
+}
+.fp-whatif-foot{
+    display:flex;justify-content:space-between;gap:12px;
+    margin-top:12px;color:#667e98;font-size:.63rem;
+}
+.fp-whatif-loading{opacity:.65;pointer-events:none}
+@media(max-width:992px){.fp-whatif-layout{grid-template-columns:1fr}}
+@media(max-width:576px){
+    .fp-whatif-card{padding:18px}
+    .fp-whatif-header{align-items:flex-start;flex-direction:column}
+    .fp-whatif-result-top,.fp-whatif-impact{grid-template-columns:1fr}
+    .fp-whatif-actions{flex-direction:column}
+    .fp-whatif-foot{flex-direction:column}
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+}
+
+.fp-forecast-card{position:relative;overflow:hidden;background:radial-gradient(circle at 92% 8%,rgba(93,231,255,.15),transparent 30%),linear-gradient(145deg,rgba(17,27,53,.94),rgba(7,14,30,.84));border:1px solid rgba(93,231,255,.18);border-radius:22px;padding:25px;box-shadow:0 20px 60px rgba(0,0,0,.25),0 0 40px rgba(93,231,255,.04)}
+.fp-forecast-header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:22px}
+.fp-forecast-brand{display:flex;align-items:center;gap:13px}
+.fp-forecast-icon{width:50px;height:50px;display:grid;place-items:center;border-radius:15px;font-size:23px;background:linear-gradient(135deg,rgba(93,231,255,.13),rgba(108,124,255,.16));border:1px solid rgba(93,231,255,.17)}
+.fp-forecast-eyebrow{margin:0 0 3px;color:var(--fp-cyan);font-size:.67rem;font-weight:850;letter-spacing:.14em}
+.fp-forecast-title{margin:0;font-size:1.2rem;font-weight:900}
+.fp-forecast-subtitle{margin:4px 0 0;color:var(--fp-muted);font-size:.76rem}
+.fp-forecast-badge{padding:7px 11px;border-radius:999px;font-size:.66rem;font-weight:850;white-space:nowrap;color:var(--fp-cyan);background:rgba(93,231,255,.07);border:1px solid rgba(93,231,255,.14)}
+.fp-forecast-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.fp-forecast-stat{padding:17px;border-radius:17px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.065)}
+.fp-forecast-stat span{display:block;color:#8198af;font-size:.69rem;font-weight:700}
+.fp-forecast-stat strong{display:block;margin-top:6px;font-size:1.18rem;font-weight:900}
+.fp-forecast-stat small{display:block;margin-top:4px;color:#667e98;font-size:.65rem}
+.fp-forecast-main{display:grid;grid-template-columns:1.15fr .85fr;gap:11px;margin-top:11px}
+.fp-forecast-result,.fp-forecast-message{padding:18px;border-radius:17px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.065)}
+.fp-forecast-result{display:flex;align-items:center;gap:15px}
+.fp-forecast-result-icon{width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;border-radius:14px;font-size:21px;background:rgba(53,230,162,.08);border:1px solid rgba(53,230,162,.14);color:var(--fp-green)}
+.fp-forecast-result-label{color:#8198af;font-size:.69rem;font-weight:700}
+.fp-forecast-result strong{display:block;margin-top:4px;font-size:1.42rem;font-weight:950}
+.fp-forecast-result small{display:block;margin-top:3px;color:#7189a2;font-size:.67rem}
+.fp-forecast-status-over{border-color:rgba(255,95,122,.25)}
+.fp-forecast-status-over .fp-forecast-result-icon,.fp-forecast-status-over .fp-forecast-result strong{color:var(--fp-red)}
+.fp-forecast-status-over .fp-forecast-result-icon{background:rgba(255,95,122,.08);border-color:rgba(255,95,122,.15)}
+.fp-forecast-status-no-budget{border-color:rgba(255,209,102,.20)}
+.fp-forecast-status-no-budget .fp-forecast-result-icon,.fp-forecast-status-no-budget .fp-forecast-result strong{color:var(--fp-yellow)}
+.fp-forecast-status-no-budget .fp-forecast-result-icon{background:rgba(255,209,102,.08);border-color:rgba(255,209,102,.14)}
+.fp-forecast-message{display:flex;gap:11px;align-items:flex-start}
+.fp-forecast-message-icon{font-size:19px;line-height:1}
+.fp-forecast-message strong{display:block;font-size:.76rem}
+.fp-forecast-message p{margin:5px 0 0;color:var(--fp-muted);font-size:.72rem;line-height:1.55}
+.fp-forecast-foot{display:flex;justify-content:space-between;gap:12px;margin-top:13px;color:#667e98;font-size:.66rem}
+@media(max-width:768px){.fp-forecast-grid{grid-template-columns:1fr}.fp-forecast-main{grid-template-columns:1fr}.fp-forecast-header{align-items:flex-start;flex-direction:column}}
+
+/* =========================================================
+   FINPILOT AI FINANCIAL CHAT
+   ========================================================= */
+.fp-chat-card{
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 92% 8%,rgba(108,124,255,.16),transparent 28%),
+        radial-gradient(circle at 5% 90%,rgba(53,230,162,.07),transparent 30%),
+        linear-gradient(145deg,rgba(17,27,53,.95),rgba(7,14,30,.86));
+    border:1px solid rgba(108,124,255,.20);
+    border-radius:22px;
+    padding:25px;
+    box-shadow:0 20px 65px rgba(0,0,0,.27),0 0 45px rgba(108,124,255,.04);
+}
+.fp-chat-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:18px;
+}
+.fp-chat-brand{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+.fp-chat-icon{
+    width:50px;
+    height:50px;
+    display:grid;
+    place-items:center;
+    border-radius:15px;
+    font-size:23px;
+    background:linear-gradient(135deg,rgba(93,231,255,.13),rgba(183,124,255,.16));
+    border:1px solid rgba(93,231,255,.17);
+}
+.fp-chat-title{
+    margin:0;
+    font-size:1.2rem;
+    font-weight:900;
+}
+.fp-chat-subtitle{
+    margin:4px 0 0;
+    color:var(--fp-muted);
+    font-size:.76rem;
+}
+.fp-chat-live{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 11px;
+    border-radius:999px;
+    color:var(--fp-green);
+    background:rgba(53,230,162,.07);
+    border:1px solid rgba(53,230,162,.13);
+    font-size:.66rem;
+    font-weight:850;
+    white-space:nowrap;
+}
+.fp-chat-live span{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--fp-green);
+    box-shadow:0 0 0 5px rgba(53,230,162,.08);
+    animation:fpPulse 1.8s infinite;
+}
+.fp-chat-messages{
+    height:330px;
+    overflow-y:auto;
+    padding:14px;
+    border-radius:17px;
+    background:rgba(4,10,24,.48);
+    border:1px solid rgba(255,255,255,.065);
+    scroll-behavior:smooth;
+}
+.fp-chat-message{
+    display:flex;
+    margin-bottom:12px;
+}
+.fp-chat-message:last-child{margin-bottom:0;}
+.fp-chat-message.user{justify-content:flex-end;}
+.fp-chat-bubble{
+    max-width:82%;
+    padding:12px 14px;
+    border-radius:15px;
+    font-size:.78rem;
+    line-height:1.6;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+.fp-chat-message.ai .fp-chat-bubble{
+    background:rgba(93,231,255,.055);
+    border:1px solid rgba(93,231,255,.10);
+    color:var(--fp-text);
+    border-top-left-radius:5px;
+}
+.fp-chat-message.user .fp-chat-bubble{
+    background:linear-gradient(135deg,rgba(108,124,255,.82),rgba(154,92,255,.78));
+    color:#fff;
+    border-top-right-radius:5px;
+    box-shadow:0 8px 25px rgba(108,124,255,.15);
+}
+.fp-chat-welcome{
+    min-height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:25px;
+    color:var(--fp-muted);
+}
+.fp-chat-welcome-icon{font-size:34px;margin-bottom:9px;}
+.fp-chat-welcome strong{
+    color:var(--fp-text);
+    font-size:.9rem;
+}
+.fp-chat-welcome p{
+    max-width:560px;
+    margin:6px 0 0;
+    font-size:.74rem;
+    line-height:1.6;
+}
+.fp-chat-suggestions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+}
+.fp-chat-suggestion{
+    border:1px solid rgba(93,231,255,.12);
+    background:rgba(93,231,255,.045);
+    color:#a9bfd4;
+    border-radius:999px;
+    padding:7px 10px;
+    font-size:.67rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
+}
+.fp-chat-suggestion:hover{
+    color:var(--fp-cyan);
+    border-color:rgba(93,231,255,.28);
+    transform:translateY(-1px);
+}
+.fp-chat-form{
+    display:flex;
+    gap:9px;
+    margin-top:12px;
+}
+.fp-chat-input{
+    flex:1;
+    min-width:0;
+    height:46px;
+    padding:0 14px;
+    color:var(--fp-text);
+    background:rgba(4,10,24,.72);
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:13px;
+    outline:none;
+    font-size:.78rem;
+}
+.fp-chat-input:focus{
+    border-color:rgba(93,231,255,.4);
+    box-shadow:0 0 0 3px rgba(93,231,255,.07);
+}
+.fp-chat-send{
+    min-width:105px;
+    border:0;
+    border-radius:13px;
+    padding:0 17px;
+    background:linear-gradient(135deg,#6c7cff,#9a5cff);
+    color:#fff;
+    font-weight:850;
+    font-size:.75rem;
+    box-shadow:0 10px 28px rgba(108,124,255,.20);
+}
+.fp-chat-send:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+.fp-chat-status{
+    min-height:18px;
+    margin-top:8px;
+    color:#7189a2;
+    font-size:.66rem;
+}
+.fp-chat-typing{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+}
+.fp-chat-typing span{
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:var(--fp-cyan);
+    animation:fpChatDot 1s infinite ease-in-out;
+}
+.fp-chat-typing span:nth-child(2){animation-delay:.15s;}
+.fp-chat-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes fpChatDot{
+    0%,60%,100%{opacity:.3;transform:translateY(0);}
+    30%{opacity:1;transform:translateY(-3px);}
+}
+@media(max-width:576px){
+    .fp-chat-card{padding:18px;}
+    .fp-chat-header{align-items:flex-start;flex-direction:column;}
+    .fp-chat-messages{height:300px;}
+    .fp-chat-form{flex-direction:column;}
+    .fp-chat-send{height:44px;}
+    .fp-chat-bubble{max-width:90%;}
+}
+
+</style>
+
+<div class="dashboard-page">
+    <div class="dashboard-orb orb-one"></div>
+    <div class="dashboard-orb orb-two"></div>
+
+    <div class="container py-3">
+
+        <!-- HEADER -->
+        <section class="dashboard-header">
+            <div>
+                <p class="dashboard-eyebrow">✨ YOUR MONEY COMMAND CENTER</p>
+                <h1 class="dashboard-title">Hey, {{ current_user.username }} 👋</h1>
+                <p class="dashboard-subtitle">Let's make your money work smarter today.</p>
+            </div>
+
+            <div class="dashboard-actions">
+                <a href="{{ url_for('income.add_income') }}" class="btn btn-lg income-dashboard-btn">＋ Add Income</a>
+                <a href="{{ url_for('budget.set_budget') }}" class="btn btn-lg budget-btn">🎯 Set Budget</a>
+                <a href="{{ url_for('expense.add_expense') }}" class="btn btn-lg add-expense-btn">＋ Add Expense</a>
+            </div>
+        </section>
+
+        <!-- KPI CARDS -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-6 col-xl-3">
+                <a href="{{ url_for('income.income_list') }}" class="finance-card dashboard-finance-link">
+                    <div class="finance-card-icon green">💰</div>
+                    <p>Monthly Income</p>
+                    <h2 class="counter" data-value="{{ monthly_income|default(0) }}">₹0</h2>
+                    <span>Money received this month</span>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="finance-card">
+                    <div class="finance-card-icon orange">💸</div>
+                    <p>Monthly Spending</p>
+                    <h2 class="counter" data-value="{{ monthly_spending|default(0) }}">₹0</h2>
+                    <span>Total spending this month</span>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="finance-card">
+                    <div class="finance-card-icon purple">💵</div>
+                    <p>Monthly Savings</p>
+                    <h2 class="counter" data-value="{{ monthly_savings|default(0) }}">₹0</h2>
+                    {% if monthly_savings > 0 %}
+                        <span class="dashboard-positive">✨ You're saving money</span>
+                    {% elif monthly_savings == 0 %}
+                        <span>Income equals spending</span>
+                    {% else %}
+                        <span class="dashboard-negative">⚠️ Spending is above income</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="finance-card">
+                    <div class="finance-card-icon blue">🛡️</div>
+                    <p>Safe To Spend Today</p>
+                    <h2 class="counter" data-value="{{ safe_daily_spending|default(0) }}">₹0</h2>
+                    <span>Stay within your budget</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-8">
+                <div class="dashboard-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>💰 Monthly Financial Overview</h3>
+                            <p>See where your money is going this month.</p>
+                        </div>
+                        <span class="budget-percent">{{ current_user.username }}</span>
+                    </div>
+
+                    <div class="money-overview-row">
+                        <div class="money-overview-left">
+                            <div class="overview-icon">💰</div>
+                            <div><strong>Income</strong><small>Money received this month</small></div>
+                        </div>
+                        <strong class="overview-income-amount">+ ₹{{ "%.2f"|format(monthly_income|default(0)) }}</strong>
+                    </div>
+
+                    <div class="money-overview-row">
+                        <div class="money-overview-left">
+                            <div class="overview-icon">💸</div>
+                            <div><strong>Expenses</strong><small>Money spent this month</small></div>
+                        </div>
+                        <strong class="overview-expense-amount">- ₹{{ "%.2f"|format(monthly_spending|default(0)) }}</strong>
+                    </div>
+
+                    <div class="money-overview-row">
+                        <div class="money-overview-left">
+                            <div class="overview-icon">💵</div>
+                            <div><strong>Savings</strong><small>Income minus expenses</small></div>
+                        </div>
+                        {% if monthly_savings|default(0) >= 0 %}
+                            <strong class="overview-savings-amount">+ ₹{{ "%.2f"|format(monthly_savings|default(0)) }}</strong>
+                        {% else %}
+                            <strong class="overview-danger-amount">- ₹{{ "%.2f"|format((monthly_savings|default(0))|abs) }}</strong>
+                        {% endif %}
+                    </div>
+
+                    <div class="savings-rate-section">
+                        <div class="savings-rate-header">
+                            <span>Savings Rate</span>
+                            <strong>{{ "%.1f"|format(savings_rate|default(0)) }}%</strong>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" style="width:{{ [savings_rate|default(0),100]|min }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="dashboard-panel financial-status-panel">
+                    <div class="ai-spark">
+                        {% if financial_status == "positive" %}🟢{% elif financial_status == "negative" %}🔴{% else %}✨{% endif %}
+                    </div>
+                    <span class="ai-label d-block mt-3">FINPILOT FINANCIAL STATUS</span>
+
+                    {% if financial_status == "positive" %}
+                        <h3>You're building savings! 🚀</h3>
+                        <p>You've saved <strong>₹{{ "%.2f"|format(monthly_savings|default(0)) }}</strong> this month. That's <strong>{{ "%.1f"|format(savings_rate|default(0)) }}%</strong> of your income.</p>
+                    {% elif financial_status == "negative" %}
+                        <h3>Spending needs attention.</h3>
+                        <p>Your expenses are currently higher than your income this month. Try reducing unnecessary spending.</p>
+                    {% elif financial_status == "balanced" %}
+                        <h3>You're perfectly balanced.</h3>
+                        <p>Your income and expenses are currently equal this month.</p>
+                    {% else %}
+                        <h3>Let's start tracking.</h3>
+                        <p>Add your income to let FinPilot calculate your savings and financial health.</p>
+                    {% endif %}
+
+                    <div class="ai-pulse"><span></span>FinPilot is learning your money habits</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- FINANCIAL HEALTH SCORE -->
+        <div class="dashboard-panel financial-health-card mb-4">
+            <div class="panel-header">
+                <div>
+                    <p class="dashboard-eyebrow">🧠 FINPILOT FINANCIAL HEALTH</p>
+                    <h3>Your Financial Health Score</h3>
+                    <p>A simple score based on your budget, savings, spending and goal progress.</p>
+                </div>
+                <span class="budget-percent">LIVE SCORE</span>
+            </div>
+
+            <div class="financial-health-layout">
+                <div class="health-score-wrap">
+                    <div class="health-score-ring" style="--score:{{ financial_health_score|default(0) }}">
+                        <div class="health-score-value">
+                            <strong>{{ financial_health_score|default(0) }}</strong>
+                            <span>out of 100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="health-score-heading">
+                        <h3>{{ financial_health_label|default("Getting Started") }}</h3>
+                        <span class="health-score-label">{{ financial_health_score|default(0) }}/100</span>
+                    </div>
+                    <p class="health-score-message">{{ financial_health_message|default("Add your income, expenses, budget and savings goal to build your financial health score.") }}</p>
+
+                    <div class="health-factor">
+                        <div class="health-factor-head"><span>🛡️ Budget Control</span><strong>{{ financial_health_budget|default(0)|round|int }}/100</strong></div>
+                        <div class="health-factor-track"><div class="health-factor-fill" style="width:{{ [[financial_health_budget|default(0), 0]|max, 100]|min }}%"></div></div>
+                    </div>
+
+                    <div class="health-factor">
+                        <div class="health-factor-head"><span>💰 Savings Health</span><strong>{{ financial_health_savings|default(0)|round|int }}/100</strong></div>
+                        <div class="health-factor-track"><div class="health-factor-fill" style="width:{{ [[financial_health_savings|default(0), 0]|max, 100]|min }}%"></div></div>
+                    </div>
+
+                    <div class="health-factor">
+                        <div class="health-factor-head"><span>📊 Spending Control</span><strong>{{ financial_health_spending|default(0)|round|int }}/100</strong></div>
+                        <div class="health-factor-track"><div class="health-factor-fill" style="width:{{ [[financial_health_spending|default(0), 0]|max, 100]|min }}%"></div></div>
+                    </div>
+
+                    <div class="health-factor">
+                        <div class="health-factor-head"><span>🎯 Goal Progress</span><strong>{{ financial_health_goal|default(0)|round|int }}/100</strong></div>
+                        <div class="health-factor-track"><div class="health-factor-fill" style="width:{{ [[financial_health_goal|default(0), 0]|max, 100]|min }}%"></div></div>
+                    </div>
+
+                    <div class="health-score-foot">
+                        <span>30% Budget · 30% Savings</span>
+                        <span>25% Spending · 15% Goal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="fp-forecast-card mb-4" id="ai-expense-forecast">
+            <div class="fp-forecast-header">
+                <div class="fp-forecast-brand">
+                    <div class="fp-forecast-icon">🔮</div>
+                    <div>
+                        <h3 class="fp-forecast-title">AI Expense Forecast</h3>
+                        <p class="fp-forecast-subtitle">Predict your month-end spending from your current spending pace.</p>
+                    </div>
+                </div>
+                <span class="fp-forecast-badge">FORECAST LIVE</span>
+            </div>
+
+            <div class="fp-forecast-grid">
+                <div class="fp-forecast-stat">
+                    <span>💸 SPENT SO FAR</span>
+                    <strong>₹{{ "%.2f"|format(monthly_spending|default(0)) }}</strong>
+                    <small>Current month spending</small>
+                </div>
+                <div class="fp-forecast-stat">
+                    <span>📅 DAILY AVERAGE</span>
+                    <strong>₹{{ "%.2f"|format(average_daily_spending|default(0)) }}</strong>
+                    <small>Average spending per day</small>
+                </div>
+                <div class="fp-forecast-stat">
+                    <span>🎯 MONTHLY BUDGET</span>
+                    <strong>{% if monthly_allowance|default(0) > 0 %}₹{{ "%.2f"|format(monthly_allowance) }}{% else %}Not set{% endif %}</strong>
+                    <small>Budget target for this month</small>
+                </div>
+            </div>
+
+            <div class="fp-forecast-main">
+                <div class="fp-forecast-result {% if expense_prediction_status|default('no_budget') == 'within_budget' %}fp-forecast-status-within{% elif expense_prediction_status|default('no_budget') == 'over_budget' %}fp-forecast-status-over{% else %}fp-forecast-status-no-budget{% endif %}">
+                    <div class="fp-forecast-result-icon">
+                        {% if expense_prediction_status|default('no_budget') == 'within_budget' %}✓{% elif expense_prediction_status|default('no_budget') == 'over_budget' %}!{% else %}$ {% endif %}
+                    </div>
+                    <div>
+                        <span class="fp-forecast-result-label">PROJECTED MONTH-END SPENDING</span>
+                        <strong>₹{{ "%.2f"|format(projected_monthly_spending|default(0)) }}</strong>
+                        <small>{% if expense_prediction_status|default('no_budget') == 'within_budget' %}On track to stay within your budget{% elif expense_prediction_status|default('no_budget') == 'over_budget' %}Forecast is above your current budget{% else %}Set a budget to measure your forecast{% endif %}</small>
+                    </div>
+                </div>
+
+                <div class="fp-forecast-message">
+                    <div class="fp-forecast-message-icon">{% if expense_prediction_status|default('no_budget') == 'within_budget' %}🟢{% elif expense_prediction_status|default('no_budget') == 'over_budget' %}🔴{% else %}🟡{% endif %}</div>
+                    <div>
+                        <strong>{% if expense_prediction_status|default('no_budget') == 'within_budget' %}You're on track{% elif expense_prediction_status|default('no_budget') == 'over_budget' %}Spending needs attention{% else %}Forecast ready{% endif %}</strong>
+                        <p>{{ expense_prediction_message|default("Add expenses and a monthly budget so FinPilot can forecast your spending.") }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fp-forecast-foot">
+                <span>🧠 Forecast uses your average daily spending pace.</span>
+                <span>{{ expense_prediction.days_elapsed|default(0) }}/{{ expense_prediction.days_in_month|default(0) }} days analyzed</span>
+            </div>
+        </div>
+        <div class="fp-whatif-card mb-4" id="what-if-simulator">
+            <div class="fp-whatif-header">
+                <div class="fp-whatif-brand">
+                    <div class="fp-whatif-icon">🧪</div>
+                    <div>
+                        <h3 class="fp-whatif-title">What-If Financial Simulator</h3>
+                        <p class="fp-whatif-subtitle">Test financial decisions before they affect your real data.</p>
+                    </div>
+                </div>
+                <span class="fp-whatif-badge">SIMULATION MODE</span>
+            </div>
+
+            <div class="fp-whatif-layout">
+                <div class="fp-whatif-controls">
+                    <div class="fp-whatif-section-title">
+                        <strong>🎛️ Change the scenario</strong>
+                        <span>₹ amounts</span>
+                    </div>
+
+                    <div class="fp-whatif-field">
+                        <label for="whatif-income">
+                            <span>💰 Income change</span>
+                            <small>+ adds · − reduces</small>
+                        </label>
+                        <div class="fp-whatif-input-wrap">
+                            <span>₹</span>
+                            <input id="whatif-income" class="fp-whatif-input" type="number" step="100" value="0" placeholder="0">
+                        </div>
+                        <p class="fp-whatif-hint">Example: enter 5000 if you expect ₹5,000 extra income.</p>
+                    </div>
+
+                    <div class="fp-whatif-field">
+                        <label for="whatif-expense">
+                            <span>💸 Expense change</span>
+                            <small>+ spends more · − saves</small>
+                        </label>
+                        <div class="fp-whatif-input-wrap">
+                            <span>₹</span>
+                            <input id="whatif-expense" class="fp-whatif-input" type="number" step="100" value="0" placeholder="0">
+                        </div>
+                        <p class="fp-whatif-hint">Example: enter -2000 to simulate cutting ₹2,000 of spending.</p>
+                    </div>
+
+                    <div class="fp-whatif-field">
+                        <label for="whatif-budget">
+                            <span>🎯 Budget change</span>
+                            <small>+ increases limit</small>
+                        </label>
+                        <div class="fp-whatif-input-wrap">
+                            <span>₹</span>
+                            <input id="whatif-budget" class="fp-whatif-input" type="number" step="100" value="0" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="fp-whatif-field">
+                        <label for="whatif-goal">
+                            <span>🏆 Goal savings</span>
+                            <small>one-time simulation</small>
+                        </label>
+                        <div class="fp-whatif-input-wrap">
+                            <span>₹</span>
+                            <input id="whatif-goal" class="fp-whatif-input" type="number" min="0" step="100" value="0" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="fp-whatif-actions">
+                        <button type="button" class="fp-whatif-run" id="run-whatif">⚡ Simulate Scenario</button>
+                        <button type="button" class="fp-whatif-reset" id="reset-whatif">Reset</button>
+                    </div>
+                </div>
+
+                <div class="fp-whatif-results" aria-live="polite">
+                    <div class="fp-whatif-section-title">
+                        <strong>📊 Simulated financial picture</strong>
+                        <span id="whatif-status-text">Using your current month</span>
+                    </div>
+
+                    <div class="fp-whatif-result-top">
+                        <div class="fp-whatif-stat">
+                            <span>SIMULATED INCOME</span>
+                            <strong id="whatif-income-result">₹0.00</strong>
+                            <small>After your change</small>
+                        </div>
+                        <div class="fp-whatif-stat">
+                            <span>SIMULATED SPENDING</span>
+                            <strong id="whatif-expense-result">₹0.00</strong>
+                            <small>After your change</small>
+                        </div>
+                        <div class="fp-whatif-stat fp-whatif-stat-savings">
+                            <span>SIMULATED SAVINGS</span>
+                            <strong id="whatif-savings-result">₹0.00</strong>
+                            <small id="whatif-savings-rate">0.0% savings rate</small>
+                        </div>
+                    </div>
+
+                    <div class="fp-whatif-health">
+                        <div class="fp-whatif-health-ring" id="whatif-health-ring" style="--whatif-score:0">
+                            <span class="fp-whatif-health-score" id="whatif-health-score">0</span>
+                        </div>
+                        <div class="fp-whatif-health-copy">
+                            <span>SIMULATED FINANCIAL HEALTH</span>
+                            <strong id="whatif-health-label">Getting Started</strong>
+                            <small id="whatif-health-message">Run a scenario to see how your financial health could change.</small>
+                        </div>
+                    </div>
+
+                    <div class="fp-whatif-impact">
+                        <div class="fp-whatif-impact-item">
+                            <span>💰 SAVINGS IMPACT</span>
+                            <strong id="whatif-savings-impact">₹0.00</strong>
+                        </div>
+                        <div class="fp-whatif-impact-item">
+                            <span>🛡️ SAFE DAILY SPEND</span>
+                            <strong id="whatif-safe-daily">₹0.00</strong>
+                        </div>
+                        <div class="fp-whatif-impact-item">
+                            <span>📊 BUDGET USAGE</span>
+                            <strong id="whatif-budget-usage">0.0%</strong>
+                        </div>
+                    </div>
+
+                    <div class="fp-whatif-recommendation">
+                        <div class="fp-whatif-recommendation-icon" id="whatif-result-icon">🧠</div>
+                        <div>
+                            <strong id="whatif-result-title">Ready to simulate</strong>
+                            <p id="whatif-recommendation">Change the numbers on the left and FinPilot will show the possible impact.</p>
+                        </div>
+                    </div>
+
+                    <div class="fp-whatif-foot">
+                        <span>🔒 Simulation only — your actual income, expenses and goals are not changed.</span>
+                        <span id="whatif-days">— days remaining</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="dashboard-panel mb-4">
+            <div class="panel-header">
+                <div>
+                    <h3>📊 Income vs Expenses</h3>
+                    <p>Compare your money received and money spent this month.</p>
+                </div>
+                <span class="budget-percent">LIVE DATA</span>
+            </div>
+            <div class="dashboard-chart-wrapper"><canvas id="incomeExpenseChart"></canvas></div>
+        </div>
+
+        <!-- BUDGET + INSIGHTS -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-8">
+                <div class="dashboard-panel h-100">
+                    <div class="panel-header">
+                        <div>
+                            <h3>🎯 Monthly Budget</h3>
+                            <p>You're building better money habits.</p>
+                        </div>
+                        <div class="budget-header-actions">
+                            <span class="budget-percent">{{ budget_percent|default(0)|round|int }}%</span>
+                            <a href="{{ url_for('budget.set_budget') }}" class="btn btn-sm btn-outline-info">✏️ Edit</a>
+                        </div>
+                    </div>
+
+                    <div class="progress modern-progress">
+                        <div class="progress-bar" style="width:{{ [budget_percent|default(0),100]|min }}%"></div>
+                    </div>
+
+                    <div class="budget-details">
+                        <div>
+                            <span>Spent</span>
+                            <strong>₹{{ "%.2f"|format(monthly_spending|default(0)) }}</strong>
+                        </div>
+                        <div class="text-end">
+                            <span>Remaining</span>
+                            <strong>₹{{ "%.2f"|format(remaining|default(0)) }}</strong>
+                        </div>
+                    </div>
+
+                    {% if monthly_allowance|default(0) <= 0 %}
+                        <div class="budget-empty-message">
+                            <span>🎯</span>
+                            <div>
+                                <strong>Your budget isn't set yet</strong>
+                                <p>Set your monthly budget to unlock personalized spending insights.</p>
+                                <a href="{{ url_for('budget.set_budget') }}" class="btn btn-primary btn-sm">Set My Budget</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="ai-insights-card">
+                    <div class="ai-insights-header">
+                        <div class="ai-insights-icon">✨</div>
+                        <div>
+                            <span class="ai-label">FINPILOT AI</span>
+                            <h3>Smart Insights</h3>
+                        </div>
+                    </div>
+
+                    {% if financial_insights %}
+                        {% for insight in financial_insights %}
+                            <div class="smart-insight insight-{{ insight.type }}">
+                                <div class="smart-insight-icon">{{ insight.icon }}</div>
+                                <div>
+                                    <strong>{{ insight.title }}</strong>
+                                    <p>{{ insight.message }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="ai-no-insights">
+                            <div>🧠</div>
+                            <h4>Your financial picture is loading.</h4>
+                            <p>Add income and expenses and FinPilot will start analyzing your money habits.</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="ai-pulse"><span></span>FinPilot is analyzing your finances</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GEMINI -->
+        <div class="dashboard-panel ai-financial-insight-card mb-4">
+            <div class="ai-financial-insight-header">
+                <div class="ai-financial-insight-icon">🤖</div>
+                <div>
+                    <span class="ai-label">FINPILOT AI</span>
+                    <h3>Personalized Financial Insight</h3>
+                    <p>Gemini is analyzing your current financial picture.</p>
+                </div>
+                <div class="ai-live-badge"><span></span>AI LIVE</div>
+                <button type="button" id="refresh-ai-insight" class="ai-refresh-button">↻ Refresh</button>
+            </div>
+
+            <div class="ai-financial-insight-body {% if not ai_financial_insight %}ai-financial-insight-empty{% endif %}">
+                <div class="ai-financial-insight-icon" id="ai-financial-insight-spark">{% if ai_financial_insight %}✨{% else %}🧠{% endif %}</div>
+                <p id="ai-financial-insight-text">
+                    {{ ai_financial_insight or "Add income and expenses so FinPilot AI can generate a personalized financial insight." }}
+                </p>
+            </div>
+
+            <div class="ai-financial-insight-footer">
+                <span>🔒 Based on your current financial data</span>
+                <span id="ai-cache-status">FinPilot AI</span>
+            </div>
+        </div>
+
+        <!-- COMMAND CENTER -->
+        <div class="dashboard-panel ai-command-center-panel mb-4" id="ai-command-center">
+            <div class="ai-command-header">
+                <div class="ai-command-brand">
+                    <div class="ai-command-icon">🤖</div>
+                    <div>
+                        <span class="ai-label">FINPILOT AI</span>
+                        <h3>AI Command Center</h3>
+                        <p>Your financial situation at a glance.</p>
+                    </div>
+                </div>
+                <div class="ai-command-live"><span></span>LIVE</div>
+            </div>
+
+            <div class="ai-command-grid">
+                <div class="ai-command-stat">
+                    <div class="ai-command-stat-icon" id="command-health-icon">🧠</div>
+                    <div class="ai-command-stat-content">
+                        <span>Financial Health</span>
+                        <strong id="command-health-label">Loading...</strong>
+                        <small id="command-health-status">FinPilot is checking your finances</small>
+                    </div>
+                </div>
+
+                <div class="ai-command-stat">
+                    <div class="ai-command-stat-icon">🛡️</div>
+                    <div class="ai-command-stat-content">
+                        <span>Safe Today</span>
+                        <strong id="command-safe-daily">₹0.00</strong>
+                        <small>Recommended daily spending</small>
+                    </div>
+                </div>
+
+                <div class="ai-command-stat">
+                    <div class="ai-command-stat-icon">💰</div>
+                    <div class="ai-command-stat-content">
+                        <span>Monthly Savings</span>
+                        <strong id="command-savings">₹0.00</strong>
+                        <small id="command-savings-rate">0.0% savings rate</small>
+                    </div>
+                </div>
+
+                <div class="ai-command-stat">
+                    <div class="ai-command-stat-icon">📊</div>
+                    <div class="ai-command-stat-content">
+                        <span>Top Spending</span>
+                        <strong id="command-top-category">No data</strong>
+                        <small id="command-top-category-detail">No spending category yet</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-command-bottom">
+                <div class="ai-command-goal">
+                    <div class="ai-command-section-heading">
+                        <span class="ai-command-mini-icon">🎯</span>
+                        <div><strong>Savings Goal</strong><small id="command-goal-name">No active goal</small></div>
+                    </div>
+                    <div class="ai-command-goal-progress">
+                        <div class="ai-command-goal-track"><div class="ai-command-goal-fill" id="command-goal-progress" style="width:0%"></div></div>
+                        <strong id="command-goal-percent">0%</strong>
+                    </div>
+                    <p id="command-goal-detail">Create a savings goal to start tracking your progress.</p>
+                </div>
+
+                <div class="ai-command-priority">
+                    <div class="ai-command-section-heading">
+                        <span class="ai-command-mini-icon" id="command-priority-icon">💡</span>
+                        <div><strong>Today's Priority</strong><small id="command-priority-name">General</small></div>
+                    </div>
+                    <p id="command-priority-action">Continue tracking your income and expenses consistently.</p>
+                </div>
+            </div>
+
+            <div class="ai-command-footer">
+                <span id="ai-command-status"><span class="ai-command-status-dot"></span>FinPilot AI is loading your financial picture...</span>
+                <button type="button" id="refresh-ai-command" class="ai-command-refresh">↻ Refresh</button>
+            </div>
+        </div>
+
+        <!-- ALERTS -->
+        <div class="dashboard-panel smart-alerts-panel mb-4">
+            <div class="panel-header">
+                <div>
+                    <p class="alerts-eyebrow">🔔 FINPILOT AI · ALERT CENTER</p>
+                    <h3>Smart Spending Alerts</h3>
+                    <p>Important things you should know about your money.</p>
+                </div>
+                {% if financial_alerts %}
+                    <span class="alerts-count">{{ financial_alerts|length }} Alert{% if financial_alerts|length != 1 %}s{% endif %}</span>
+                {% endif %}
+            </div>
+
+            {% if financial_alerts %}
+                <div>
+                    {% for alert in financial_alerts %}
+                        <div class="smart-alert alert-{{ alert.type }}">
+                            <div class="smart-alert-icon">{{ alert.icon }}</div>
+                            <div>
+                                <strong>{{ alert.title }}</strong>
+                                <p>{{ alert.message }}</p>
+                            </div>
+                            <div class="smart-alert-status">
+                                <span>
+                                    {% if alert.type == "danger" %}Action needed
+                                    {% elif alert.type == "warning" %}Keep an eye on it
+                                    {% elif alert.type == "success" %}Looking good
+                                    {% else %}FinPilot tip{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="smart-alert-empty">
+                    <div style="font-size:30px">🛡️</div>
+                    <h4>No alerts right now</h4>
+                    <p>Everything looks good. FinPilot will alert you when something needs your attention.</p>
+                </div>
+            {% endif %}
+            <div class="alert-monitor"><span></span>FinPilot is monitoring your spending</div>
+        </div>
+
+        <!-- GOAL -->
+        <div class="dashboard-panel mb-4">
+            <div class="panel-header">
+                <div>
+                    <p class="goal-dashboard-eyebrow">🎯 SAVINGS GOAL</p>
+                    <h3>Your Current Goal</h3>
+                    <p>Stay focused and turn your target into reality.</p>
+                </div>
+                <a href="{{ url_for('goal.goal_list') }}" class="btn btn-outline-info">View Goals</a>
+            </div>
+
+            {% if current_goal %}
+                <div class="dashboard-goal-content">
+                    <div class="dashboard-goal-icon">{% if goal_completed %}🏆{% else %}🎯{% endif %}</div>
+                    <div class="dashboard-goal-main">
+                        <div class="dashboard-goal-title-row">
+                            <div>
+                                <h4>{{ current_goal.name }}</h4>
+                                <p>{{ current_goal.description or "Keep moving toward your goal." }}</p>
+                            </div>
+                            {% if goal_completed %}
+                                <span class="goal-dashboard-status completed">🏆 Completed</span>
+                            {% else %}
+                                <span class="goal-dashboard-status">{{ goal_progress|round|int }}%</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="dashboard-goal-amounts">
+                            <strong>₹{{ "%.2f"|format(current_goal.saved_amount) }}</strong>
+                            <span>of</span>
+                            <strong>₹{{ "%.2f"|format(current_goal.target_amount) }}</strong>
+                        </div>
+
+                        <div class="progress dashboard-goal-progress">
+                            <div class="progress-bar" style="width:{{ goal_progress }}%"></div>
+                        </div>
+
+                        <div class="dashboard-goal-footer">
+                            <span>
+                                {% if goal_completed %}🎉 You've reached your goal!
+                                {% else %}💵 ₹{{ "%.2f"|format(goal_remaining) }} remaining{% endif %}
+                            </span>
+                            {% if current_goal.target_date %}
+                                <span>📅 {{ current_goal.target_date.strftime("%d %b %Y") }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="dashboard-no-goal">
+                    <div style="font-size:30px">🎯</div>
+                    <div>
+                        <h4>You don't have a savings goal yet.</h4>
+                        <p>Set a goal for something you really want and let FinPilot track your progress.</p>
+                    </div>
+                    <a href="{{ url_for('goal.add_goal') }}" class="btn btn-primary">Create Goal</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- RECENT ACTIVITY -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="dashboard-panel h-100">
+                    <div class="panel-header">
+                        <div><h3>💰 Recent Income</h3><p>Your latest money received.</p></div>
+                        <a href="{{ url_for('income.income_list') }}" class="btn btn-outline-success">View All</a>
+                    </div>
+
+                    {% if recent_income %}
+                        {% for income in recent_income %}
+                            <div class="income-row">
+                                <div class="income-left">
+                                    <div class="income-category-icon">
+                                        {% if income.source == "Scholarship" %}🎓{% elif income.source == "Pocket Money" %}💵{% elif income.source == "Salary" %}💼{% elif income.source == "Freelancing" %}💻{% else %}💰{% endif %}
+                                    </div>
+                                    <div>
+                                        <strong>{{ income.source }}</strong>
+                                        <small>{{ income.description or "Income received" }} · {{ income.date.strftime("%d %b") }}</small>
+                                    </div>
+                                </div>
+                                <strong class="income-amount">+ ₹{{ "%.2f"|format(income.amount) }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-income">
+                            <div class="empty-income-icon">💰</div>
+                            <h4>No income yet</h4>
+                            <p>Add your first income to start calculating savings.</p>
+                            <a href="{{ url_for('income.add_income') }}" class="btn btn-success">Add Income</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="dashboard-panel h-100">
+                    <div class="panel-header">
+                        <div><h3>💸 Recent Expenses</h3><p>Your latest money activity.</p></div>
+                        <a href="{{ url_for('expense.add_expense') }}" class="btn btn-outline-info">＋ Add</a>
+                    </div>
+
+                    {% if recent_expenses %}
+                        {% for expense in recent_expenses %}
+                            <div class="expense-row">
+                                <div class="expense-left">
+                                    <div class="expense-category-icon">
+                                        {% if expense.category == "Food" %}🍔{% elif expense.category == "Travel" %}🚌{% elif expense.category == "Shopping" %}🛍️{% elif expense.category == "Education" %}📚{% elif expense.category == "Gym" %}🏋️{% elif expense.category == "Health" %}💊{% elif expense.category == "Entertainment" %}🎮{% elif expense.category == "Bills" %}📱{% else %}💸{% endif %}
+                                    </div>
+                                    <div>
+                                        <strong>{{ expense.description or expense.category }}</strong>
+                                        <small>{{ expense.category }} · {{ expense.date }} · {{ expense.payment_method }}</small>
+                                    </div>
+                                </div>
+                                <strong class="expense-amount">- ₹{{ "%.2f"|format(expense.amount) }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-expenses">
+                            <div style="font-size:28px">💸</div>
+                            <h4>No expenses yet</h4>
+                            <p>Add your first expense and start understanding your money.</p>
+                            <a href="{{ url_for('expense.add_expense') }}" class="btn btn-primary">Add First Expense</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <!-- AI FINANCIAL CHATBOT -->
+        <div class="fp-chat-card mb-4" id="finpilot-ai-chat">
+            <div class="fp-chat-header">
+                <div class="fp-chat-brand">
+                    <div class="fp-chat-icon">💬</div>
+                    <div>
+                        <span class="ai-label">FINPILOT AI</span>
+                        <h3 class="fp-chat-title">AI Financial Assistant</h3>
+                        <p class="fp-chat-subtitle">Ask questions about your income, spending, budget, savings and goals.</p>
+                    </div>
+                </div>
+                <div class="fp-chat-live"><span></span>AI READY</div>
+            </div>
+
+            <div class="fp-chat-messages" id="fp-chat-messages" aria-live="polite">
+                <div class="fp-chat-welcome" id="fp-chat-welcome">
+                    <div class="fp-chat-welcome-icon">🤖</div>
+                    <strong>Hi {{ current_user.username }}! I'm your FinPilot AI assistant.</strong>
+                    <p>I can use your current financial information to answer questions and help you make better money decisions.</p>
+                    <div class="fp-chat-suggestions">
+                        <button type="button" class="fp-chat-suggestion" data-question="How much did I spend this month?">💸 My spending</button>
+                        <button type="button" class="fp-chat-suggestion" data-question="How much have I saved this month?">💰 My savings</button>
+                        <button type="button" class="fp-chat-suggestion" data-question="Am I within my monthly budget?">🎯 My budget</button>
+                        <button type="button" class="fp-chat-suggestion" data-question="What should I focus on financially right now?">🧠 My priority</button>
+                    </div>
+                </div>
+            </div>
+
+            <form class="fp-chat-form" id="fp-chat-form">
+                <input
+                    type="text"
+                    id="fp-chat-input"
+                    name="question"
+                    class="fp-chat-input"
+                    maxlength="1000"
+                    autocomplete="off"
+                    placeholder="Ask FinPilot AI anything about your finances..."
+                    aria-label="Ask FinPilot AI a financial question"
+                    required
+                >
+                <button type="submit" class="fp-chat-send" id="fp-chat-send">Send ➤</button>
+            </form>
+
+            <div class="fp-chat-status" id="fp-chat-status">
+                🔒 Your questions are processed for your account and saved in your FinPilot chat history.
+            </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="row g-3 pb-5">
+            <div class="col-md-3">
+                <a href="{{ url_for('income.add_income') }}" class="quick-action-card">
+                    <div class="quick-action-icon">💰</div>
+                    <div><strong>Add Income</strong><span>Record money received</span></div>
+                    <span class="quick-arrow">→</span>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('expense.add_expense') }}" class="quick-action-card">
+                    <div class="quick-action-icon">💸</div>
+                    <div><strong>Add Expense</strong><span>Record your spending</span></div>
+                    <span class="quick-arrow">→</span>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('budget.set_budget') }}" class="quick-action-card">
+                    <div class="quick-action-icon">🎯</div>
+                    <div><strong>Monthly Budget</strong><span>{% if monthly_allowance|default(0) > 0 %}Change your budget{% else %}Set your spending limit{% endif %}</span></div>
+                    <span class="quick-arrow">→</span>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('analytics.analytics_home') }}" class="quick-action-card">
+                    <div class="quick-action-icon">📊</div>
+                    <div><strong>Analytics</strong><span>Explore your spending</span></div>
+                    <span class="quick-arrow">→</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================================================
+     AI REFRESH + COMMAND CENTER JS
+========================================================= -->
+<script>
+const FP_CSRF_TOKEN = "{{ csrf_token() }}";
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* ---------- Gemini insight ---------- */
+    const refreshButton = document.getElementById("refresh-ai-insight");
+    const insightText = document.getElementById("ai-financial-insight-text");
+    const insightSpark = document.getElementById("ai-financial-insight-spark");
+
+    if (refreshButton && insightText) {
+        const AI_STATE_URL = "{{ url_for('dashboard.dashboard_ai_state') }}";
+        const AI_INSIGHT_URL = "{{ url_for('dashboard.dashboard_ai_insight') }}";
+        const INTERVAL = 15000;
+
+        let lastSignature = null;
+        let busy = false;
+        let stateBusy = false;
+
+        function loading(){
+            refreshButton.disabled = true;
+            refreshButton.textContent = "⏳ Thinking...";
+            if(insightSpark) insightSpark.textContent = "🧠";
+        }
+
+        function restore(){
+            refreshButton.disabled = false;
+            refreshButton.textContent = "↻ Refresh";
+        }
+
+        async function refreshInsight(force=false, signature=null){
+            if(busy) return;
+            busy=true;
+            loading();
+
+            try{
+                const response = await fetch(
+                    force ? AI_INSIGHT_URL + "?force=1" : AI_INSIGHT_URL,
+                    {headers:{"Accept":"application/json"},cache:"no-store"}
+                );
+                if(!response.ok) throw new Error("AI request failed");
+                const data = await response.json();
+                if(!data.success || !data.insight) throw new Error("Invalid AI response");
+
+                insightText.textContent = data.insight;
+                if(insightSpark) insightSpark.textContent = "✨";
+
+                const cacheStatus=document.getElementById("ai-cache-status");
+                if(cacheStatus) cacheStatus.textContent =
+                    data.cached ? "FinPilot AI · Cached" : "FinPilot AI · Fresh";
+
+                if(data.signature) lastSignature=data.signature;
+                else if(signature) lastSignature=signature;
+            }catch(error){
+                console.debug("FinPilot AI:",error);
+            }finally{
+                busy=false;
+                restore();
+            }
+        }
+
+        async function checkState(){
+            if(stateBusy || busy) return;
+            stateBusy=true;
+            try{
+                const response=await fetch(
+                    AI_STATE_URL,
+                    {headers:{"Accept":"application/json"},cache:"no-store"}
+                );
+                if(!response.ok) return;
+                const data=await response.json();
+                if(!data.success || !data.signature) return;
+
+                if(lastSignature===null){
+                    lastSignature=data.signature;
+                    return;
+                }
+
+                if(data.signature!==lastSignature){
+                    await refreshInsight(false,data.signature);
+                }
+            }catch(error){
+                console.debug("FinPilot AI state:",error);
+            }finally{
+                stateBusy=false;
+            }
+        }
+
+        refreshButton.addEventListener("click",()=>refreshInsight(true));
+        checkState();
+        const watcher=setInterval(checkState,INTERVAL);
+        document.addEventListener("visibilitychange",()=>{
+            if(document.visibilityState==="visible") checkState();
+        });
+        window.addEventListener("beforeunload",()=>clearInterval(watcher));
+    }
+
+    /* ---------- AI Command Center ---------- */
+    const panel=document.getElementById("ai-command-center");
+    if(!panel) return;
+
+    const commandUrl="{{ url_for('dashboard.dashboard_ai_command_center') }}";
+    const stateUrl="{{ url_for('dashboard.dashboard_ai_state') }}";
+
+    const refresh=document.getElementById("refresh-ai-command");
+    const status=document.getElementById("ai-command-status");
+    const healthIcon=document.getElementById("command-health-icon");
+    const healthLabel=document.getElementById("command-health-label");
+    const healthStatus=document.getElementById("command-health-status");
+    const safe=document.getElementById("command-safe-daily");
+    const savings=document.getElementById("command-savings");
+    const savingsRate=document.getElementById("command-savings-rate");
+    const topCategory=document.getElementById("command-top-category");
+    const topDetail=document.getElementById("command-top-category-detail");
+    const goalName=document.getElementById("command-goal-name");
+    const goalProgress=document.getElementById("command-goal-progress");
+    const goalPercent=document.getElementById("command-goal-percent");
+    const goalDetail=document.getElementById("command-goal-detail");
+    const priorityIcon=document.getElementById("command-priority-icon");
+    const priorityName=document.getElementById("command-priority-name");
+    const priorityAction=document.getElementById("command-priority-action");
+
+    let commandBusy=false;
+    let stateBusy=false;
+    let signature=null;
+
+    const rupees=v=>"₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+    const update=e=>{if(e){e.animate([{opacity:.35,transform:"translateY(4px)"},{opacity:1,transform:"translateY(0)"}],{duration:400,easing:"ease-out"}).catch(()=>{});}};
+
+    function setStatus(text){
+        if(status) status.innerHTML='<span class="ai-command-status-dot"></span>'+text;
+    }
+
+    function updateUI(cc){
+        const health=cc.financial_health||{};
+        if(healthIcon) healthIcon.textContent=health.icon||"🧠";
+        if(healthLabel) healthLabel.textContent=health.label||"Unknown";
+        if(healthStatus) healthStatus.textContent=String(health.status||"").replaceAll("_"," ").toLowerCase();
+
+        if(safe) safe.textContent=rupees(cc.safe_daily_spending);
+
+        const save=cc.savings||{};
+        if(savings) savings.textContent=rupees(save.monthly);
+        if(savingsRate) savingsRate.textContent=Number(save.rate_percent||0).toFixed(1)+"% savings rate";
+
+        const cat=cc.top_category||{};
+        if(topCategory) topCategory.textContent=cat.name||"No data";
+        if(topDetail) topDetail.textContent=cat.name ? rupees(cat.amount)+" · "+Number(cat.percentage||0).toFixed(1)+"% of spending" : "No spending category yet";
+
+        const goal=cc.goal||{};
+        if(goal.active){
+            if(goalName) goalName.textContent=goal.name||"Savings Goal";
+            const p=Math.min(Math.max(Number(goal.progress_percent||0),0),100);
+            if(goalProgress) goalProgress.style.width=p+"%";
+            if(goalPercent) goalPercent.textContent=p.toFixed(1)+"%";
+            if(goalDetail) goalDetail.textContent=Number(goal.remaining||0)<=0 ? "🎉 You've reached this goal!" : rupees(goal.remaining)+" remaining to reach your goal.";
+        }else{
+            if(goalName) goalName.textContent="No active goal";
+            if(goalProgress) goalProgress.style.width="0%";
+            if(goalPercent) goalPercent.textContent="0%";
+            if(goalDetail) goalDetail.textContent="Create a savings goal to start tracking your progress.";
+        }
+
+        const priority=cc.priority||{};
+        if(priorityIcon) priorityIcon.textContent=priority.icon||"💡";
+        if(priorityName) priorityName.textContent=String(priority.name||"GENERAL").replaceAll("_"," ");
+        if(priorityAction) priorityAction.textContent=priority.recommended_action||"Continue tracking your finances.";
+
+        [healthIcon,healthLabel,healthStatus,safe,savings,savingsRate,topCategory,topDetail,goalName,goalProgress,goalPercent,goalDetail,priorityIcon,priorityName,priorityAction].forEach(update);
+        setStatus("FinPilot AI · Updated");
+    }
+
+    async function loadCommandCenter(){
+        if(commandBusy) return;
+        commandBusy=true;
+        if(refresh){refresh.disabled=true;refresh.textContent="⏳ Loading...";}
+        setStatus("FinPilot AI · Updating...");
+
+        try{
+            const response=await fetch(commandUrl,{headers:{"Accept":"application/json"},cache:"no-store"});
+            if(!response.ok) throw new Error("Command Center request failed");
+            const data=await response.json();
+            if(!data.success || !data.command_center) throw new Error("Invalid Command Center response");
+
+            updateUI(data.command_center);
+            if(data.signature) signature=data.signature;
+        }catch(error){
+            console.debug("FinPilot Command Center:",error);
+            setStatus("FinPilot AI · Unable to update");
+        }finally{
+            commandBusy=false;
+            if(refresh){refresh.disabled=false;refresh.textContent="↻ Refresh";}
+        }
+    }
+
+    async function checkCommandState(){
+        if(stateBusy || document.visibilityState!=="visible") return;
+        stateBusy=true;
+        try{
+            const response=await fetch(stateUrl,{headers:{"Accept":"application/json"},cache:"no-store"});
+            if(!response.ok) return;
+            const data=await response.json();
+            if(!data.success) return;
+
+            if(signature===null){signature=data.signature||null;return;}
+
+            if(data.signature && data.signature!==signature){
+                signature=data.signature;
+                await loadCommandCenter();
+            }
+        }catch(error){
+            console.debug("FinPilot command state:",error);
+        }finally{
+            stateBusy=false;
+        }
+    }
+
+    if(refresh) refresh.addEventListener("click",loadCommandCenter);
+
+    loadCommandCenter();
+    const commandWatcher=setInterval(checkCommandState,10000);
+    document.addEventListener("visibilitychange",()=>{
+        if(document.visibilityState==="visible"){
+            loadCommandCenter();
+            checkCommandState();
+        }
+    });
+    window.addEventListener("beforeunload",()=>clearInterval(commandWatcher));
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    const runButton = document.getElementById("run-whatif");
+    const resetButton = document.getElementById("reset-whatif");
+    const simulator = document.getElementById("what-if-simulator");
+
+    if(!runButton || !simulator) return;
+
+    const whatIfUrl = "{{ url_for('dashboard.dashboard_what_if') }}";
+
+    const incomeInput = document.getElementById("whatif-income");
+    const expenseInput = document.getElementById("whatif-expense");
+    const budgetInput = document.getElementById("whatif-budget");
+    const goalInput = document.getElementById("whatif-goal");
+
+    const incomeResult = document.getElementById("whatif-income-result");
+    const expenseResult = document.getElementById("whatif-expense-result");
+    const savingsResult = document.getElementById("whatif-savings-result");
+    const savingsRate = document.getElementById("whatif-savings-rate");
+    const healthRing = document.getElementById("whatif-health-ring");
+    const healthScore = document.getElementById("whatif-health-score");
+    const healthLabel = document.getElementById("whatif-health-label");
+    const healthMessage = document.getElementById("whatif-health-message");
+    const savingsImpact = document.getElementById("whatif-savings-impact");
+    const safeDaily = document.getElementById("whatif-safe-daily");
+    const budgetUsage = document.getElementById("whatif-budget-usage");
+    const resultIcon = document.getElementById("whatif-result-icon");
+    const resultTitle = document.getElementById("whatif-result-title");
+    const recommendation = document.getElementById("whatif-recommendation");
+    const statusText = document.getElementById("whatif-status-text");
+    const daysText = document.getElementById("whatif-days");
+
+    const rupees = value => "₹" + Number(value || 0).toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    const signedRupees = value => {
+        const n = Number(value || 0);
+        if(n > 0) return "+" + rupees(n);
+        if(n < 0) return "-" + rupees(Math.abs(n));
+        return rupees(0);
+    };
+
+    function numberValue(input){
+        const value = Number(input?.value);
+        return Number.isFinite(value) ? value : 0;
+    }
+
+    function setImpactClass(element, value){
+        if(!element) return;
+        element.classList.remove("fp-whatif-positive","fp-whatif-negative","fp-whatif-neutral");
+        const n = Number(value || 0);
+        if(n > 0) element.classList.add("fp-whatif-positive");
+        else if(n < 0) element.classList.add("fp-whatif-negative");
+        else element.classList.add("fp-whatif-neutral");
+    }
+
+    function updateResult(data){
+        const simulation = data.simulation || {};
+        const health = data.health || {};
+        const impact = data.impact || {};
+        const result = data.result || {};
+
+        if(incomeResult) incomeResult.textContent = rupees(simulation.income);
+        if(expenseResult) expenseResult.textContent = rupees(simulation.spending);
+        if(savingsResult) savingsResult.textContent = rupees(simulation.savings);
+        if(savingsRate) savingsRate.textContent =
+            Number(simulation.savings_rate || 0).toFixed(1) + "% savings rate";
+
+        const score = Math.min(Math.max(Number(health.score || 0),0),100);
+        if(healthScore) healthScore.textContent = Math.round(score);
+        if(healthRing) healthRing.style.setProperty("--whatif-score", score);
+
+        if(healthLabel) healthLabel.textContent = health.label || "Unknown";
+        if(healthMessage) healthMessage.textContent =
+            health.message || "FinPilot calculated the simulated scenario.";
+
+        if(savingsImpact) savingsImpact.textContent = signedRupees(impact.savings_difference);
+        setImpactClass(savingsImpact, impact.savings_difference);
+
+        if(safeDaily) safeDaily.textContent = rupees(simulation.safe_daily_spending);
+        if(budgetUsage) budgetUsage.textContent =
+            Number(simulation.budget_usage || 0).toFixed(1) + "%";
+
+        if(resultIcon) resultIcon.textContent = result.icon || "🧠";
+        if(resultTitle) resultTitle.textContent = result.title || "Scenario calculated";
+        if(recommendation) recommendation.textContent =
+            result.recommendation || "Review the simulated result before making a decision.";
+
+        if(statusText) statusText.textContent =
+            "Scenario calculated · " + (health.label || "Updated");
+
+        if(daysText) daysText.textContent =
+            Number(data.days_remaining || 0) + " days remaining";
+    }
+
+    async function runSimulation(){
+        if(runButton.disabled) return;
+
+        runButton.disabled = true;
+        runButton.textContent = "⏳ Simulating...";
+        simulator.classList.add("fp-whatif-loading");
+
+        try{
+            const response = await fetch(whatIfUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "X-CSRFToken": FP_CSRF_TOKEN
+                },
+                body: JSON.stringify({
+                    income_change: numberValue(incomeInput),
+                    expense_change: numberValue(expenseInput),
+                    budget_change: numberValue(budgetInput),
+                    goal_saving: Math.max(numberValue(goalInput), 0)
+                }),
+                cache: "no-store"
+            });
+
+            const data = await response.json();
+
+            if(!response.ok || !data.success){
+                throw new Error(data.message || "Simulation failed");
+            }
+
+            updateResult(data);
+        }catch(error){
+            console.debug("FinPilot What-If:", error);
+            if(resultIcon) resultIcon.textContent = "⚠️";
+            if(resultTitle) resultTitle.textContent = "Simulation unavailable";
+            if(recommendation) recommendation.textContent =
+                "FinPilot could not calculate this scenario right now. Please try again.";
+            if(statusText) statusText.textContent = "Simulation error";
+        }finally{
+            simulator.classList.remove("fp-whatif-loading");
+            runButton.disabled = false;
+            runButton.textContent = "⚡ Simulate Scenario";
+        }
+    }
+
+    function resetSimulation(){
+        incomeInput.value = "0";
+        expenseInput.value = "0";
+        budgetInput.value = "0";
+        goalInput.value = "0";
+
+        if(incomeResult) incomeResult.textContent = "₹0.00";
+        if(expenseResult) expenseResult.textContent = "₹0.00";
+        if(savingsResult) savingsResult.textContent = "₹0.00";
+        if(savingsRate) savingsRate.textContent = "0.0% savings rate";
+        if(healthScore) healthScore.textContent = "0";
+        if(healthRing) healthRing.style.setProperty("--whatif-score", 0);
+        if(healthLabel) healthLabel.textContent = "Getting Started";
+        if(healthMessage) healthMessage.textContent =
+            "Run a scenario to see how your financial health could change.";
+        if(savingsImpact) savingsImpact.textContent = "₹0.00";
+        if(savingsImpact){
+            savingsImpact.classList.remove(
+                "fp-whatif-positive",
+                "fp-whatif-negative",
+                "fp-whatif-neutral"
+            );
+        }
+        if(safeDaily) safeDaily.textContent = "₹0.00";
+        if(budgetUsage) budgetUsage.textContent = "0.0%";
+        if(resultIcon) resultIcon.textContent = "🧠";
+        if(resultTitle) resultTitle.textContent = "Ready to simulate";
+        if(recommendation) recommendation.textContent =
+            "Change the numbers on the left and FinPilot will show the possible impact.";
+        if(statusText) statusText.textContent = "Using your current month";
+        if(daysText) daysText.textContent = "— days remaining";
+    }
+
+    runButton.addEventListener("click", runSimulation);
+    resetButton?.addEventListener("click", resetSimulation);
+
+    [incomeInput, expenseInput, budgetInput, goalInput].forEach(input => {
+        input?.addEventListener("keydown", event => {
+            if(event.key === "Enter") runSimulation();
+        });
+    });
+});
+</script>
+
+
+<!-- AI FINANCIAL CHATBOT JS -->
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    const form = document.getElementById("fp-chat-form");
+    const input = document.getElementById("fp-chat-input");
+    const sendButton = document.getElementById("fp-chat-send");
+    const messages = document.getElementById("fp-chat-messages");
+    const welcome = document.getElementById("fp-chat-welcome");
+    const status = document.getElementById("fp-chat-status");
+
+    if(!form || !input || !sendButton || !messages) return;
+
+    const coachUrl = "{{ url_for('coach.money_coach') }}";
+
+    function scrollToBottom(){
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function addMessage(type, text){
+        if(welcome) welcome.remove();
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "fp-chat-message " + type;
+
+        const bubble = document.createElement("div");
+        bubble.className = "fp-chat-bubble";
+        bubble.textContent = text;
+
+        wrapper.appendChild(bubble);
+        messages.appendChild(wrapper);
+        scrollToBottom();
+
+        return wrapper;
+    }
+
+    function setBusy(busy){
+        sendButton.disabled = busy;
+        input.disabled = busy;
+
+        if(busy){
+            sendButton.textContent = "⏳ Thinking...";
+            status.innerHTML =
+                '<span class="fp-chat-typing">' +
+                '<span></span><span></span><span></span>' +
+                ' FinPilot AI is thinking...</span>';
+        }else{
+            sendButton.textContent = "Send ➤";
+        }
+    }
+
+    async function askFinPilot(question){
+        const cleanQuestion = String(question || "").trim();
+        if(!cleanQuestion || sendButton.disabled) return;
+
+        addMessage("user", cleanQuestion);
+        input.value = "";
+        setBusy(true);
+
+        try{
+            const formData = new FormData();
+            formData.append("question", cleanQuestion);
+
+            const response = await fetch(coachUrl, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Accept": "application/json",
+                    "X-CSRFToken": FP_CSRF_TOKEN
+                },
+                body: formData,
+                cache: "no-store"
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if(!response.ok || !data.success){
+                throw new Error(data.error || "FinPilot AI could not process your question.");
+            }
+
+            addMessage("ai", data.response || "I couldn't generate a response right now.");
+            status.textContent = "🤖 FinPilot AI answered using your financial context.";
+        }catch(error){
+            console.debug("FinPilot AI Chat:", error);
+            addMessage(
+                "ai",
+                "Sorry, I couldn't process that right now. Please try again."
+            );
+            status.textContent = "⚠️ FinPilot AI is temporarily unavailable.";
+        }finally{
+            setBusy(false);
+            input.focus();
+        }
+    }
+
+    form.addEventListener("submit", function(event){
+        event.preventDefault();
+        askFinPilot(input.value);
+    });
+
+    document.querySelectorAll(".fp-chat-suggestion").forEach(button => {
+        button.addEventListener("click", function(){
+            const question = this.dataset.question || "";
+            input.value = question;
+            input.focus();
+        });
+    });
+});
+</script>
+
+<!-- COUNTERS -->
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+    document.querySelectorAll(".counter").forEach(counter=>{
+        const target=Number(counter.dataset.value||0);
+        const start=performance.now();
+        const duration=900;
+
+        function animate(now){
+            const p=Math.min((now-start)/duration,1);
+            const eased=1-Math.pow(1-p,3);
+            const value=target*eased;
+            counter.textContent="₹"+value.toLocaleString("en-IN",{minimumFractionDigits:0,maximumFractionDigits:2});
+            if(p<1) requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+    });
+});
+</script>
+
+<!-- CHART -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+    const canvas=document.getElementById("incomeExpenseChart");
+    if(!canvas) return;
+
+    const income=Number({{ monthly_income|default(0) }});
+    const expenses=Number({{ monthly_spending|default(0) }});
+    const savings=Number({{ monthly_savings|default(0) }});
+
+    new Chart(canvas,{
+        type:"bar",
+        data:{
+            labels:["Income","Expenses","Savings"],
+            datasets:[{
+                data:[income,expenses,Math.max(savings,0)],
+                borderRadius:12,
+                borderSkipped:false,
+                barThickness:55,
+                backgroundColor:["#35e6a2","#ff5f7a","#5de7ff"],
+                borderColor:["#35e6a2","#ff5f7a","#5de7ff"],
+                borderWidth:1
+            }]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            animation:{duration:1200,easing:"easeOutQuart"},
+            plugins:{
+                legend:{display:false},
+                tooltip:{
+                    callbacks:{
+                        label:c=>" ₹"+Number(c.raw).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})
+                    }
+                }
+            },
+            scales:{
+                y:{
+                    beginAtZero:true,
+                    ticks:{
+                        color:"#8198af",
+                        callback:v=>"₹"+Number(v).toLocaleString("en-IN")
+                    },
+                    grid:{color:"rgba(255,255,255,.06)"}
+                },
+                x:{
+                    ticks:{color:"#8198af"},
+                    grid:{display:false}
+                }
+            }
+        }
+    });
+});
+</script>
+
+{% endblock %}

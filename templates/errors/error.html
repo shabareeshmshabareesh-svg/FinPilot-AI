@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | {{ title }}
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   FINPILOT AI - ERROR PAGE
+========================================================= */
+
+.fp-error-page{
+
+    min-height:calc(100vh - 74px);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:60px 18px;
+
+    background:
+        radial-gradient(
+            circle at 20% 15%,
+            rgba(23,105,255,.14),
+            transparent 45%
+        ),
+        radial-gradient(
+            circle at 80% 85%,
+            rgba(118,87,255,.12),
+            transparent 45%
+        ),
+        #070f1d;
+}
+
+.fp-error-card{
+
+    max-width:560px;
+
+    width:100%;
+
+    padding:44px 34px;
+
+    text-align:center;
+
+    border-radius:22px;
+
+    background:rgba(12,24,45,.88);
+
+    border:1px solid rgba(0,229,255,.18);
+
+    box-shadow:
+        0 26px 60px rgba(0,0,0,.45);
+}
+
+.fp-error-code{
+
+    font-size:3.4rem;
+
+    font-weight:800;
+
+    letter-spacing:.06em;
+
+    color:#4dabff;
+}
+
+.fp-error-title{
+
+    margin:14px 0 10px;
+
+    font-size:1.4rem;
+
+    font-weight:700;
+
+    color:#f3f8ff;
+}
+
+.fp-error-message{
+
+    margin-bottom:26px;
+
+    color:#91a4c0;
+
+    line-height:1.7;
+}
+
+.fp-error-actions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    justify-content:center;
+}
+
+.fp-error-btn{
+
+    padding:12px 22px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    transition:.2s ease;
+}
+
+.fp-error-btn-primary{
+
+    color:#fff;
+
+    background:linear-gradient(
+        135deg,
+        #1769ff,
+        #7657ff
+    );
+}
+
+.fp-error-btn-primary:hover{
+
+    color:#fff;
+
+    transform:translateY(-2px);
+}
+
+.fp-error-btn-ghost{
+
+    color:#9bb0c4;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.12);
+}
+
+.fp-error-btn-ghost:hover{
+
+    color:#fff;
+}
+
+@media (max-width:480px){
+
+    .fp-error-card{
+
+        padding:34px 22px;
+    }
+
+    .fp-error-code{
+
+        font-size:2.6rem;
+    }
+}
+
+</style>
+
+
+<div class="fp-error-page">
+
+    <div class="fp-error-card">
+
+        <div class="fp-error-code">
+            {{ code }}
+        </div>
+
+
+        <h1 class="fp-error-title">
+            {{ title }}
+        </h1>
+
+
+        <p class="fp-error-message">
+            {{ message }}
+        </p>
+
+
+        <div class="fp-error-actions">
+
+            <a
+                href="{{ url_for('home.index') }}"
+                class="fp-error-btn fp-error-btn-primary"
+            >
+                🏠 Go home
+            </a>
+
+
+            {% if current_user.is_authenticated %}
+
+            <a
+                href="{{ url_for('dashboard.dashboard_home') }}"
+                class="fp-error-btn fp-error-btn-ghost"
+            >
+                📊 Dashboard
+            </a>
+
+            {% else %}
+
+            <a
+                href="{{ url_for('auth.login') }}"
+                class="fp-error-btn fp-error-btn-ghost"
+            >
+                🔐 Login
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

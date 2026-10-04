@@ -1,0 +1,3272 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | Smart Personal Finance
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   FINPILOT HOME — PREMIUM DARK THEME
+========================================================= */
+
+:root {
+
+    --fp-bg: #07101f;
+    --fp-bg-2: #0b1428;
+    --fp-card: rgba(12, 24, 45, .88);
+
+    --fp-blue: #1769ff;
+    --fp-cyan: #00e5ff;
+    --fp-purple: #7657ff;
+
+    --fp-green: #42e8a1;
+
+    --fp-text: #f3f8ff;
+    --fp-muted: #91a4c0;
+
+    --fp-border: rgba(0, 229, 255, .22);
+
+}
+
+
+/* =========================================================
+   MAIN HOME
+========================================================= */
+
+.fp-home {
+
+    position: relative;
+
+    min-height: 100vh;
+
+    overflow: hidden;
+
+    background:
+
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(23, 105, 255, .16),
+            transparent 32%
+        ),
+
+        radial-gradient(
+            circle at 85% 15%,
+            rgba(118, 87, 255, .14),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 70% 85%,
+            rgba(0, 229, 255, .07),
+            transparent 28%
+        ),
+
+        linear-gradient(
+            135deg,
+            #07101f,
+            #0b1428 50%,
+            #080e1d
+        );
+
+    color: var(--fp-text);
+
+}
+
+
+/* =========================================================
+   GRID BACKGROUND
+========================================================= */
+
+.fp-home::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+
+        linear-gradient(
+            rgba(0, 229, 255, .035) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0, 229, 255, .035) 1px,
+            transparent 1px
+        );
+
+    background-size: 48px 48px;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   GLOW ORBS
+========================================================= */
+
+.fp-orb {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(5px);
+
+    opacity: .6;
+
+    animation:
+        fpFloat 8s ease-in-out infinite;
+
+}
+
+
+.fp-orb-1 {
+
+    width: 260px;
+    height: 260px;
+
+    top: 100px;
+    left: -120px;
+
+    background:
+        rgba(23, 105, 255, .16);
+
+}
+
+
+.fp-orb-2 {
+
+    width: 220px;
+    height: 220px;
+
+    top: 350px;
+    right: -100px;
+
+    background:
+        rgba(118, 87, 255, .16);
+
+    animation-delay: 1.5s;
+
+}
+
+
+.fp-orb-3 {
+
+    width: 150px;
+    height: 150px;
+
+    bottom: 300px;
+    left: 25%;
+
+    background:
+        rgba(0, 229, 255, .08);
+
+    animation-delay: 3s;
+
+}
+
+
+@keyframes fpFloat {
+
+    0%,
+    100% {
+
+        transform:
+            translate3d(0, 0, 0);
+
+    }
+
+    50% {
+
+        transform:
+            translate3d(0, -25px, 0);
+
+    }
+
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.fp-hero {
+
+    position: relative;
+
+    z-index: 2;
+
+    min-height: 690px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding:
+        85px 0 100px;
+
+}
+
+
+.fp-hero-content {
+
+    position: relative;
+
+    z-index: 4;
+
+}
+
+
+/* =========================================================
+   AI BADGE
+========================================================= */
+
+.fp-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        10px 18px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(9, 25, 48, .85);
+
+    border:
+        1px solid
+        rgba(0, 229, 255, .25);
+
+    box-shadow:
+        0 0 25px
+        rgba(0, 229, 255, .08);
+
+    color:
+        var(--fp-cyan);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: .12em;
+
+    text-transform: uppercase;
+
+}
+
+
+.fp-badge-dot {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background:
+        var(--fp-green);
+
+    box-shadow:
+        0 0 12px
+        var(--fp-green);
+
+}
+
+
+/* =========================================================
+   HERO TITLE
+========================================================= */
+
+.fp-title {
+
+    margin-top: 28px;
+
+    margin-bottom: 22px;
+
+    color:
+        var(--fp-text);
+
+    font-size:
+        clamp(3.2rem, 7vw, 6.5rem);
+
+    line-height: .96;
+
+    font-weight: 850;
+
+    letter-spacing:
+        -.055em;
+
+}
+
+
+.fp-title-gradient {
+
+    display: inline-block;
+
+    background:
+        linear-gradient(
+            110deg,
+            #1769ff,
+            #00e5ff,
+            #7657ff
+        );
+
+    -webkit-background-clip:
+        text;
+
+    background-clip:
+        text;
+
+    color:
+        transparent;
+
+    filter:
+        drop-shadow(
+            0 0 25px
+            rgba(0, 229, 255, .12)
+        );
+
+}
+
+
+/* =========================================================
+   HERO DESCRIPTION
+========================================================= */
+
+.fp-subtitle {
+
+    max-width: 720px;
+
+    margin:
+        0 auto 0;
+
+    color:
+        var(--fp-muted);
+
+    font-size:
+        1.15rem;
+
+    line-height:
+        1.8;
+
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.fp-actions {
+
+    display: flex;
+
+    justify-content:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap: 15px;
+
+    margin-top:
+        34px;
+
+}
+
+
+.fp-btn {
+
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    min-width:
+        170px;
+
+    padding:
+        15px 25px;
+
+    border-radius:
+        13px;
+
+    font-weight:
+        800;
+
+    text-decoration:
+        none;
+
+    transition:
+        .25s ease;
+
+    border:
+        1px solid transparent;
+
+}
+
+
+.fp-btn-primary {
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1769ff,
+            #7657ff
+        );
+
+    box-shadow:
+        0 12px 35px
+        rgba(23, 105, 255, .28);
+
+}
+
+
+.fp-btn-primary:hover {
+
+    color: white;
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 18px 45px
+        rgba(23, 105, 255, .4);
+
+}
+
+
+.fp-btn-secondary {
+
+    color:
+        var(--fp-text);
+
+    background:
+        rgba(255, 255, 255, .045);
+
+    border-color:
+        rgba(255, 255, 255, .12);
+
+    backdrop-filter:
+        blur(12px);
+
+}
+
+
+.fp-btn-secondary:hover {
+
+    color:
+        white;
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(0, 229, 255, .35);
+
+    box-shadow:
+        0 12px 35px
+        rgba(0, 229, 255, .08);
+
+}
+
+
+/* =========================================================
+   3D FINPILOT VISUAL
+========================================================= */
+
+.fp-3d-scene {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 510px;
+
+    height: 490px;
+
+    margin:
+        25px auto 0;
+
+    perspective:
+        1200px;
+
+    transform-style:
+        preserve-3d;
+
+    z-index: 4;
+
+}
+
+
+/* =========================================================
+   GLOW
+========================================================= */
+
+.fp-3d-glow {
+
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(23, 105, 255, .35),
+            rgba(118, 87, 255, .18),
+            transparent 70%
+        );
+
+    filter:
+        blur(25px);
+
+    animation:
+        fpGlowPulse 4s
+        ease-in-out infinite;
+
+}
+
+
+@keyframes fpGlowPulse {
+
+    0%,
+    100% {
+
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+
+        opacity: .65;
+
+    }
+
+    50% {
+
+        transform:
+            translate(-50%, -50%)
+            scale(1.18);
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/* =========================================================
+   CENTRAL ORB
+========================================================= */
+
+.fp-3d-orb {
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    left: 50%;
+    top: 48%;
+
+    transform:
+        translate(-50%, -50%);
+
+    transform-style:
+        preserve-3d;
+
+    animation:
+        fpOrbFloat 5s
+        ease-in-out infinite;
+
+    z-index: 5;
+
+}
+
+
+@keyframes fpOrbFloat {
+
+    0%,
+    100% {
+
+        transform:
+            translate(-50%, -50%)
+            rotateX(0deg)
+            rotateY(0deg);
+
+    }
+
+    50% {
+
+        transform:
+            translate(-50%, -56%)
+            rotateX(8deg)
+            rotateY(18deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   ORB CORE
+========================================================= */
+
+.fp-orb-core {
+
+    position: absolute;
+
+    inset: 25px;
+
+    border-radius:
+        50%;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #546dff,
+            #273879 45%,
+            #070d1c 82%
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.2);
+
+    box-shadow:
+
+        inset
+        -25px -30px 55px
+        rgba(0,0,0,.55),
+
+        inset
+        15px 15px 35px
+        rgba(255,255,255,.15),
+
+        0 25px 80px
+        rgba(23,105,255,.4);
+
+    transform:
+        translateZ(30px);
+
+}
+
+
+.fp-orb-icon {
+
+    font-size:
+        45px;
+
+    animation:
+        fpRocket 2s
+        ease-in-out infinite;
+
+}
+
+
+@keyframes fpRocket {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-7px);
+
+    }
+
+}
+
+
+.fp-orb-text {
+
+    margin-top:
+        6px;
+
+    color:
+        white;
+
+    font-size:
+        22px;
+
+    font-weight:
+        850;
+
+}
+
+
+.fp-orb-status {
+
+    margin-top:
+        8px;
+
+    color:
+        var(--fp-green);
+
+    font-size:
+        9px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .12em;
+
+}
+
+
+/* =========================================================
+   ORBIT RINGS
+========================================================= */
+
+.fp-orb-ring {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 285px;
+    height: 110px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border:
+        1px solid
+        rgba(0, 229, 255, .4);
+
+    border-radius:
+        50%;
+
+    transform-style:
+        preserve-3d;
+
+}
+
+
+.fp-ring-1 {
+
+    transform:
+        translate(-50%, -50%)
+        rotateX(68deg)
+        rotateZ(15deg);
+
+    animation:
+        fpRing1 8s
+        linear infinite;
+
+}
+
+
+.fp-ring-2 {
+
+    transform:
+        translate(-50%, -50%)
+        rotateX(68deg)
+        rotateZ(-55deg);
+
+    animation:
+        fpRing2 10s
+        linear infinite reverse;
+
+}
+
+
+.fp-ring-3 {
+
+    width: 210px;
+    height: 210px;
+
+    transform:
+        translate(-50%, -50%)
+        rotateX(70deg);
+
+    border-color:
+        rgba(143,103,255,.3);
+
+    animation:
+        fpRing3 12s
+        linear infinite;
+
+}
+
+
+@keyframes fpRing1 {
+
+    from {
+
+        transform:
+            translate(-50%, -50%)
+            rotateX(68deg)
+            rotateZ(15deg);
+
+    }
+
+    to {
+
+        transform:
+            translate(-50%, -50%)
+            rotateX(68deg)
+            rotateZ(375deg);
+
+    }
+
+}
+
+
+@keyframes fpRing2 {
+
+    from {
+
+        transform:
+            translate(-50%, -50%)
+            rotateX(68deg)
+            rotateZ(-55deg);
+
+    }
+
+    to {
+
+        transform:
+            translate(-50%, -50%)
+            rotateX(68deg)
+            rotateZ(-415deg);
+
+    }
+
+}
+
+
+@keyframes fpRing3 {
+
+    from {
+
+        transform:
+            translate(-50%, -50%)
+            rotateX(70deg)
+            rotateZ(0deg);
+
+    }
+
+    to {
+
+        transform:
+            translate(-50%, -50%)
+            rotateX(70deg)
+            rotateZ(360deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   FLOATING ICONS
+========================================================= */
+
+.fp-3d-float {
+
+    position: absolute;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    width: 58px;
+    height: 58px;
+
+    border-radius:
+        17px;
+
+    background:
+        rgba(13, 28, 52, .92);
+
+    border:
+        1px solid
+        rgba(0,229,255,.18);
+
+    box-shadow:
+        0 18px 40px
+        rgba(0,0,0,.3);
+
+    backdrop-filter:
+        blur(14px);
+
+    font-size:
+        25px;
+
+    z-index:
+        7;
+
+}
+
+
+.fp-money-1 {
+
+    left: 3%;
+    top: 21%;
+
+    animation:
+        fpMoney1 4s
+        ease-in-out infinite;
+
+}
+
+
+.fp-money-2 {
+
+    right: 3%;
+    top: 16%;
+
+    animation:
+        fpMoney2 5s
+        ease-in-out infinite;
+
+}
+
+
+.fp-money-3 {
+
+    right: 12%;
+    bottom: 10%;
+
+    animation:
+        fpMoney3 4.5s
+        ease-in-out infinite;
+
+}
+
+
+@keyframes fpMoney1 {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0)
+            rotate(-8deg);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-18px)
+            rotate(8deg);
+
+    }
+
+}
+
+
+@keyframes fpMoney2 {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0)
+            rotate(8deg);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-22px)
+            rotate(-8deg);
+
+    }
+
+}
+
+
+@keyframes fpMoney3 {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0)
+            rotate(-5deg);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-15px)
+            rotate(5deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   DATA CARDS
+========================================================= */
+
+.fp-3d-data {
+
+    position: absolute;
+
+    min-width:
+        165px;
+
+    padding:
+        15px 17px;
+
+    border-radius:
+        15px;
+
+    background:
+        rgba(10, 25, 46, .9);
+
+    border:
+        1px solid
+        rgba(0,229,255,.18);
+
+    box-shadow:
+        0 18px 45px
+        rgba(0,0,0,.3);
+
+    backdrop-filter:
+        blur(16px);
+
+    z-index:
+        8;
+
+}
+
+
+.fp-3d-data small {
+
+    display:
+        block;
+
+    color:
+        #8fa3bf;
+
+    font-size:
+        9px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.fp-3d-data strong {
+
+    display:
+        block;
+
+    margin-top:
+        5px;
+
+    color:
+        white;
+
+    font-size:
+        18px;
+
+}
+
+
+.fp-3d-data span {
+
+    display:
+        block;
+
+    margin-top:
+        4px;
+
+    color:
+        var(--fp-green);
+
+    font-size:
+        10px;
+
+    font-weight:
+        700;
+
+}
+
+
+.fp-data-income {
+
+    left: -5px;
+    top: 53%;
+
+    animation:
+        fpData1 5s
+        ease-in-out infinite;
+
+}
+
+
+.fp-data-saving {
+
+    right: -5px;
+    top: 52%;
+
+    animation:
+        fpData2 5.5s
+        ease-in-out infinite;
+
+}
+
+
+.fp-data-ai {
+
+    left: 50%;
+    bottom: 0;
+
+    transform:
+        translateX(-50%);
+
+    animation:
+        fpData3 5s
+        ease-in-out infinite;
+
+}
+
+
+@keyframes fpData1 {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0)
+            rotate(-2deg);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-10px)
+            rotate(1deg);
+
+    }
+
+}
+
+
+@keyframes fpData2 {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0)
+            rotate(2deg);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-12px)
+            rotate(-1deg);
+
+    }
+
+}
+
+
+@keyframes fpData3 {
+
+    0%,
+    100% {
+
+        transform:
+            translateX(-50%)
+            translateY(0);
+
+    }
+
+    50% {
+
+        transform:
+            translateX(-50%)
+            translateY(-9px);
+
+    }
+
+}
+
+
+/* =========================================================
+   SHARED SECTION
+========================================================= */
+
+.fp-section {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    padding:
+        100px 0;
+
+}
+
+
+.fp-section-label {
+
+    color:
+        var(--fp-cyan);
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .13em;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+.fp-section-title {
+
+    margin-top:
+        10px;
+
+    color:
+        white;
+
+    font-size:
+        clamp(2rem, 4vw, 3.2rem);
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        -.035em;
+
+}
+
+
+.fp-section-subtitle {
+
+    max-width:
+        650px;
+
+    margin:
+        14px auto 0;
+
+    color:
+        var(--fp-muted);
+
+    line-height:
+        1.8;
+
+}
+
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
+.fp-features {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    padding:
+        90px 0 100px;
+
+}
+
+
+.fp-feature-card {
+
+    height:
+        100%;
+
+    padding:
+        30px;
+
+    border-radius:
+        22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(14,29,53,.94),
+            rgba(8,18,35,.94)
+        );
+
+    border:
+        1px solid
+        rgba(0,229,255,.12);
+
+    box-shadow:
+        0 18px 50px
+        rgba(0,0,0,.2);
+
+    transition:
+        .3s ease;
+
+}
+
+
+.fp-feature-card:hover {
+
+    transform:
+        translateY(-8px);
+
+    border-color:
+        rgba(0,229,255,.32);
+
+    box-shadow:
+        0 25px 60px
+        rgba(0,0,0,.35),
+
+        0 0 30px
+        rgba(0,229,255,.05);
+
+}
+
+
+.fp-feature-icon {
+
+    width:
+        58px;
+
+    height:
+        58px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin-bottom:
+        22px;
+
+    border-radius:
+        17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(23,105,255,.2),
+            rgba(118,87,255,.18)
+        );
+
+    border:
+        1px solid
+        rgba(0,229,255,.14);
+
+    font-size:
+        28px;
+
+}
+
+
+.fp-feature-card h3 {
+
+    margin-bottom:
+        12px;
+
+    color:
+        white;
+
+    font-size:
+        1.3rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.fp-feature-card p {
+
+    margin:
+        0;
+
+    color:
+        var(--fp-muted);
+
+    line-height:
+        1.7;
+
+}
+
+
+/* =========================================================
+   QUICK STATS
+========================================================= */
+
+.fp-stats {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    padding:
+        20px 0 90px;
+
+}
+
+
+.fp-stat {
+
+    padding:
+        25px;
+
+    text-align:
+        center;
+
+    border-radius:
+        18px;
+
+}
+
+
+.fp-stat-number {
+
+    color:
+        var(--fp-cyan);
+
+    font-size:
+        2rem;
+
+    font-weight:
+        850;
+
+    filter:
+        drop-shadow(
+            0 0 10px
+            rgba(0,229,255,.15)
+        );
+
+}
+
+
+.fp-stat-label {
+
+    margin-top:
+        6px;
+
+    color:
+        var(--fp-muted);
+
+    font-size:
+        .9rem;
+
+}
+
+
+/* =========================================================
+   ABOUT SECTION
+========================================================= */
+
+.fp-about {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    padding:
+        110px 0;
+
+}
+
+
+.fp-about-wrapper {
+
+    position:
+        relative;
+
+    padding:
+        55px;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(13,29,53,.96),
+            rgba(10,18,38,.96)
+        );
+
+    border:
+        1px solid
+        rgba(0,229,255,.15);
+
+    box-shadow:
+        0 30px 80px
+        rgba(0,0,0,.28);
+
+}
+
+
+.fp-about-wrapper::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        300px;
+
+    height:
+        300px;
+
+    right:
+        -120px;
+
+    top:
+        -150px;
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(118,87,255,.18),
+            transparent 70%
+        );
+
+    pointer-events:
+        none;
+
+}
+
+
+.fp-about-card {
+
+    position:
+        relative;
+
+    height:
+        100%;
+
+    padding:
+        30px;
+
+    border-radius:
+        22px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    transition:
+        .3s ease;
+
+}
+
+
+.fp-about-card:hover {
+
+    transform:
+        translateY(-6px);
+
+    border-color:
+        rgba(0,229,255,.2);
+
+    background:
+        rgba(0,229,255,.035);
+
+}
+
+
+.fp-about-icon {
+
+    width:
+        60px;
+
+    height:
+        60px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    margin-bottom:
+        20px;
+
+    border-radius:
+        18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(23,105,255,.2),
+            rgba(118,87,255,.2)
+        );
+
+    border:
+        1px solid
+        rgba(0,229,255,.15);
+
+    font-size:
+        28px;
+
+}
+
+
+.fp-about-card h3 {
+
+    margin-bottom:
+        12px;
+
+    color:
+        #ffffff;
+
+    font-size:
+        1.2rem;
+
+    font-weight:
+        800;
+
+}
+
+
+.fp-about-card p {
+
+    margin:
+        0;
+
+    color:
+        var(--fp-muted);
+
+    line-height:
+        1.75;
+
+}
+
+
+.fp-about-highlight {
+
+    margin-top:
+        25px;
+
+    padding:
+        20px;
+
+    border-left:
+        3px solid
+        var(--fp-cyan);
+
+    border-radius:
+        0 14px 14px 0;
+
+    background:
+        rgba(0,229,255,.035);
+
+    color:
+        #c7d7ea;
+
+    line-height:
+        1.75;
+
+}
+
+
+/* =========================================================
+   CONTACT SECTION
+========================================================= */
+
+.fp-contact {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    padding:
+        30px 0 100px;
+
+}
+
+
+.fp-contact-wrapper {
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
+
+    padding:
+        65px 45px;
+
+    border-radius:
+        30px;
+
+    text-align:
+        center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0c1c38,
+            #171d4b,
+            #211b52
+        );
+
+    border:
+        1px solid
+        rgba(0,229,255,.18);
+
+    box-shadow:
+        0 30px 90px
+        rgba(0,0,0,.3);
+
+}
+
+
+.fp-contact-wrapper::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        350px;
+
+    height:
+        350px;
+
+    left:
+        -160px;
+
+    bottom:
+        -190px;
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(23,105,255,.2),
+            transparent 70%
+        );
+
+}
+
+
+.fp-contact-wrapper::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        300px;
+
+    height:
+        300px;
+
+    right:
+        -120px;
+
+    top:
+        -160px;
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(118,87,255,.18),
+            transparent 70%
+        );
+
+}
+
+
+.fp-contact-content {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+}
+
+
+.fp-contact-title {
+
+    margin:
+        12px 0 15px;
+
+    color:
+        #ffffff;
+
+    font-size:
+        clamp(2rem, 4vw, 3.4rem);
+
+    font-weight:
+        850;
+
+    letter-spacing:
+        -.04em;
+
+}
+
+
+.fp-contact-title span {
+
+    background:
+        linear-gradient(
+            90deg,
+            #00e5ff,
+            #1769ff,
+            #7657ff
+        );
+
+    -webkit-background-clip:
+        text;
+
+    background-clip:
+        text;
+
+    color:
+        transparent;
+
+}
+
+
+.fp-contact-description {
+
+    max-width:
+        650px;
+
+    margin:
+        0 auto;
+
+    color:
+        rgba(255,255,255,.68);
+
+    line-height:
+        1.8;
+
+}
+
+
+.fp-contact-links {
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        14px;
+
+    margin-top:
+        30px;
+
+}
+
+
+.fp-contact-link {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    padding:
+        13px 20px;
+
+    border-radius:
+        13px;
+
+    color:
+        #dcecff;
+
+    text-decoration:
+        none;
+
+    background:
+        rgba(255,255,255,.05);
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    font-weight:
+        750;
+
+    transition:
+        .25s ease;
+
+}
+
+
+.fp-contact-link:hover {
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-4px);
+
+    background:
+        rgba(0,229,255,.08);
+
+    border-color:
+        rgba(0,229,255,.35);
+
+    box-shadow:
+        0 12px 35px
+        rgba(0,229,255,.08);
+
+}
+
+
+.fp-contact-note {
+
+    margin-top:
+        25px;
+
+    color:
+        #7187a5;
+
+    font-size:
+        .82rem;
+
+}
+
+
+/* =========================================================
+   FINAL CTA
+========================================================= */
+
+.fp-cta {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    margin-bottom:
+        80px;
+
+    padding:
+        70px 30px;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d1b34,
+            #171b4b,
+            #24205d
+        );
+
+    border:
+        1px solid
+        rgba(0,229,255,.18);
+
+    color:
+        white;
+
+    box-shadow:
+        0 30px 80px
+        rgba(0,0,0,.3);
+
+}
+
+
+.fp-cta::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        280px;
+
+    height:
+        280px;
+
+    right:
+        -120px;
+
+    top:
+        -150px;
+
+    border-radius:
+        50%;
+
+    border:
+        1px solid
+        rgba(0,229,255,.15);
+
+}
+
+
+.fp-cta h2 {
+
+    position:
+        relative;
+
+    z-index:
+        1;
+
+    font-size:
+        clamp(2rem, 4vw, 3rem);
+
+    font-weight:
+        850;
+
+}
+
+
+.fp-cta p {
+
+    position:
+        relative;
+
+    z-index:
+        1;
+
+    max-width:
+        600px;
+
+    margin:
+        15px auto 28px;
+
+    color:
+        rgba(255,255,255,.68);
+
+}
+
+
+.fp-cta .fp-btn-primary {
+
+    background:
+        linear-gradient(
+            135deg,
+            #00cfff,
+            #1769ff
+        );
+
+    color:
+        white;
+
+}
+
+
+.fp-cta .fp-btn-primary:hover {
+
+    color:
+        white;
+
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes fpFadeUp {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(25px);
+
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+.fp-hero-content,
+.fp-3d-scene,
+.fp-feature-card,
+.fp-about-wrapper,
+.fp-contact-wrapper,
+.fp-cta {
+
+    animation:
+        fpFadeUp .8s ease both;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .fp-hero {
+
+        padding:
+            70px 0 80px;
+
+    }
+
+
+    .fp-hero-content {
+
+        text-align:
+            center;
+
+    }
+
+
+    .fp-subtitle {
+
+        margin-left:
+            auto;
+
+        margin-right:
+            auto;
+
+    }
+
+
+    .fp-3d-scene {
+
+        margin-top:
+            55px;
+
+    }
+
+
+    .fp-about-wrapper {
+
+        padding:
+            35px;
+
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .fp-hero {
+
+        min-height:
+            auto;
+
+        padding:
+            55px 0 70px;
+
+    }
+
+
+    .fp-title {
+
+        font-size:
+            3.1rem;
+
+    }
+
+
+    .fp-subtitle {
+
+        font-size:
+            1rem;
+
+    }
+
+
+    .fp-3d-scene {
+
+        height:
+            400px;
+
+        transform:
+            scale(.82);
+
+        transform-origin:
+            center top;
+
+    }
+
+
+    .fp-3d-data {
+
+        min-width:
+            130px;
+
+        padding:
+            11px;
+
+    }
+
+
+    .fp-data-income {
+
+        left:
+            -20px;
+
+    }
+
+
+    .fp-data-saving {
+
+        right:
+            -20px;
+
+    }
+
+
+    .fp-money-1 {
+
+        left:
+            0;
+
+    }
+
+
+    .fp-money-2 {
+
+        right:
+            0;
+
+    }
+
+
+    .fp-feature-card {
+
+        padding:
+            25px;
+
+    }
+
+
+    .fp-actions {
+
+        flex-direction:
+            column;
+
+        align-items:
+            center;
+
+    }
+
+
+    .fp-btn {
+
+        width:
+            100%;
+
+        max-width:
+            280px;
+
+    }
+
+
+    .fp-section {
+
+        padding:
+            75px 0;
+
+    }
+
+
+    .fp-about {
+
+        padding:
+            70px 0;
+
+    }
+
+
+    .fp-about-wrapper {
+
+        padding:
+            25px;
+
+        border-radius:
+            22px;
+
+    }
+
+
+    .fp-contact {
+
+        padding:
+            10px 0 70px;
+
+    }
+
+
+    .fp-contact-wrapper {
+
+        padding:
+            45px 22px;
+
+        border-radius:
+            22px;
+
+    }
+
+
+    .fp-contact-links {
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .fp-contact-link {
+
+        width:
+            100%;
+
+        max-width:
+            260px;
+
+        justify-content:
+            center;
+
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .fp-home *,
+    .fp-home *::before,
+    .fp-home *::after {
+
+        animation:
+            none !important;
+
+        transition:
+            none !important;
+
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     FINPILOT HOME
+========================================================= -->
+
+<div class="fp-home">
+
+
+    <!-- BACKGROUND -->
+
+    <div class="fp-orb fp-orb-1"></div>
+
+    <div class="fp-orb fp-orb-2"></div>
+
+    <div class="fp-orb fp-orb-3"></div>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="fp-hero">
+
+        <div class="container">
+
+            <div class="row align-items-center">
+
+
+                <!-- HERO CONTENT -->
+
+                <div class="col-lg-7 text-center text-lg-start">
+
+                    <div class="fp-hero-content">
+
+
+                        <div class="fp-badge">
+
+                            <span class="fp-badge-dot"></span>
+
+                            AI-powered money management
+
+                        </div>
+
+
+                        <h1 class="fp-title">
+
+                            Track Smart.
+                            <br>
+
+                            Save Smart.
+                            <br>
+
+                            <span class="fp-title-gradient">
+                                Grow Smart.
+                            </span>
+
+                        </h1>
+
+
+                        <p class="fp-subtitle">
+
+                            FinPilot AI helps you understand your
+                            spending, control your budget, build
+                            savings, and make smarter everyday money
+                            decisions.
+
+                        </p>
+
+
+                        <div class="fp-actions">
+
+                            <a
+                                href="{{ url_for('dashboard.dashboard_home') }}"
+                                class="fp-btn fp-btn-primary"
+                            >
+
+                                🚀 Get Started
+
+                            </a>
+
+
+                            <a
+                                href="#features"
+                                class="fp-btn fp-btn-secondary"
+                            >
+
+                                ✨ Explore Features
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FINPILOT AI VISUAL -->
+
+                <div class="col-lg-5">
+
+                    <div class="fp-3d-scene">
+
+
+                        <div class="fp-3d-glow"></div>
+
+
+                        <div class="fp-3d-orb">
+
+
+                            <div class="fp-orb-ring fp-ring-1"></div>
+
+                            <div class="fp-orb-ring fp-ring-2"></div>
+
+                            <div class="fp-orb-ring fp-ring-3"></div>
+
+
+                            <div class="fp-orb-core">
+
+                                <div class="fp-orb-icon">
+                                    🚀
+                                </div>
+
+                                <div class="fp-orb-text">
+                                    FinPilot
+                                </div>
+
+                                <div class="fp-orb-status">
+
+                                    {% if current_user.is_authenticated %}
+                                        ● AI ACTIVE
+                                    {% else %}
+                                        ● AI READY
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="fp-3d-float fp-money-1">
+                            💰
+                        </div>
+
+                        <div class="fp-3d-float fp-money-2">
+                            💵
+                        </div>
+
+                        <div class="fp-3d-float fp-money-3">
+                            🪙
+                        </div>
+
+
+                        <div class="fp-3d-data fp-data-income">
+
+                            <small>
+                                MONTHLY INCOME
+                            </small>
+
+                            <strong>
+
+                                ₹{{ '{:,.2f}'.format(
+                                    monthly_income|default(0, true)|float
+                                ) }}
+
+                            </strong>
+
+                            <span>
+
+                                {% if savings_rate|default(0, true)|float > 0 %}
+                                    ↗ Building savings
+                                {% else %}
+                                    → Start tracking
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="fp-3d-data fp-data-saving">
+
+                            <small>
+                                SAVINGS RATE
+                            </small>
+
+                            <strong>
+
+                                {{ '{:.1f}'.format(
+                                    savings_rate|default(0, true)|float
+                                ) }}%
+
+                            </strong>
+
+                            <span>
+
+                                {% if savings_rate|default(0, true)|float >= 30 %}
+
+                                    ✨ Excellent
+
+                                {% elif savings_rate|default(0, true)|float >= 20 %}
+
+                                    ↗ Good progress
+
+                                {% elif savings_rate|default(0, true)|float > 0 %}
+
+                                    💡 Keep growing
+
+                                {% else %}
+
+                                    → Add income
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="fp-3d-data fp-data-ai">
+
+                            <small>
+                                FINPILOT AI
+                            </small>
+
+                            <strong>
+                                Smart Analysis
+                            </strong>
+
+                            <span>
+                                ● AI Ready
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FEATURES
+    ====================================================== -->
+
+    <section
+        id="features"
+        class="fp-features"
+    >
+
+        <div class="container">
+
+
+            <div class="text-center mb-5">
+
+                <div class="fp-section-label">
+                    YOUR MONEY COMMAND CENTER
+                </div>
+
+
+                <h2 class="fp-section-title">
+
+                    Everything you need.
+                    <br>
+
+                    One intelligent platform.
+
+                </h2>
+
+
+                <p class="fp-section-subtitle">
+
+                    Track, understand and improve your finances
+                    with one simple AI-powered platform.
+
+                </p>
+
+            </div>
+
+
+            <div class="row g-4">
+
+
+                <div class="col-md-4">
+
+                    <div class="fp-feature-card">
+
+                        <div class="fp-feature-icon">
+                            💰
+                        </div>
+
+                        <h3>
+                            Expense Tracking
+                        </h3>
+
+                        <p>
+                            Record your daily expenses and
+                            understand exactly where your money
+                            is going.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="fp-feature-card">
+
+                        <div class="fp-feature-icon">
+                            📊
+                        </div>
+
+                        <h3>
+                            Smart Analytics
+                        </h3>
+
+                        <p>
+                            Visualize your income, spending,
+                            savings, categories and financial
+                            progress.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="fp-feature-card">
+
+                        <div class="fp-feature-icon">
+                            🤖
+                        </div>
+
+                        <h3>
+                            AI Money Coach
+                        </h3>
+
+                        <p>
+                            Get practical financial guidance
+                            based on your current money situation.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="fp-feature-card">
+
+                        <div class="fp-feature-icon">
+                            🎯
+                        </div>
+
+                        <h3>
+                            Budget Control
+                        </h3>
+
+                        <p>
+                            Set your monthly spending limit and
+                            monitor how much budget you have left.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="fp-feature-card">
+
+                        <div class="fp-feature-icon">
+                            🏆
+                        </div>
+
+                        <h3>
+                            Savings Goals
+                        </h3>
+
+                        <p>
+                            Create savings goals and track your
+                            progress toward the things you want.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="fp-feature-card">
+
+                        <div class="fp-feature-icon">
+                            🔔
+                        </div>
+
+                        <h3>
+                            Smart Alerts
+                        </h3>
+
+                        <p>
+                            Get useful warnings when your budget
+                            gets tight or spending needs attention.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         QUICK STATS
+    ====================================================== -->
+
+    <section class="fp-stats">
+
+        <div class="container">
+
+            <div class="row g-3">
+
+
+                <div class="col-6 col-md-3">
+
+                    <div class="fp-stat">
+
+                        <div class="fp-stat-number">
+                            💰
+                        </div>
+
+                        <div class="fp-stat-label">
+                            Track Expenses
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-3">
+
+                    <div class="fp-stat">
+
+                        <div class="fp-stat-number">
+                            📊
+                        </div>
+
+                        <div class="fp-stat-label">
+                            Analyze Spending
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-3">
+
+                    <div class="fp-stat">
+
+                        <div class="fp-stat-number">
+                            🎯
+                        </div>
+
+                        <div class="fp-stat-label">
+                            Reach Goals
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-3">
+
+                    <div class="fp-stat">
+
+                        <div class="fp-stat-number">
+                            🤖
+                        </div>
+
+                        <div class="fp-stat-label">
+                            AI Guidance
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ABOUT FINPILOT
+    ====================================================== -->
+
+    <section
+        id="about"
+        class="fp-about fp-section"
+    >
+
+        <div class="container">
+
+            <div class="fp-about-wrapper">
+
+                <div class="text-center mb-5">
+
+                    <div class="fp-section-label">
+                        ABOUT FINPILOT AI
+                    </div>
+
+
+                    <h2 class="fp-section-title">
+
+                        Your personal
+                        <br>
+
+                        <span class="fp-title-gradient">
+                            financial command center.
+                        </span>
+
+                    </h2>
+
+
+                    <p class="fp-section-subtitle">
+
+                        FinPilot AI brings your everyday financial
+                        activity into one simple, intelligent
+                        experience.
+
+                    </p>
+
+                </div>
+
+
+                <div class="row g-4">
+
+
+                    <div class="col-md-4">
+
+                        <div class="fp-about-card">
+
+                            <div class="fp-about-icon">
+                                🧠
+                            </div>
+
+                            <h3>
+                                Understand Your Money
+                            </h3>
+
+                            <p>
+                                FinPilot helps turn your income,
+                                expenses, budgets and savings
+                                activity into information that is
+                                easier to understand.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="fp-about-card">
+
+                            <div class="fp-about-icon">
+                                🎯
+                            </div>
+
+                            <h3>
+                                Make Better Decisions
+                            </h3>
+
+                            <p>
+                                Use your financial activity to
+                                identify spending patterns,
+                                monitor your budget and work toward
+                                meaningful savings goals.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="fp-about-card">
+
+                            <div class="fp-about-icon">
+                                🤖
+                            </div>
+
+                            <h3>
+                                Get AI Assistance
+                            </h3>
+
+                            <p>
+                                Ask FinPilot questions about your
+                                finances and receive practical
+                                guidance based on the information
+                                available in your account.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="fp-about-highlight">
+
+                    <strong>
+                        💡 FinPilot philosophy:
+                    </strong>
+
+                    Your finances should feel understandable,
+                    manageable and actionable — not complicated.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CONTACT / CONNECT
+    ====================================================== -->
+
+    <section
+        id="contact"
+        class="fp-contact"
+    >
+
+        <div class="container">
+
+            <div class="fp-contact-wrapper">
+
+                <div class="fp-contact-content">
+
+                    <div class="fp-section-label">
+                        CONNECT WITH FINPILOT
+                    </div>
+
+
+                    <h2 class="fp-contact-title">
+
+                        Let's build a
+                        <span>smarter financial future.</span>
+
+                    </h2>
+
+
+                    <p class="fp-contact-description">
+
+                        Have feedback, ideas, or want to follow
+                        the development of FinPilot AI?
+                        Connect through the links below.
+
+                    </p>
+
+
+                    <div class="fp-contact-links">
+
+
+                        <a
+                            href="https://github.com/shabareeshmshabareesh-svg"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="fp-contact-link"
+                        >
+
+                            🐙
+
+                            GitHub
+
+                        </a>
+
+
+                        <a
+                            href="https://www.linkedin.com/in/shabareesh-m-62ba1733b"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="fp-contact-link"
+                        >
+
+                            💼
+
+                            LinkedIn
+
+                        </a>
+
+
+                        <a
+                            href="{{ url_for('dashboard.dashboard_home') }}"
+                            class="fp-contact-link"
+                        >
+
+                            🚀
+
+                            Open Dashboard
+
+                        </a>
+
+                    </div>
+
+
+                    <p class="fp-contact-note">
+
+                        FinPilot AI · Track Smart · Save Smart · Grow Smart
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FINAL CTA
+    ====================================================== -->
+
+    <section class="container">
+
+        <div class="fp-cta text-center">
+
+            <h2>
+                Ready to take control of your money?
+            </h2>
+
+            <p>
+                Start tracking your finances and let FinPilot AI
+                help you build better money habits.
+            </p>
+
+
+            <a
+                href="{{ url_for('dashboard.dashboard_home') }}"
+                class="fp-btn fp-btn-primary"
+            >
+
+                🚀 Open FinPilot Dashboard
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+{% endblock %}

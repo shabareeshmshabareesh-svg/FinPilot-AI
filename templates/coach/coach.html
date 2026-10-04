@@ -1,0 +1,2870 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | Money Coach
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid px-3 px-md-4">
+
+    <!-- =========================================
+         HEADER
+         ========================================= -->
+
+    <div class="text-center mb-4">
+
+        <div class="coach-logo">
+            🤖
+        </div>
+
+        <div class="text-primary fw-bold small">
+            FINPILOT AI · MONEY COACH
+        </div>
+
+        <h1 class="fw-bold mt-1">
+            Your Personal Money Coach
+        </h1>
+
+        <p class="text-muted">
+            Ask questions based on your actual finances.
+        </p>
+
+    </div>
+
+
+    <!-- =========================================
+         MAIN CHAT PANEL
+         ========================================= -->
+
+    <div class="dashboard-panel finpilot-chat-panel">
+
+        <!-- =====================================
+             CHAT HEADER
+             ===================================== -->
+
+        <div class="finpilot-chat-header">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="finpilot-ai-avatar">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h4 class="mb-0 fw-bold">
+                        FinPilot AI
+                    </h4>
+
+                    <small class="text-success">
+                        ● Online · Financial Coach
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 CLEAR CHAT
+                 ================================= -->
+
+            {% if chat_history %}
+
+            <form
+                method="POST"
+                action="{{ url_for('coach.clear_chat_history') }}"
+                onsubmit="
+                    return confirm(
+                        'Are you sure you want to clear your chat history?'
+                    );
+                "
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-outline-danger btn-sm"
+                >
+                    🗑️ Clear
+                </button>
+
+            </form>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =====================================
+             CHAT MESSAGES
+             ===================================== -->
+
+        <div
+            class="finpilot-chat-messages"
+            id="finpilotChatMessages"
+        >
+
+            <!-- =================================
+                 WELCOME MESSAGE
+                 ================================= -->
+
+            {% if not chat_history %}
+
+            <div class="ai-message">
+
+                <div class="chat-message-avatar ai-avatar">
+                    🤖
+                </div>
+
+                <div class="chat-message-body">
+
+                    <div class="chat-message-name">
+                        FinPilot AI
+                    </div>
+
+                    <div class="ai-bubble">
+
+                        <h5 class="fw-bold">
+                            Hey! 👋 I'm FinPilot.
+                        </h5>
+
+                        <p class="mb-2">
+                            I'm your personal money coach.
+                            Ask me about your budget, spending,
+                            savings, goals, or a purchase you're
+                            thinking about.
+                        </p>
+
+                        <p class="mb-0 text-muted small">
+                            I'll use your current financial
+                            information to give you practical
+                            guidance.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- =================================
+                 SAVED CHAT HISTORY
+                 ================================= -->
+
+            {% for chat in chat_history %}
+
+            <!-- USER MESSAGE -->
+
+            <div class="user-message">
+
+                <div class="chat-message-body">
+
+                    <div class="chat-message-name text-end">
+                        You
+                    </div>
+
+                    <div class="user-bubble">
+                        {{ chat.question }}
+                    </div>
+
+                    {% if chat.created_at %}
+
+                    <div class="chat-message-time text-end">
+
+                        {{ chat.created_at.strftime(
+                            "%d %b · %I:%M %p"
+                        ) }}
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="chat-message-avatar user-avatar">
+                    👤
+                </div>
+
+            </div>
+
+
+            <!-- AI MESSAGE -->
+
+            <div class="ai-message">
+
+                <div class="chat-message-avatar ai-avatar">
+                    🤖
+                </div>
+
+                <div class="chat-message-body">
+
+                    <div class="chat-message-name">
+                        FinPilot AI
+                    </div>
+
+                    <div
+                        class="ai-bubble chat-ai-text"
+                        data-chat-response
+                        data-message-id="{{ chat.id }}"
+                        data-feedback="{{ chat.feedback or '' }}"
+                    >
+                        {{ chat.response }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+
+            <!-- =================================
+                 CURRENT RESPONSE
+                 ================================= -->
+
+            {% if coach_response %}
+
+            <div class="user-message">
+
+                <div class="chat-message-body">
+
+                    <div class="chat-message-name text-end">
+                        You
+                    </div>
+
+                    <div class="user-bubble">
+                        {{ question }}
+                    </div>
+
+                </div>
+
+                <div class="chat-message-avatar user-avatar">
+                    👤
+                </div>
+
+            </div>
+
+
+            <div class="ai-message">
+
+                <div class="chat-message-avatar ai-avatar">
+                    🤖
+                </div>
+
+                <div class="chat-message-body">
+
+                    <div class="chat-message-name">
+                        FinPilot AI
+                    </div>
+
+                    <div
+                        id="currentAIResponse"
+                        class="ai-bubble chat-ai-text"
+                        data-chat-response
+                        data-message-id="{{ coach_message_id or '' }}"
+                        data-feedback="{{ coach_message_feedback or '' }}"
+                    >
+
+                        {% if coach_response.message %}
+
+                            {{ coach_response.message }}
+
+                        {% else %}
+
+                            {{ coach_response }}
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- =================================
+                 AJAX MESSAGES WILL BE ADDED HERE
+                 ================================= -->
+
+            <div id="ajaxMessages"></div>
+
+        </div>
+
+
+        <!-- =====================================
+             QUICK QUESTIONS
+             ===================================== -->
+
+        <div class="quick-question-area">
+
+            <div class="small text-muted mb-2">
+                Quick questions
+            </div>
+
+            <div class="quick-question-list">
+
+                <button
+                    type="button"
+                    onclick="setQuestion(
+                        'How much can I spend today?'
+                    )"
+                    class="quick-question-btn"
+                >
+                    🛡️ Daily limit
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="setQuestion(
+                        'How much budget do I have left?'
+                    )"
+                    class="quick-question-btn"
+                >
+                    🎯 Budget
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="setQuestion(
+                        'How much am I saving this month?'
+                    )"
+                    class="quick-question-btn"
+                >
+                    💰 Savings
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="setQuestion(
+                        'Can I afford ₹1500 headphones?'
+                    )"
+                    class="quick-question-btn"
+                >
+                    🎧 Purchase
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="setQuestion(
+                        'How is my savings goal doing?'
+                    )"
+                    class="quick-question-btn"
+                >
+                    🏆 Goal
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             CHAT INPUT
+             ===================================== -->
+
+        <div class="finpilot-input-area">
+
+            <form
+                method="POST"
+                action="{{ url_for('coach.money_coach') }}"
+                id="coachForm"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <div class="finpilot-input-wrapper">
+
+                    <input
+                        type="text"
+                        name="question"
+                        id="questionInput"
+                        class="finpilot-input"
+                        placeholder="Ask FinPilot anything..."
+                        autocomplete="off"
+                        required
+                    >
+
+
+                    <button
+                        type="submit"
+                        class="finpilot-send-btn"
+                        id="sendButton"
+                    >
+                        ➤
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <div class="text-center mt-2">
+
+                <small class="text-muted">
+                    FinPilot AI can make mistakes.
+                    Check important financial decisions.
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         FINANCIAL SNAPSHOT
+         ========================================= -->
+
+    <div class="row g-3 mt-4">
+
+
+        <!-- INCOME -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="finance-card h-100">
+
+                <div class="finance-card-icon green">
+                    💰
+                </div>
+
+                <p class="mb-1">
+                    Income
+                </p>
+
+                <h3 class="fw-bold">
+                    ₹{{ "%.2f"|format(monthly_income) }}
+                </h3>
+
+                <span>
+                    This month
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- SPENDING -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="finance-card h-100">
+
+                <div class="finance-card-icon orange">
+                    💸
+                </div>
+
+                <p class="mb-1">
+                    Spending
+                </p>
+
+                <h3 class="fw-bold">
+                    ₹{{ "%.2f"|format(monthly_spending) }}
+                </h3>
+
+                <span>
+                    This month
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- SAVINGS -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="finance-card h-100">
+
+                <div class="finance-card-icon purple">
+                    💵
+                </div>
+
+                <p class="mb-1">
+                    Savings
+                </p>
+
+                <h3 class="fw-bold">
+                    ₹{{ "%.2f"|format(monthly_savings) }}
+                </h3>
+
+                <span>
+                    Income − spending
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- SAFE TODAY -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="finance-card h-100">
+
+                <div class="finance-card-icon blue">
+                    🛡️
+                </div>
+
+                <p class="mb-1">
+                    Safe Today
+                </p>
+
+                <h3 class="fw-bold">
+                    ₹{{ "%.2f"|format(safe_daily_spending) }}
+                </h3>
+
+                <span>
+                    Recommended daily limit
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         STEP 17C · FINANCIAL INSIGHTS
+         ========================================= -->
+
+    <div class="dashboard-panel mt-4 financial-insights-panel">
+
+        <div class="panel-header">
+            <div>
+                <h3 class="fw-bold mb-1">
+                    📊 Financial Insights
+                </h3>
+
+                <p class="text-muted mb-0">
+                    A quick health check based on your current finances.
+                </p>
+            </div>
+
+            {% if financial_insights %}
+                {% set health_label =
+                    financial_insights.get("health_label", "Not available")
+                %}
+
+                <span
+                    class="financial-health-badge
+                    {% if 'excellent' in health_label|lower or 'good' in health_label|lower %}
+                        financial-health-good
+                    {% elif 'warning' in health_label|lower or 'caution' in health_label|lower %}
+                        financial-health-warning
+                    {% elif 'danger' in health_label|lower or 'risk' in health_label|lower or 'poor' in health_label|lower %}
+                        financial-health-danger
+                    {% else %}
+                        financial-health-neutral
+                    {% endif %}"
+                >
+                    {{ health_label }}
+                </span>
+            {% endif %}
+        </div>
+
+
+        {% if financial_insights %}
+
+        <div class="row g-3 mt-2">
+
+            <!-- BUDGET USAGE -->
+            <div class="col-md-6 col-lg-3">
+                <div class="insight-card h-100">
+
+                    <div class="insight-icon insight-blue">
+                        🎯
+                    </div>
+
+                    <div class="insight-card-label">
+                        Budget Used
+                    </div>
+
+                    <div class="insight-card-value">
+                        {{ "%.1f"|format(
+                            financial_insights.get(
+                                "budget_usage_percent",
+                                0
+                            )|float
+                        ) }}%
+                    </div>
+
+                    <div class="insight-progress">
+                        <div
+                            class="insight-progress-bar"
+                            style="width: {{
+                                [
+                                    financial_insights.get(
+                                        'budget_usage_percent',
+                                        0
+                                    )|float,
+                                    100
+                                ]|min
+                            }}%;"
+                        ></div>
+                    </div>
+
+                    <small class="text-muted">
+                        Monthly budget utilization
+                    </small>
+
+                </div>
+            </div>
+
+
+            <!-- SAVINGS RATE -->
+            <div class="col-md-6 col-lg-3">
+                <div class="insight-card h-100">
+
+                    <div class="insight-icon insight-green">
+                        💰
+                    </div>
+
+                    <div class="insight-card-label">
+                        Savings Rate
+                    </div>
+
+                    <div class="insight-card-value">
+                        {{ "%.1f"|format(
+                            financial_insights.get(
+                                "savings_rate",
+                                0
+                            )|float
+                        ) }}%
+                    </div>
+
+                    <small class="text-muted">
+                        Income kept after spending
+                    </small>
+
+                </div>
+            </div>
+
+
+            <!-- REMAINING BUDGET -->
+            <div class="col-md-6 col-lg-3">
+                <div class="insight-card h-100">
+
+                    <div class="insight-icon insight-purple">
+                        💵
+                    </div>
+
+                    <div class="insight-card-label">
+                        Budget Remaining
+                    </div>
+
+                    <div class="insight-card-value">
+                        ₹{{ "%.2f"|format(
+                            financial_insights.get(
+                                "remaining_budget",
+                                monthly_budget - monthly_spending
+                            )|float
+                        ) }}
+                    </div>
+
+                    <small class="text-muted">
+                        Available for the rest of the month
+                    </small>
+
+                </div>
+            </div>
+
+
+            <!-- GOAL PROGRESS -->
+            <div class="col-md-6 col-lg-3">
+                <div class="insight-card h-100">
+
+                    <div class="insight-icon insight-orange">
+                        🏆
+                    </div>
+
+                    <div class="insight-card-label">
+                        Goal Progress
+                    </div>
+
+                    <div class="insight-card-value">
+                        {% if current_goal %}
+                            {{ "%.1f"|format(
+                                financial_insights.get(
+                                    "goal_progress_percent",
+                                    (
+                                        (
+                                            current_goal.saved_amount /
+                                            current_goal.target_amount
+                                        ) * 100
+                                        if current_goal.target_amount > 0
+                                        else 0
+                                    )
+                                )|float
+                            ) }}%
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+
+                    <small class="text-muted">
+                        {% if current_goal %}
+                            {{ current_goal.name }}
+                        {% else %}
+                            No active savings goal
+                        {% endif %}
+                    </small>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- MAIN INSIGHT -->
+        <div class="financial-insight-message mt-3">
+
+            <div class="financial-insight-message-icon">
+                💡
+            </div>
+
+            <div>
+                <div class="fw-bold mb-1">
+                    FinPilot's Insight
+                </div>
+
+                <div class="text-muted">
+                    {{ financial_insights.get(
+                        "insight",
+                        "Keep tracking your income, spending and savings to build a clearer financial picture."
+                    ) }}
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ADDITIONAL INSIGHT DETAILS -->
+        <div class="row g-3 mt-1">
+
+            <div class="col-md-6">
+
+                <div class="insight-detail-card">
+
+                    <div class="insight-detail-title">
+                        🛡️ Safe Daily Spending
+                    </div>
+
+                    <div class="insight-detail-value">
+                        ₹{{ "%.2f"|format(
+                            safe_daily_spending
+                        ) }}
+                    </div>
+
+                    <small class="text-muted">
+                        Recommended daily spending limit
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <div class="insight-detail-card">
+
+                    <div class="insight-detail-title">
+                        📈 Monthly Savings
+                    </div>
+
+                    <div
+                        class="insight-detail-value
+                        {% if monthly_savings >= 0 %}
+                            text-success
+                        {% else %}
+                            text-danger
+                        {% endif %}"
+                    >
+                        ₹{{ "%.2f"|format(
+                            monthly_savings
+                        ) }}
+                    </div>
+
+                    <small class="text-muted">
+                        Income minus spending this month
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="financial-insights-empty">
+
+            <div class="financial-insights-empty-icon">
+                📊
+            </div>
+
+            <h5 class="fw-bold mt-3">
+                Financial insights are getting ready
+            </h5>
+
+            <p class="text-muted mb-0">
+                Add your income, expenses and budget to let FinPilot
+                generate personalized financial insights.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =========================================
+         MONTHLY BUDGET
+         ========================================= -->
+
+    <div class="dashboard-panel mt-4">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h3>
+                    🎯 Monthly Budget
+                </h3>
+
+                <p>
+                    Your current financial limits.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <p class="text-muted mb-1">
+                    Monthly Budget
+                </p>
+
+                <h3 class="fw-bold">
+                    ₹{{ "%.2f"|format(monthly_budget) }}
+                </h3>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <p class="text-muted mb-1">
+                    Spent
+                </p>
+
+                <h3 class="fw-bold">
+                    ₹{{ "%.2f"|format(monthly_spending) }}
+                </h3>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                {% set budget_remaining =
+                    monthly_budget - monthly_spending
+                %}
+
+                <p class="text-muted mb-1">
+                    Budget Remaining
+                </p>
+
+                <h3
+                    class="
+                        fw-bold
+                        {% if budget_remaining < 0 %}
+                            text-danger
+                        {% else %}
+                            text-success
+                        {% endif %}
+                    "
+                >
+                    ₹{{ "%.2f"|format(budget_remaining) }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         CURRENT GOAL
+         ========================================= -->
+
+    {% if current_goal %}
+
+    <div class="dashboard-panel mt-4">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h3>
+                    🏆 Current Savings Goal
+                </h3>
+
+                <p>
+                    FinPilot considers this goal when
+                    giving recommendations.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <p class="text-muted mb-1">
+                    Goal
+                </p>
+
+                <h4 class="fw-bold">
+                    {{ current_goal.name }}
+                </h4>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <p class="text-muted mb-1">
+                    Target
+                </p>
+
+                <h4 class="fw-bold">
+                    ₹{{ "%.2f"|format(
+                        current_goal.target_amount
+                    ) }}
+                </h4>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <p class="text-muted mb-1">
+                    Saved
+                </p>
+
+                <h4 class="fw-bold">
+                    ₹{{ "%.2f"|format(
+                        current_goal.saved_amount
+                    ) }}
+                </h4>
+
+            </div>
+
+        </div>
+
+
+        {% if current_goal.target_amount > 0 %}
+
+        {% set goal_percentage =
+            (
+                current_goal.saved_amount /
+                current_goal.target_amount
+            ) * 100
+        %}
+
+        {% set goal_percentage =
+            [goal_percentage, 100]|min
+        %}
+
+        <div class="mt-4">
+
+            <div class="d-flex justify-content-between mb-2">
+
+                <span class="fw-semibold">
+                    Goal Progress
+                </span>
+
+                <span class="fw-semibold">
+                    {{ "%.1f"|format(
+                        goal_percentage
+                    ) }}%
+                </span>
+
+            </div>
+
+
+            <div
+                class="progress"
+                style="height: 10px;"
+            >
+
+                <div
+                    class="progress-bar"
+                    role="progressbar"
+                    style="width: {{ goal_percentage }}%;"
+                    aria-valuenow="{{ goal_percentage }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                >
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <div class="dashboard-panel mt-4">
+
+        <div class="text-center py-4">
+
+            <div style="font-size: 2.5rem;">
+                🏆
+            </div>
+
+            <h4 class="mt-3">
+                No savings goal yet
+            </h4>
+
+            <p class="text-muted mb-0">
+                Create a savings goal and FinPilot AI
+                can consider it in future recommendations.
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+     ========================================= -->
+
+
+<style>
+
+/* =========================================
+   FINPILOT AI THINKING ANIMATION
+   ========================================= */
+
+.finpilot-thinking {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* =========================================
+   THINKING DOTS
+   ========================================= */
+
+.thinking-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+
+.thinking-dots span {
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+
+    display: inline-block;
+
+    animation:
+        finpilotDot 1.2s infinite ease-in-out;
+
+}
+
+
+.thinking-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+
+.thinking-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+
+.thinking-dots span:nth-child(3) {
+    animation-delay: 0.30s;
+}
+
+
+/* =========================================
+   DOT ANIMATION
+   ========================================= */
+
+@keyframes finpilotDot {
+
+    0%,
+    60%,
+    100% {
+
+        transform:
+            translateY(0);
+
+        opacity: 0.35;
+
+    }
+
+
+    30% {
+
+        transform:
+            translateY(-4px);
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/* =========================================
+   AI RESPONSE TEXT
+   ========================================= */
+
+.chat-ai-text {
+
+    line-height: 1.7;
+
+    word-wrap: break-word;
+
+    overflow-wrap: break-word;
+
+}
+
+
+/* =========================================
+   AI SECTION HEADINGS
+   ========================================= */
+
+.ai-section {
+
+    display: block;
+
+    margin-top: 10px;
+
+    margin-bottom: 4px;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================
+   FIRST SECTION
+   ========================================= */
+
+.ai-bubble .ai-section:first-child {
+
+    margin-top: 0;
+
+}
+
+
+/* =========================================
+   MOBILE CHAT
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    .finpilot-chat-messages {
+
+        max-height: 60vh;
+
+        overflow-y: auto;
+
+    }
+
+
+    .chat-ai-text {
+
+        font-size: 0.95rem;
+
+    }
+
+
+    .user-bubble,
+    .ai-bubble {
+
+        max-width: 90%;
+
+    }
+
+}
+
+/* =========================================
+   STEP 15 · AI RESPONSE ACTIONS
+   ========================================= */
+
+.ai-response-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.ai-action-btn {
+    border: 1px solid rgba(108, 117, 125, 0.25);
+    background: transparent;
+    color: inherit;
+    border-radius: 8px;
+    padding: 4px 9px;
+    font-size: 0.78rem;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.ai-action-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(13, 110, 253, 0.08);
+    border-color: rgba(13, 110, 253, 0.35);
+}
+
+.ai-action-btn.copied {
+    background: rgba(25, 135, 84, 0.10);
+    border-color: rgba(25, 135, 84, 0.35);
+}
+
+.ai-feedback-status {
+    font-size: 0.78rem;
+    color: #6c757d;
+    margin-left: 4px;
+}
+
+.ai-action-btn:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.ai-feedback-active {
+    background: rgba(13, 110, 253, 0.10);
+    border-color: rgba(13, 110, 253, 0.35);
+}
+
+.ai-followup-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+.ai-followup-label {
+    width: 100%;
+    font-size: 0.76rem;
+    color: var(--bs-secondary-color, #6c757d);
+    margin-bottom: 1px;
+}
+
+.ai-followup-btn {
+    border: 1px solid rgba(13, 110, 253, 0.25);
+    background: rgba(13, 110, 253, 0.05);
+    color: inherit;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.ai-followup-btn:hover {
+    background: rgba(13, 110, 253, 0.10);
+    transform: translateY(-1px);
+}
+
+.ai-retry-note {
+    margin-top: 7px;
+    font-size: 0.78rem;
+}
+
+@media (max-width: 576px) {
+    .ai-response-actions {
+        gap: 5px;
+    }
+
+    .ai-action-btn {
+        font-size: 0.74rem;
+        padding: 4px 7px;
+    }
+
+    .ai-followup-btn {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+
+/* =========================================
+   STEP 17C · FINANCIAL INSIGHTS
+   ========================================= */
+
+.financial-insights-panel {
+    overflow: hidden;
+}
+
+.financial-health-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.financial-health-good {
+    color: #198754;
+    background: rgba(25, 135, 84, 0.10);
+    border: 1px solid rgba(25, 135, 84, 0.22);
+}
+
+.financial-health-warning {
+    color: #b77900;
+    background: rgba(255, 193, 7, 0.12);
+    border: 1px solid rgba(255, 193, 7, 0.25);
+}
+
+.financial-health-danger {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.10);
+    border: 1px solid rgba(220, 53, 69, 0.22);
+}
+
+.financial-health-neutral {
+    color: #6c757d;
+    background: rgba(108, 117, 125, 0.08);
+    border: 1px solid rgba(108, 117, 125, 0.18);
+}
+
+.insight-card {
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid rgba(108, 117, 125, 0.14);
+    background: rgba(255, 255, 255, 0.025);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.insight-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.insight-icon {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+}
+
+.insight-blue {
+    background: rgba(13, 110, 253, 0.10);
+}
+
+.insight-green {
+    background: rgba(25, 135, 84, 0.10);
+}
+
+.insight-purple {
+    background: rgba(111, 66, 193, 0.10);
+}
+
+.insight-orange {
+    background: rgba(253, 126, 20, 0.10);
+}
+
+.insight-card-label {
+    font-size: 0.82rem;
+    color: var(--bs-secondary-color, #6c757d);
+    margin-bottom: 4px;
+}
+
+.insight-card-value {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin-bottom: 7px;
+}
+
+.insight-progress {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(108, 117, 125, 0.12);
+    margin: 8px 0 9px;
+}
+
+.insight-progress-bar {
+    height: 100%;
+    border-radius: inherit;
+    background: currentColor;
+    color: #0d6efd;
+    transition: width 0.5s ease;
+}
+
+.financial-insight-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 15px;
+    border: 1px solid rgba(13, 110, 253, 0.16);
+    background: rgba(13, 110, 253, 0.045);
+}
+
+.financial-insight-message-icon {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: rgba(13, 110, 253, 0.10);
+}
+
+.insight-detail-card {
+    padding: 15px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(108, 117, 125, 0.13);
+}
+
+.insight-detail-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.insight-detail-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+}
+
+.financial-insights-empty {
+    text-align: center;
+    padding: 35px 20px;
+}
+
+.financial-insights-empty-icon {
+    font-size: 2.5rem;
+}
+
+@media (max-width: 576px) {
+
+    .financial-insights-panel .panel-header {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .financial-health-badge {
+        font-size: 0.72rem;
+        padding: 5px 9px;
+    }
+
+    .insight-card {
+        padding: 15px;
+    }
+
+    .financial-insight-message {
+        padding: 13px;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+/* =========================================
+   SET QUICK QUESTION
+   ========================================= */
+
+function setQuestion(question) {
+
+    const input =
+        document.getElementById(
+            "questionInput"
+        );
+
+    if (!input) {
+        return;
+    }
+
+    input.value = question;
+
+    input.focus();
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+   ========================================= */
+
+function escapeHTML(text) {
+
+    if (!text) {
+        return "";
+    }
+
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================
+   CSRF TOKEN
+   -----------------------------------------
+   Required by Flask-WTF on every POST.
+   ========================================= */
+
+const FP_CSRF_TOKEN =
+    "{{ csrf_token() }}";
+
+
+/* =========================================
+   FORMAT AI RESPONSE
+   ========================================= */
+
+function formatAIText(text) {
+
+    if (!text) {
+        return "";
+    }
+
+
+    let formatted =
+        escapeHTML(text);
+
+
+    /* Markdown bold */
+
+    formatted = formatted.replace(
+        /\*\*(.*?)\*\*/g,
+        "<strong>$1</strong>"
+    );
+
+
+    /* Sections */
+
+    formatted = formatted.replace(
+        /<strong>Recommendation:<\/strong>/gi,
+        '<strong class="ai-section recommendation">🤖 Recommendation</strong>'
+    );
+
+
+    formatted = formatted.replace(
+        /<strong>Why:<\/strong>/gi,
+        '<strong class="ai-section why">💡 Why</strong>'
+    );
+
+
+    formatted = formatted.replace(
+        /<strong>Caution:<\/strong>/gi,
+        '<strong class="ai-section caution">⚠️ Caution</strong>'
+    );
+
+
+    formatted = formatted.replace(
+        /<strong>Next step:<\/strong>/gi,
+        '<strong class="ai-section next-step">🎯 Next Step</strong>'
+    );
+
+
+    /* Plain section headings */
+
+    formatted = formatted.replace(
+        /(^|<br>)Recommendation:/gi,
+        '$1<strong class="ai-section recommendation">🤖 Recommendation</strong>'
+    );
+
+
+    formatted = formatted.replace(
+        /(^|<br>)Why:/gi,
+        '$1<strong class="ai-section why">💡 Why</strong>'
+    );
+
+
+    formatted = formatted.replace(
+        /(^|<br>)Caution:/gi,
+        '$1<strong class="ai-section caution">⚠️ Caution</strong>'
+    );
+
+
+    formatted = formatted.replace(
+        /(^|<br>)Next step:/gi,
+        '$1<strong class="ai-section next-step">🎯 Next Step</strong>'
+    );
+
+
+    /* Line breaks */
+
+    formatted = formatted.replace(
+        /\r?\n/g,
+        "<br>"
+    );
+
+
+    return formatted;
+
+}
+
+
+/* =========================================
+   CREATE USER MESSAGE
+   ========================================= */
+
+function createUserMessage(question) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "user-message";
+
+
+    wrapper.innerHTML = `
+
+        <div class="chat-message-body">
+
+            <div class="chat-message-name text-end">
+                You
+            </div>
+
+            <div class="user-bubble">
+                ${escapeHTML(question)}
+            </div>
+
+            <div class="chat-message-time text-end">
+                Just now
+            </div>
+
+        </div>
+
+        <div class="chat-message-avatar user-avatar">
+            👤
+        </div>
+
+    `;
+
+
+    return wrapper;
+
+}
+
+
+/* =========================================
+   STEP 15 · RESPONSE ACTION HELPERS
+   ========================================= */
+
+function getFollowUpQuestions(responseText) {
+
+    const text = (responseText || "").toLowerCase();
+
+    if (
+        text.includes("purchase") ||
+        text.includes("afford") ||
+        text.includes("buy")
+    ) {
+        return [
+            "How much can I safely spend today?",
+            "How will this purchase affect my savings?",
+            "What should I save before buying this?"
+        ];
+    }
+
+    if (
+        text.includes("budget") ||
+        text.includes("spending")
+    ) {
+        return [
+            "How can I reduce my spending?",
+            "How much should I save this month?",
+            "What is my safe daily spending limit?"
+        ];
+    }
+
+    if (
+        text.includes("saving") ||
+        text.includes("goal")
+    ) {
+        return [
+            "How much more should I save this month?",
+            "How can I reach my goal faster?",
+            "What spending should I avoid?"
+        ];
+    }
+
+    return [
+        "How much can I spend today?",
+        "How much budget do I have left?",
+        "How can I save more this month?"
+    ];
+}
+
+
+function createResponseActions(
+    responseText,
+    question,
+    messageId = null,
+    existingFeedback = ""
+) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "ai-response-actions";
+
+    wrapper.innerHTML = `
+
+        <button
+            type="button"
+            class="ai-action-btn"
+            data-action="copy"
+            title="Copy AI response"
+        >
+            📋 Copy
+        </button>
+
+        <button
+            type="button"
+            class="ai-action-btn ${
+                existingFeedback === "helpful"
+                    ? "ai-feedback-active"
+                    : ""
+            }"
+            data-action="helpful"
+            title="Mark response helpful"
+        >
+            👍 Helpful
+        </button>
+
+        <button
+            type="button"
+            class="ai-action-btn ${
+                existingFeedback === "not_helpful"
+                    ? "ai-feedback-active"
+                    : ""
+            }"
+            data-action="not-helpful"
+            title="Mark response not helpful"
+        >
+            👎 Not helpful
+        </button>
+
+        <span
+            class="ai-feedback-status"
+            aria-live="polite"
+        ></span>
+
+    `;
+
+    const copyButton =
+        wrapper.querySelector(
+            '[data-action="copy"]'
+        );
+
+    copyButton.addEventListener(
+        "click",
+        async function () {
+
+            try {
+
+                await navigator.clipboard.writeText(
+                    responseText || ""
+                );
+
+                copyButton.innerHTML =
+                    "✅ Copied";
+
+                copyButton.classList.add(
+                    "copied"
+                );
+
+                setTimeout(
+                    function () {
+
+                        copyButton.innerHTML =
+                            "📋 Copy";
+
+                        copyButton.classList.remove(
+                            "copied"
+                        );
+
+                    },
+                    1500
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Copy failed:",
+                    error
+                );
+
+                copyButton.innerHTML =
+                    "⚠️ Copy failed";
+
+                setTimeout(
+                    function () {
+
+                        copyButton.innerHTML =
+                            "📋 Copy";
+
+                    },
+                    1500
+                );
+
+            }
+
+        }
+    );
+
+
+    const helpfulButton =
+        wrapper.querySelector(
+            '[data-action="helpful"]'
+        );
+
+    const notHelpfulButton =
+        wrapper.querySelector(
+            '[data-action="not-helpful"]'
+        );
+
+    const status =
+        wrapper.querySelector(
+            ".ai-feedback-status"
+        );
+
+
+    async function submitFeedback(feedback) {
+
+        if (!messageId) {
+
+            status.textContent =
+                "Feedback unavailable";
+
+            return;
+        }
+
+        helpfulButton.disabled = true;
+        notHelpfulButton.disabled = true;
+
+        status.textContent =
+            "Saving...";
+
+        try {
+
+            const formData =
+                new FormData();
+
+            formData.append(
+                "message_id",
+                String(messageId)
+            );
+
+            formData.append(
+                "feedback",
+                feedback
+            );
+
+            const response =
+                await fetch(
+                    "{{ url_for('coach.chat_message_feedback') }}",
+                    {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            "X-Requested-With":
+                                "XMLHttpRequest",
+                            "Accept":
+                                "application/json",
+                            "X-CSRFToken":
+                                FP_CSRF_TOKEN
+                        }
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok || !data.success) {
+
+                throw new Error(
+                    data.error ||
+                    "Unable to save feedback."
+                );
+            }
+
+            helpfulButton.classList.toggle(
+                "ai-feedback-active",
+                feedback === "helpful"
+            );
+
+            notHelpfulButton.classList.toggle(
+                "ai-feedback-active",
+                feedback === "not_helpful"
+            );
+
+            status.textContent =
+                feedback === "helpful"
+                    ? "Thanks! 👍"
+                    : "Thanks for the feedback."
+
+            setTimeout(
+                function () {
+                    status.textContent = "";
+                },
+                1800
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Feedback error:",
+                error
+            );
+
+            status.textContent =
+                "Could not save feedback."
+
+        } finally {
+
+            helpfulButton.disabled = false;
+            notHelpfulButton.disabled = false;
+
+        }
+    }
+
+
+    helpfulButton.addEventListener(
+        "click",
+        function () {
+            submitFeedback("helpful");
+        }
+    );
+
+
+    notHelpfulButton.addEventListener(
+        "click",
+        function () {
+            submitFeedback("not_helpful");
+        }
+    );
+
+
+    return wrapper;
+}
+
+function createFollowUpArea(responseText) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "ai-followup-area";
+
+    const questions =
+        getFollowUpQuestions(
+            responseText
+        );
+
+    wrapper.innerHTML = `
+        <div class="ai-followup-label">
+            💡 You can also ask:
+        </div>
+    `;
+
+    questions.forEach(
+        function (question) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.type = "button";
+
+            button.className =
+                "ai-followup-btn";
+
+            button.textContent =
+                question;
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    setQuestion(
+                        question
+                    );
+
+                    const input =
+                        document.getElementById(
+                            "questionInput"
+                        );
+
+                    if (input) {
+                        input.focus();
+                    }
+
+                }
+            );
+
+            wrapper.appendChild(
+                button
+            );
+
+        }
+    );
+
+    return wrapper;
+}
+
+
+function addResponseTools(
+    aiMessage,
+    responseText,
+    question,
+    messageId = null
+) {
+
+    if (!aiMessage) {
+        return;
+    }
+
+    const body =
+        aiMessage.querySelector(
+            ".chat-message-body"
+        );
+
+    if (!body) {
+        return;
+    }
+
+    const existing =
+        body.querySelector(
+            ".ai-response-actions"
+        );
+
+    if (existing) {
+        existing.remove();
+    }
+
+    body.appendChild(
+        createResponseActions(
+            responseText,
+            question,
+            messageId
+        )
+    );
+
+    body.appendChild(
+        createFollowUpArea(
+            responseText
+        )
+    );
+}
+
+
+/* =========================================
+   STEP 15 · RETRY ERROR MESSAGE
+   ========================================= */
+
+function createRetryMessage(question) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "ai-message";
+
+    wrapper.innerHTML = `
+
+        <div class="chat-message-avatar ai-avatar">
+            🤖
+        </div>
+
+        <div class="chat-message-body">
+
+            <div class="chat-message-name">
+                FinPilot AI
+            </div>
+
+            <div class="ai-bubble chat-ai-text">
+                Sorry, I couldn't process that request right now.
+            </div>
+
+            <div class="ai-retry-note">
+
+                <button
+                    type="button"
+                    class="ai-action-btn"
+                    id="retryQuestionButton"
+                >
+                    🔄 Retry
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+    const retryButton =
+        wrapper.querySelector(
+            "#retryQuestionButton"
+        );
+
+    retryButton.addEventListener(
+        "click",
+        function () {
+
+            setQuestion(
+                question
+            );
+
+            sendCoachQuestion();
+
+        }
+    );
+
+    return wrapper;
+}
+
+
+/* =========================================
+   CREATE AI MESSAGE
+   ========================================= */
+
+function createAIMessage(
+    responseText,
+    messageId = null
+) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "ai-message";
+
+    if (messageId) {
+        wrapper.dataset.messageId =
+            String(messageId);
+    }
+
+
+    wrapper.innerHTML = `
+
+        <div class="chat-message-avatar ai-avatar">
+            🤖
+        </div>
+
+        <div class="chat-message-body">
+
+            <div class="chat-message-name">
+                FinPilot AI
+            </div>
+
+            <div class="ai-bubble chat-ai-text">
+                ${formatAIText(responseText)}
+            </div>
+
+        </div>
+
+    `;
+
+
+    return wrapper;
+
+}
+
+
+/* =========================================
+   CREATE LOADING MESSAGE
+   ========================================= */
+
+function createLoadingMessage() {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "ai-message";
+
+    wrapper.id =
+        "finpilotLoadingMessage";
+
+
+    wrapper.innerHTML = `
+
+        <div class="chat-message-avatar ai-avatar">
+            🤖
+        </div>
+
+        <div class="chat-message-body">
+
+            <div class="chat-message-name">
+                FinPilot AI
+            </div>
+
+            <div class="ai-bubble finpilot-thinking">
+
+                <span>
+                    FinPilot is thinking
+                </span>
+
+                <span class="thinking-dots">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </span>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    return wrapper;
+
+}
+
+
+/* =========================================
+   REMOVE LOADING
+   ========================================= */
+
+function removeLoadingMessage() {
+
+    const loading =
+        document.getElementById(
+            "finpilotLoadingMessage"
+        );
+
+    if (loading) {
+        loading.remove();
+    }
+
+}
+
+
+/* =========================================
+   SCROLL TO BOTTOM
+   ========================================= */
+
+function scrollChatToBottom() {
+
+    const chatBox =
+        document.getElementById(
+            "finpilotChatMessages"
+        );
+
+    if (!chatBox) {
+        return;
+    }
+
+
+    chatBox.scrollTo({
+
+        top:
+            chatBox.scrollHeight,
+
+        behavior:
+            "smooth"
+
+    });
+
+}
+
+/* =========================================
+   TYPE AI RESPONSE
+   ========================================= */
+
+async function typeAIResponse(
+    text,
+    element
+) {
+
+    if (
+        !text ||
+        !element
+    ) {
+        return;
+    }
+
+
+    const characters =
+        Array.from(text);
+
+
+    let currentText = "";
+
+
+    // =====================================
+    // TYPING SPEED
+    // =====================================
+
+    const typingSpeed = 12;
+
+
+    // =====================================
+    // TYPE CHARACTER BY CHARACTER
+    // =====================================
+
+    for (
+        let i = 0;
+        i < characters.length;
+        i++
+    ) {
+
+        currentText +=
+            characters[i];
+
+
+        element.innerHTML =
+            formatAIText(
+                currentText
+            );
+
+
+        scrollChatToBottom();
+
+
+        await new Promise(
+            function(resolve) {
+
+                setTimeout(
+                    resolve,
+                    typingSpeed
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   SEND QUESTION WITHOUT PAGE REFRESH
+   ========================================= */
+
+async function sendCoachQuestion() {
+
+    const form =
+        document.getElementById(
+            "coachForm"
+        );
+
+    const input =
+        document.getElementById(
+            "questionInput"
+        );
+
+    const sendButton =
+        document.getElementById(
+            "sendButton"
+        );
+
+    const messages =
+        document.getElementById(
+            "ajaxMessages"
+        );
+
+
+    if (
+        !form ||
+        !input ||
+        !sendButton ||
+        !messages
+    ) {
+        return;
+    }
+
+
+    const question =
+        input.value.trim();
+
+
+    if (!question) {
+        return;
+    }
+
+
+    // =====================================
+    // PREVENT DOUBLE SUBMIT
+    // =====================================
+
+    if (
+        sendButton.disabled ||
+        input.disabled
+    ) {
+        return;
+    }
+
+
+    // =====================================
+    // DISABLE INPUT
+    // =====================================
+
+    input.disabled = true;
+
+    sendButton.disabled = true;
+
+    sendButton.innerHTML = "⏳";
+
+
+    // =====================================
+    // ADD USER MESSAGE
+    // =====================================
+
+    const userMessage =
+        createUserMessage(
+            question
+        );
+
+    messages.appendChild(
+        userMessage
+    );
+
+
+    // =====================================
+    // ADD THINKING MESSAGE
+    // =====================================
+
+    const loadingMessage =
+        createLoadingMessage();
+
+    messages.appendChild(
+        loadingMessage
+    );
+
+
+    // =====================================
+    // CLEAR INPUT
+    // =====================================
+
+    input.value = "";
+
+    scrollChatToBottom();
+
+
+    try {
+
+        // =================================
+        // CREATE FORM DATA
+        // =================================
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "question",
+            question
+        );
+
+
+        // =================================
+        // SEND REQUEST TO FLASK
+        // =================================
+
+        const response =
+            await fetch(
+                form.action,
+                {
+
+                    method: "POST",
+
+                    body: formData,
+
+                    headers: {
+
+                        "X-Requested-With":
+                            "XMLHttpRequest",
+
+                        "Accept":
+                            "application/json",
+
+                        "X-CSRFToken":
+                            FP_CSRF_TOKEN
+
+                    }
+
+                }
+            );
+
+
+        // =================================
+        // CHECK HTTP STATUS
+        // =================================
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+
+        // =================================
+        // READ JSON
+        // =================================
+
+        const data =
+            await response.json();
+
+
+        // =================================
+        // REMOVE THINKING MESSAGE
+        // =================================
+
+        removeLoadingMessage();
+
+
+        // =================================
+        // CHECK AI RESPONSE
+        // =================================
+
+        if (
+            !data.success ||
+            !data.response
+        ) {
+
+            throw new Error(
+                data.error ||
+                "No AI response received."
+            );
+
+        }
+
+
+        // =================================
+        // CREATE EMPTY AI MESSAGE
+        // =================================
+
+        const aiMessage =
+            createAIMessage("");
+
+        messages.appendChild(
+            aiMessage
+        );
+
+
+        // =================================
+        // FIND AI BUBBLE
+        // =================================
+
+        const aiBubble =
+            aiMessage.querySelector(
+                ".chat-ai-text"
+            );
+
+
+        // =================================
+        // TYPE AI RESPONSE
+        // =================================
+
+        await typeAIResponse(
+            data.response,
+            aiBubble
+        );
+
+
+        // =================================
+        // STEP 15 · RESPONSE ACTIONS
+        // =================================
+
+        addResponseTools(
+            aiMessage,
+            data.response,
+            question,
+            data.message_id
+        );
+
+
+        // =================================
+        // FINAL SCROLL
+        // =================================
+
+        scrollChatToBottom();
+
+
+    } catch (error) {
+
+        console.error(
+            "FinPilot Chat Error:",
+            error
+        );
+
+
+        removeLoadingMessage();
+
+
+        const errorMessage =
+            createRetryMessage(
+                question
+            );
+
+
+        messages.appendChild(
+            errorMessage
+        );
+
+
+        scrollChatToBottom();
+
+
+    } finally {
+
+        // =================================
+        // ENABLE INPUT
+        // =================================
+
+        input.disabled = false;
+
+        sendButton.disabled = false;
+
+        sendButton.innerHTML = "➤";
+
+        input.focus();
+
+    }
+
+}
+
+
+/* =========================================
+   DOM READY
+   ========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =================================
+           FORMAT SAVED AI MESSAGES
+           ================================= */
+
+        const messages =
+            document.querySelectorAll(
+                ".chat-ai-text"
+            );
+
+
+        messages.forEach(
+            function (message) {
+
+                const originalText =
+                    message.textContent.trim();
+
+
+                message.innerHTML =
+                    formatAIText(
+                        originalText
+                    );
+
+            }
+        );
+
+
+        /* =================================
+           STEP 15 · ADD TOOLS TO SAVED AI MESSAGES
+           ================================= */
+
+        document
+            .querySelectorAll(
+                "[data-chat-response]"
+            )
+            .forEach(
+                function (message) {
+
+                    const responseText =
+                        message.textContent.trim();
+
+                    const body =
+                        message.closest(
+                            ".chat-message-body"
+                        );
+
+                    if (!body) {
+                        return;
+                    }
+
+                    if (
+                        body.querySelector(
+                            ".ai-response-actions"
+                        )
+                    ) {
+                        return;
+                    }
+
+                    body.appendChild(
+                        createResponseActions(
+                            responseText,
+                            "",
+                            message.dataset.messageId || null,
+                            message.dataset.feedback || ""
+                        )
+                    );
+
+                    body.appendChild(
+                        createFollowUpArea(
+                            responseText
+                        )
+                    );
+
+                }
+            );
+
+
+
+        /* =================================
+           SCROLL TO BOTTOM
+           ================================= */
+
+        scrollChatToBottom();
+
+
+        /* =================================
+           FORM SUBMIT
+           ================================= */
+
+        const form =
+            document.getElementById(
+                "coachForm"
+            );
+
+
+        if (form) {
+
+            form.addEventListener(
+                "submit",
+                function (event) {
+
+                    event.preventDefault();
+
+                    sendCoachQuestion();
+
+                }
+            );
+
+        }
+
+
+        /* =================================
+           ENTER KEY
+           ================================= */
+
+        const input =
+            document.getElementById(
+                "questionInput"
+            );
+
+
+        if (input) {
+
+            input.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (
+                        event.key === "Enter"
+                        &&
+                        !event.shiftKey
+                    ) {
+
+                        event.preventDefault();
+
+                        sendCoachQuestion();
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,1418 @@
+<!-- =========================================================
+     FINPILOT AI — NEON NAVBAR
+========================================================= -->
+
+<style>
+
+    /* =====================================================
+       NAVBAR
+    ====================================================== */
+
+    .fp-neon-navbar {
+        position: sticky;
+        top: 0;
+        z-index: 1050;
+
+        min-height: 74px;
+
+        background:
+            rgba(2, 7, 12, 0.88);
+
+        border-bottom:
+            1px solid
+            rgba(0, 238, 255, 0.18);
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+
+        box-shadow:
+            0 8px 35px rgba(0, 0, 0, 0.25),
+            inset 0 -1px 0 rgba(0, 238, 255, 0.04);
+    }
+
+
+    .fp-neon-navbar::after {
+        content: "";
+
+        position: absolute;
+
+        left: 10%;
+        right: 10%;
+        bottom: -1px;
+
+        height: 1px;
+
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(0, 238, 255, 0.75),
+                rgba(0, 140, 255, 0.75),
+                rgba(0, 238, 255, 0.75),
+                transparent
+            );
+
+        box-shadow:
+            0 0 10px rgba(0, 238, 255, 0.45);
+    }
+
+
+    /* =====================================================
+       BRAND
+    ====================================================== */
+
+    .fp-neon-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+
+        color: #ffffff !important;
+
+        font-size: 20px;
+        font-weight: 800;
+
+        letter-spacing: -0.4px;
+
+        text-decoration: none;
+
+        transition:
+            transform 0.25s ease,
+            color 0.25s ease;
+    }
+
+
+    .fp-neon-brand:hover {
+        color: #00eeff !important;
+
+        transform: translateY(-1px);
+
+        text-shadow:
+            0 0 8px rgba(0, 238, 255, 0.65),
+            0 0 22px rgba(0, 238, 255, 0.25);
+    }
+
+
+    .fp-neon-brand-icon {
+        width: 40px;
+        height: 40px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(0, 238, 255, 0.15),
+                rgba(0, 100, 255, 0.14)
+            );
+
+        border:
+            1px solid
+            rgba(0, 238, 255, 0.38);
+
+        box-shadow:
+            0 0 15px rgba(0, 238, 255, 0.12),
+            inset 0 0 15px rgba(0, 238, 255, 0.04);
+
+        font-size: 20px;
+
+        animation:
+            fpNavbarLogoFloat
+            3s ease-in-out infinite;
+    }
+
+
+    @keyframes fpNavbarLogoFloat {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-3px);
+        }
+    }
+
+
+    .fp-neon-brand-text {
+        white-space: nowrap;
+    }
+
+
+    .fp-neon-brand-ai {
+        color: #00eeff;
+
+        text-shadow:
+            0 0 8px rgba(0, 238, 255, 0.5);
+    }
+
+
+    /* =====================================================
+       TOGGLER
+    ====================================================== */
+
+    .fp-neon-toggler {
+        width: 44px;
+        height: 40px;
+
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border:
+            1px solid
+            rgba(0, 238, 255, 0.35) !important;
+
+        border-radius: 10px !important;
+
+        background:
+            rgba(0, 238, 255, 0.04);
+
+        box-shadow:
+            0 0 12px rgba(0, 238, 255, 0.08);
+
+        transition: 0.25s ease;
+    }
+
+
+    .fp-neon-toggler:hover,
+    .fp-neon-toggler:focus {
+        background:
+            rgba(0, 238, 255, 0.1);
+
+        border-color:
+            #00eeff !important;
+
+        box-shadow:
+            0 0 16px rgba(0, 238, 255, 0.2);
+    }
+
+
+    .fp-neon-toggler-icon {
+        width: 21px;
+        height: 15px;
+
+        position: relative;
+
+        background:
+            linear-gradient(
+                #00eeff,
+                #00eeff
+            );
+
+        background-size: 100% 2px;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        filter:
+            drop-shadow(0 0 5px rgba(0, 238, 255, 0.55));
+    }
+
+
+    .fp-neon-toggler-icon::before,
+    .fp-neon-toggler-icon::after {
+        content: "";
+
+        position: absolute;
+        left: 0;
+
+        width: 100%;
+        height: 2px;
+
+        background: #00eeff;
+
+        box-shadow:
+            0 0 5px rgba(0, 238, 255, 0.55);
+    }
+
+
+    .fp-neon-toggler-icon::before {
+        top: 0;
+    }
+
+
+    .fp-neon-toggler-icon::after {
+        bottom: 0;
+    }
+
+
+    /* =====================================================
+       NAV LINKS
+    ====================================================== */
+
+    .fp-neon-nav-link {
+        position: relative;
+
+        display: inline-flex;
+        align-items: center;
+
+        margin: 5px 3px;
+        padding: 9px 12px !important;
+
+        color:
+            rgba(255, 255, 255, 0.65) !important;
+
+        border-radius: 9px;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition:
+            color 0.25s ease,
+            background 0.25s ease,
+            transform 0.25s ease;
+    }
+
+
+    .fp-neon-nav-link::after {
+        content: "";
+
+        position: absolute;
+
+        left: 50%;
+        bottom: 3px;
+
+        width: 0;
+        height: 2px;
+
+        transform: translateX(-50%);
+
+        border-radius: 20px;
+
+        background: #00eeff;
+
+        box-shadow:
+            0 0 8px #00eeff;
+
+        transition:
+            width 0.25s ease;
+    }
+
+
+    .fp-neon-nav-link:hover {
+        color: #ffffff !important;
+
+        background:
+            rgba(0, 238, 255, 0.055);
+
+        transform: translateY(-1px);
+
+        text-shadow:
+            0 0 8px rgba(0, 238, 255, 0.35);
+    }
+
+
+    .fp-neon-nav-link:hover::after {
+        width: 42%;
+    }
+
+
+    .fp-neon-nav-link.fp-nav-active {
+        color: #00eeff !important;
+
+        background:
+            rgba(0, 238, 255, 0.07);
+    }
+
+
+    .fp-neon-nav-link.fp-nav-active::after {
+        width: 42%;
+    }
+
+
+    /* =====================================================
+       AUTH BUTTONS
+    ====================================================== */
+
+    .fp-nav-login,
+    .fp-nav-register {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 40px;
+
+        margin-top: 5px;
+        margin-bottom: 5px;
+
+        padding: 0 17px;
+
+        border-radius: 9px;
+
+        font-size: 12px;
+        font-weight: 800;
+
+        text-decoration: none;
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            color 0.25s ease,
+            background 0.25s ease;
+    }
+
+
+    .fp-nav-login {
+        color: #00eeff !important;
+
+        background:
+            rgba(0, 238, 255, 0.045);
+
+        border:
+            1px solid
+            rgba(0, 238, 255, 0.38);
+    }
+
+
+    .fp-nav-login:hover {
+        color: #ffffff !important;
+
+        background:
+            rgba(0, 238, 255, 0.1);
+
+        border-color: #00eeff;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 0 16px rgba(0, 238, 255, 0.2);
+    }
+
+
+    .fp-nav-register {
+        color: #001015 !important;
+
+        background:
+            linear-gradient(
+                90deg,
+                #00eaff,
+                #00b7ff,
+                #00eaff
+            );
+
+        background-size: 200% auto;
+
+        border: none;
+
+        box-shadow:
+            0 0 14px rgba(0, 238, 255, 0.22);
+
+        animation:
+            fpNavGradient
+            3s linear infinite;
+    }
+
+
+    @keyframes fpNavGradient {
+        0% {
+            background-position: 0% center;
+        }
+
+        100% {
+            background-position: 200% center;
+        }
+    }
+
+
+    .fp-nav-register:hover {
+        color: #001015 !important;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 0 20px rgba(0, 238, 255, 0.48);
+    }
+
+
+    /* =====================================================
+       USER MENU
+    ====================================================== */
+
+    .fp-user-link {
+        gap: 8px;
+    }
+
+
+    .fp-user-avatar {
+        width: 34px;
+        height: 34px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 10px;
+
+        color: #001015;
+
+        background:
+            linear-gradient(
+                135deg,
+                #00eeff,
+                #008cff
+            );
+
+        font-size: 13px;
+        font-weight: 900;
+
+        box-shadow:
+            0 0 12px rgba(0, 238, 255, 0.25);
+    }
+
+
+    .fp-user-name {
+        max-width: 110px;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       DROPDOWNS
+    ====================================================== */
+
+    .fp-neon-dropdown {
+        min-width: 220px;
+
+        margin-top: 10px !important;
+        padding: 8px;
+
+        border:
+            1px solid
+            rgba(0, 238, 255, 0.25);
+
+        border-radius: 14px;
+
+        background:
+            rgba(4, 10, 16, 0.97);
+
+        box-shadow:
+            0 18px 45px rgba(0, 0, 0, 0.45),
+            0 0 25px rgba(0, 238, 255, 0.08);
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
+
+
+    .fp-neon-dropdown .dropdown-header {
+        color: #00eeff;
+
+        font-size: 10px;
+        font-weight: 800;
+
+        letter-spacing: 0.08em;
+    }
+
+
+    .fp-neon-dropdown .dropdown-divider {
+        border-color:
+            rgba(255, 255, 255, 0.08);
+    }
+
+
+    .fp-neon-dropdown .dropdown-item {
+        padding: 10px 12px;
+
+        border-radius: 8px;
+
+        color:
+            rgba(255, 255, 255, 0.72);
+
+        font-size: 12px;
+        font-weight: 600;
+
+        transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .fp-neon-dropdown .dropdown-item:hover {
+        color: #ffffff;
+
+        background:
+            rgba(0, 238, 255, 0.08);
+
+        transform: translateX(3px);
+    }
+
+
+    .fp-neon-dropdown .fp-logout:hover {
+        color: #ff6875;
+
+        background:
+            rgba(255, 70, 90, 0.08);
+    }
+
+
+    /* =====================================================
+       NOTIFICATION
+    ====================================================== */
+
+    .fp-notification-link {
+        position: relative;
+
+        width: 42px;
+        height: 42px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 !important;
+
+        border-radius: 10px;
+    }
+
+
+    .fp-notification-icon {
+        font-size: 17px;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+
+    .fp-notification-link:hover
+    .fp-notification-icon {
+        transform:
+            rotate(-10deg)
+            scale(1.08);
+
+        filter:
+            drop-shadow(0 0 6px #00eeff);
+    }
+
+
+    .fp-notification-count {
+        position: absolute;
+
+        top: 0;
+        right: 0;
+
+        min-width: 18px;
+        height: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 4px;
+
+        border-radius: 20px;
+
+        color: #ffffff;
+
+        background:
+            #ff4055;
+
+        border:
+            2px solid
+            #030609;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        box-shadow:
+            0 0 9px rgba(255, 64, 85, 0.55);
+
+        animation:
+            fpNotificationPulse
+            2s ease-in-out infinite;
+    }
+
+
+    @keyframes fpNotificationPulse {
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.08);
+        }
+    }
+
+
+    /* =====================================================
+       NOTIFICATION DROPDOWN
+    ====================================================== */
+
+    .fp-notification-dropdown {
+        width: 360px;
+        max-width: calc(100vw - 30px);
+
+        padding: 0;
+
+        overflow: hidden;
+    }
+
+
+    .fp-notification-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 16px;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.07);
+    }
+
+
+    .fp-notification-label {
+        display: block;
+
+        color: #00eeff;
+
+        font-size: 9px;
+        font-weight: 800;
+
+        letter-spacing: 0.12em;
+    }
+
+
+    .fp-notification-header h6 {
+        margin: 3px 0 0;
+
+        color: #ffffff;
+
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+
+    .fp-notification-total {
+        min-width: 25px;
+        height: 25px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 8px;
+
+        color: #001015;
+
+        background: #00eeff;
+
+        font-size: 10px;
+        font-weight: 900;
+
+        box-shadow:
+            0 0 10px rgba(0, 238, 255, 0.3);
+    }
+
+
+    .fp-notification-list {
+        max-height: 300px;
+
+        overflow-y: auto;
+    }
+
+
+    .fp-notification-item {
+        display: flex;
+        gap: 12px;
+
+        padding: 13px 15px;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.055);
+    }
+
+
+    .fp-notification-item-icon {
+        width: 34px;
+        height: 34px;
+
+        flex: 0 0 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 10px;
+
+        background:
+            rgba(0, 238, 255, 0.06);
+
+        font-size: 16px;
+    }
+
+
+    .fp-notification-item-content {
+        min-width: 0;
+    }
+
+
+    .fp-notification-item-content strong {
+        display: block;
+
+        color: #ffffff;
+
+        font-size: 11px;
+    }
+
+
+    .fp-notification-item-content p {
+        margin: 4px 0 0;
+
+        color:
+            rgba(255, 255, 255, 0.48);
+
+        font-size: 10px;
+
+        line-height: 1.45;
+    }
+
+
+    .fp-notification-empty {
+        padding: 28px 18px;
+
+        text-align: center;
+    }
+
+
+    .fp-notification-empty-icon {
+        font-size: 28px;
+
+        margin-bottom: 7px;
+    }
+
+
+    .fp-notification-empty strong {
+        display: block;
+
+        color: #ffffff;
+
+        font-size: 12px;
+    }
+
+
+    .fp-notification-empty p {
+        margin: 5px 0 0;
+
+        color:
+            rgba(255, 255, 255, 0.45);
+
+        font-size: 10px;
+    }
+
+
+    .fp-notification-footer {
+        padding: 11px 15px;
+
+        border-top:
+            1px solid
+            rgba(255, 255, 255, 0.07);
+    }
+
+
+    .fp-notification-footer a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        color: #00eeff;
+
+        font-size: 10px;
+        font-weight: 800;
+
+        text-decoration: none;
+    }
+
+
+    .fp-notification-footer a:hover {
+        color: #ffffff;
+    }
+
+
+    /* =====================================================
+       MOBILE NAVIGATION
+    ====================================================== */
+
+    @media (max-width: 991.98px) {
+
+        .fp-neon-navbar .navbar-collapse {
+            margin-top: 12px;
+            padding: 12px;
+
+            border:
+                1px solid
+                rgba(0, 238, 255, 0.16);
+
+            border-radius: 14px;
+
+            background:
+                rgba(2, 7, 12, 0.96);
+
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.35);
+        }
+
+
+        .fp-neon-nav-link {
+            width: 100%;
+
+            margin: 2px 0;
+        }
+
+
+        .fp-nav-login,
+        .fp-nav-register {
+            width: 100%;
+
+            margin-top: 7px;
+        }
+
+
+        .fp-notification-dropdown {
+            width: 100%;
+            max-width: 100%;
+        }
+
+
+        .fp-user-name {
+            max-width: none;
+        }
+
+    }
+
+
+    /* =====================================================
+       REDUCED MOTION
+    ====================================================== */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .fp-neon-brand-icon,
+        .fp-nav-register,
+        .fp-notification-count {
+            animation: none;
+        }
+
+    }
+
+</style>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================== -->
+
+<nav
+    class="navbar navbar-expand-lg fp-neon-navbar"
+    aria-label="FinPilot main navigation"
+>
+
+    <div class="container">
+
+
+        <!-- =================================================
+             BRAND
+        ================================================== -->
+
+        <a
+            class="navbar-brand fp-neon-brand"
+            href="/"
+            aria-label="FinPilot AI Home"
+        >
+
+            <span class="fp-neon-brand-icon">
+                🚀
+            </span>
+
+            <span class="fp-neon-brand-text">
+                FinPilot
+                <span class="fp-neon-brand-ai">
+                    AI
+                </span>
+            </span>
+
+        </a>
+
+
+        <!-- =================================================
+             MOBILE TOGGLE
+        ================================================== -->
+
+        <button
+            class="navbar-toggler fp-neon-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#finpilotNavbar"
+            aria-controls="finpilotNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+
+            <span
+                class="fp-neon-toggler-icon"
+                aria-hidden="true"
+            ></span>
+
+        </button>
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <div
+            class="collapse navbar-collapse"
+            id="finpilotNavbar"
+        >
+
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+
+
+                <!-- =============================================
+                     HOME
+                ============================================== -->
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link fp-neon-nav-link"
+                        href="/"
+                    >
+                        Home
+                    </a>
+
+                </li>
+
+
+                <!-- =============================================
+                     FEATURES
+                ============================================== -->
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link fp-neon-nav-link"
+                        href="/#features"
+                    >
+                        Features
+                    </a>
+
+                </li>
+
+
+                <!-- =============================================
+                     ABOUT
+                ============================================== -->
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link fp-neon-nav-link"
+                        href="/#about"
+                    >
+                        About
+                    </a>
+
+                </li>
+
+
+                <!-- =============================================
+                     CONTACT
+                ============================================== -->
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link fp-neon-nav-link"
+                        href="/#contact"
+                    >
+                        Contact
+                    </a>
+
+                </li>
+
+
+                <!-- =============================================
+                     LOGGED-IN USER
+                ============================================== -->
+
+                {% if current_user.is_authenticated %}
+
+
+                    <!-- =========================================
+                         DASHBOARD
+                    ========================================== -->
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link fp-neon-nav-link"
+                            href="{{ url_for('dashboard.dashboard_home') }}"
+                        >
+                            📊 Dashboard
+                        </a>
+
+                    </li>
+
+
+                    <!-- =========================================
+                         ANALYTICS
+                    ========================================== -->
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link fp-neon-nav-link"
+                            href="{{ url_for('analytics.analytics_home') }}"
+                        >
+                            📈 Analytics
+                        </a>
+
+                    </li>
+
+
+                    <!-- =========================================
+                         NOTIFICATIONS
+                    ========================================== -->
+
+                    <li class="nav-item dropdown">
+
+                        <a
+                            class="nav-link fp-neon-nav-link fp-notification-link"
+                            href="#"
+                            id="finpilotNotificationDropdown"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            title="Financial Alerts"
+                        >
+
+                            <span
+                                class="fp-notification-icon"
+                            >
+                                🔔
+                            </span>
+
+
+                            {% if financial_alerts is defined
+                                  and financial_alerts %}
+
+                                <span
+                                    class="fp-notification-count"
+                                >
+                                    {{ financial_alerts|length }}
+                                </span>
+
+                            {% endif %}
+
+                        </a>
+
+
+                        <!-- =====================================
+                             NOTIFICATION MENU
+                        ====================================== -->
+
+                        <div
+                            class="dropdown-menu dropdown-menu-end fp-neon-dropdown fp-notification-dropdown"
+                            aria-labelledby="finpilotNotificationDropdown"
+                        >
+
+                            <div
+                                class="fp-notification-header"
+                            >
+
+                                <div>
+
+                                    <span
+                                        class="fp-notification-label"
+                                    >
+                                        FINPILOT AI
+                                    </span>
+
+                                    <h6>
+                                        Notifications
+                                    </h6>
+
+                                </div>
+
+
+                                {% if financial_alerts is defined
+                                      and financial_alerts %}
+
+                                    <span
+                                        class="fp-notification-total"
+                                    >
+                                        {{ financial_alerts|length }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            {% if financial_alerts is defined
+                                  and financial_alerts %}
+
+                                <div
+                                    class="fp-notification-list"
+                                >
+
+                                    {% for alert in financial_alerts %}
+
+                                        <div
+                                            class="fp-notification-item notification-{{ alert.type }}"
+                                        >
+
+                                            <div
+                                                class="fp-notification-item-icon"
+                                            >
+                                                {{ alert.icon }}
+                                            </div>
+
+                                            <div
+                                                class="fp-notification-item-content"
+                                            >
+
+                                                <strong>
+                                                    {{ alert.title }}
+                                                </strong>
+
+                                                <p>
+                                                    {{ alert.message }}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                <div
+                                    class="fp-notification-empty"
+                                >
+
+                                    <div
+                                        class="fp-notification-empty-icon"
+                                    >
+                                        🛡️
+                                    </div>
+
+                                    <strong>
+                                        You're all clear!
+                                    </strong>
+
+                                    <p>
+                                        FinPilot has no important
+                                        financial alerts right now.
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <div
+                                class="fp-notification-footer"
+                            >
+
+                                <a
+                                    href="{{ url_for('dashboard.dashboard_home') }}"
+                                >
+                                    <span>
+                                        View Financial Dashboard
+                                    </span>
+
+                                    <span>
+                                        →
+                                    </span>
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </li>
+
+
+                    <!-- =========================================
+                         USER MENU
+                    ========================================== -->
+
+                    <li class="nav-item dropdown ms-lg-2">
+
+                        <a
+                            class="nav-link fp-neon-nav-link fp-user-link dropdown-toggle"
+                            href="#"
+                            id="finpilotUserDropdown"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+
+                            <span
+                                class="fp-user-avatar"
+                            >
+                                {{ current_user.username[0]|upper }}
+                            </span>
+
+                            <span
+                                class="fp-user-name"
+                            >
+                                {{ current_user.username }}
+                            </span>
+
+                        </a>
+
+
+                        <ul
+                            class="dropdown-menu dropdown-menu-end fp-neon-dropdown"
+                            aria-labelledby="finpilotUserDropdown"
+                        >
+
+                            <li>
+
+                                <h6
+                                    class="dropdown-header"
+                                >
+                                    👋 Hey,
+                                    {{ current_user.username }}
+                                </h6>
+
+                            </li>
+
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{{ url_for('dashboard.dashboard_home') }}"
+                                >
+                                    📊 Dashboard
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{{ url_for('analytics.analytics_home') }}"
+                                >
+                                    📈 Analytics
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{{ url_for('budget.set_budget') }}"
+                                >
+                                    🎯 My Budget
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{{ url_for('goal.goal_list') }}"
+                                >
+                                    🏆 My Goals
+                                </a>
+
+                            </li>
+
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item fp-logout"
+                                    href="{{ url_for('auth.logout') }}"
+                                >
+                                    🚪 Logout
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                {% else %}
+
+
+                    <!-- =========================================
+                         GUEST LOGIN
+                    ========================================== -->
+
+                    <li class="nav-item ms-lg-2">
+
+                        <a
+                            href="/login"
+                            class="fp-nav-login"
+                        >
+                            Login
+                        </a>
+
+                    </li>
+
+
+                    <!-- =========================================
+                         GUEST REGISTER
+                    ========================================== -->
+
+                    <li class="nav-item ms-lg-2">
+
+                        <a
+                            href="/register"
+                            class="fp-nav-register"
+                        >
+                            Register
+                        </a>
+
+                    </li>
+
+
+                {% endif %}
+
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>

@@ -1,0 +1,1068 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | Expenses
+{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   FINPILOT AI — EXPENSE MANAGER
+   Step 26I
+========================================================= */
+
+.fp-expense-manager{
+    min-height:calc(100vh - 74px);
+    position:relative;
+    overflow:hidden;
+    padding:36px 0 65px;
+    color:#eef7ff;
+    background:
+        radial-gradient(circle at 7% 8%,rgba(108,124,255,.11),transparent 25%),
+        radial-gradient(circle at 94% 18%,rgba(255,91,126,.08),transparent 28%),
+        radial-gradient(circle at 50% 100%,rgba(93,231,255,.07),transparent 34%),
+        #050816;
+}
+
+.fp-expense-manager::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(255,255,255,.021) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.021) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom,black,transparent 94%);
+}
+
+.fp-manager-orb{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    filter:blur(3px);
+    opacity:.4;
+}
+
+.fp-manager-orb.one{
+    width:320px;
+    height:320px;
+    right:-150px;
+    top:100px;
+    background:rgba(108,124,255,.08);
+    animation:fpManagerFloat 9s ease-in-out infinite;
+}
+
+.fp-manager-orb.two{
+    width:230px;
+    height:230px;
+    left:-115px;
+    bottom:100px;
+    background:rgba(93,231,255,.07);
+    animation:fpManagerFloat 11s ease-in-out infinite reverse;
+}
+
+.fp-expense-manager .container{
+    position:relative;
+    z-index:2;
+}
+
+.fp-manager-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:25px;
+}
+
+.fp-manager-eyebrow{
+    margin:0 0 8px;
+    color:#5de7ff;
+    font-size:.69rem;
+    font-weight:850;
+    letter-spacing:.16em;
+}
+
+.fp-manager-title{
+    margin:0;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:900;
+    letter-spacing:-.045em;
+}
+
+.fp-manager-subtitle{
+    max-width:680px;
+    margin:9px 0 0;
+    color:#8299b1;
+    font-size:.86rem;
+    line-height:1.7;
+}
+
+.fp-manager-add{
+    min-height:49px;
+    padding:10px 18px!important;
+    border:0!important;
+    border-radius:13px!important;
+    color:#fff!important;
+    background:linear-gradient(90deg,#6c7cff,#ff5b7e)!important;
+    font-weight:850!important;
+    box-shadow:0 10px 28px rgba(108,124,255,.16);
+    transition:.25s!important;
+}
+
+.fp-manager-add:hover{
+    color:#fff!important;
+    transform:translateY(-2px);
+    box-shadow:0 14px 35px rgba(108,124,255,.27);
+}
+
+/* FILTER PANEL */
+
+.fp-filter-panel{
+    margin-top:24px;
+    padding:20px;
+    border-radius:22px;
+    background:linear-gradient(145deg,rgba(17,27,53,.86),rgba(7,14,30,.78));
+    border:1px solid rgba(93,231,255,.14);
+    box-shadow:0 20px 55px rgba(0,0,0,.22);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+.fp-filter-search{
+    position:relative;
+}
+
+.fp-filter-search-icon{
+    position:absolute;
+    left:15px;
+    top:50%;
+    z-index:2;
+    transform:translateY(-50%);
+    color:#5de7ff;
+    pointer-events:none;
+}
+
+.fp-filter-panel .form-control,
+.fp-filter-panel .form-select{
+    min-height:47px;
+    color:#eef7ff!important;
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+    border-radius:12px!important;
+    box-shadow:none!important;
+    transition:.25s ease;
+}
+
+.fp-filter-panel .form-control::placeholder{
+    color:#607891;
+}
+
+.fp-filter-panel .form-control:focus,
+.fp-filter-panel .form-select:focus{
+    border-color:rgba(93,231,255,.58)!important;
+    background:rgba(93,231,255,.04)!important;
+    box-shadow:0 0 0 3px rgba(93,231,255,.06)!important;
+}
+
+.fp-filter-panel .form-select option{
+    color:#101827;
+    background:#fff;
+}
+
+.fp-filter-search input{
+    padding-left:43px!important;
+}
+
+.fp-filter-label{
+    display:block;
+    margin:15px 0 7px;
+    color:#8fa6bb;
+    font-size:.68rem;
+    font-weight:750;
+}
+
+.fp-filter-actions{
+    display:flex;
+    align-items:end;
+    gap:9px;
+    height:100%;
+}
+
+.fp-filter-apply{
+    min-height:47px;
+    flex:1;
+    border:0!important;
+    border-radius:12px!important;
+    color:#fff!important;
+    background:linear-gradient(90deg,#6c7cff,#5de7ff)!important;
+    font-weight:800!important;
+}
+
+.fp-filter-clear{
+    min-height:47px;
+    border-radius:12px!important;
+    color:#9fb3c6!important;
+    border-color:rgba(255,255,255,.11)!important;
+    background:rgba(255,255,255,.025)!important;
+    font-weight:750!important;
+}
+
+.fp-filter-clear:hover{
+    color:#fff!important;
+    background:rgba(255,255,255,.06)!important;
+}
+
+/* RESULTS HEADER */
+
+.fp-results-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    margin-top:22px;
+    padding:0 3px;
+}
+
+.fp-results-count{
+    color:#8098b0;
+    font-size:.75rem;
+}
+
+.fp-results-count strong{
+    color:#f1f7ff;
+    font-size:1rem;
+}
+
+.fp-active-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    margin-left:8px;
+    padding:5px 9px;
+    border-radius:999px;
+    color:#5de7ff;
+    background:rgba(93,231,255,.055);
+    border:1px solid rgba(93,231,255,.14);
+    font-size:.61rem;
+    font-weight:800;
+}
+
+.fp-results-total{
+    color:#7189a2;
+    font-size:.7rem;
+}
+
+.fp-results-total strong{
+    color:#ff7e9a;
+    font-size:.92rem;
+}
+
+/* LIST */
+
+.fp-expense-list-panel{
+    margin-top:12px;
+    overflow:hidden;
+    border-radius:23px;
+    background:linear-gradient(145deg,rgba(17,27,53,.85),rgba(7,14,30,.78));
+    border:1px solid rgba(93,231,255,.14);
+    box-shadow:0 20px 60px rgba(0,0,0,.24);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+.fp-expense-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    padding:17px 23px;
+    border-bottom:1px solid rgba(255,255,255,.045);
+    transition:.23s ease;
+}
+
+.fp-expense-row:last-child{
+    border-bottom:0;
+}
+
+.fp-expense-row:hover{
+    background:rgba(108,124,255,.025);
+}
+
+.fp-expense-left{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.fp-expense-category-icon{
+    width:48px;
+    height:48px;
+    flex:0 0 48px;
+    display:grid;
+    place-items:center;
+    border-radius:15px;
+    font-size:20px;
+    background:linear-gradient(135deg,rgba(108,124,255,.09),rgba(255,91,126,.055));
+    border:1px solid rgba(108,124,255,.13);
+}
+
+.fp-expense-details{
+    min-width:0;
+}
+
+.fp-expense-details strong{
+    display:block;
+    overflow:hidden;
+    color:#edf6ff;
+    font-size:.79rem;
+    font-weight:800;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.fp-expense-meta{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px;
+    margin-top:5px;
+    color:#637b94;
+    font-size:.64rem;
+}
+
+.fp-expense-meta span{
+    color:#3f5870;
+}
+
+.fp-expense-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:0 0 auto;
+}
+
+.fp-expense-amount{
+    margin-right:4px;
+    color:#ff7e9a;
+    font-size:.85rem;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.fp-expense-action{
+    width:35px;
+    height:35px;
+    display:grid;
+    place-items:center;
+    padding:0!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(255,255,255,.08)!important;
+    transition:.22s!important;
+}
+
+.fp-expense-action.edit{
+    color:#5de7ff!important;
+}
+
+.fp-expense-action.delete{
+    color:#ff7e9a!important;
+}
+
+.fp-expense-action:hover{
+    transform:translateY(-2px);
+    background:rgba(255,255,255,.07)!important;
+}
+
+.fp-expense-action.delete:hover{
+    border-color:rgba(255,126,154,.25)!important;
+    box-shadow:0 0 18px rgba(255,91,126,.08);
+}
+
+.fp-expense-empty{
+    padding:65px 25px;
+    text-align:center;
+}
+
+.fp-empty-icon{
+    width:70px;
+    height:70px;
+    display:grid;
+    place-items:center;
+    margin:0 auto 16px;
+    border-radius:22px;
+    font-size:30px;
+    background:rgba(93,231,255,.055);
+    border:1px solid rgba(93,231,255,.12);
+    box-shadow:0 0 35px rgba(93,231,255,.06);
+}
+
+.fp-expense-empty h3{
+    margin:0;
+    font-size:1rem;
+    font-weight:850;
+}
+
+.fp-expense-empty p{
+    max-width:430px;
+    margin:8px auto 18px;
+    color:#7189a2;
+    font-size:.73rem;
+    line-height:1.65;
+}
+
+.fp-empty-btn{
+    border:0!important;
+    border-radius:11px!important;
+    color:#fff!important;
+    background:linear-gradient(90deg,#6c7cff,#ff5b7e)!important;
+    font-weight:800!important;
+}
+
+.fp-manager-tip{
+    position:relative;
+    overflow:hidden;
+    margin-top:18px;
+    padding:21px 24px;
+    border-radius:21px;
+    background:linear-gradient(135deg,rgba(108,124,255,.055),rgba(93,231,255,.04));
+    border:1px solid rgba(93,231,255,.11);
+}
+
+.fp-manager-tip::after{
+    content:"";
+    position:absolute;
+    width:170px;
+    height:170px;
+    right:-85px;
+    top:-105px;
+    border-radius:50%;
+    background:rgba(108,124,255,.07);
+    filter:blur(5px);
+}
+
+.fp-tip-icon{
+    width:36px;
+    height:36px;
+    display:grid;
+    place-items:center;
+    margin-bottom:10px;
+    border-radius:11px;
+    background:rgba(93,231,255,.065);
+}
+
+.fp-tip-label{
+    display:block;
+    color:#5de7ff;
+    font-size:.64rem;
+    font-weight:850;
+    letter-spacing:.13em;
+}
+
+.fp-manager-tip h3{
+    margin:7px 0 5px;
+    font-size:1rem;
+    font-weight:850;
+}
+
+.fp-manager-tip p{
+    max-width:760px;
+    margin:0;
+    color:#728aa2;
+    font-size:.71rem;
+    line-height:1.7;
+}
+
+.fp-tip-pulse{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:13px;
+    color:#536b84;
+    font-size:.62rem;
+}
+
+.fp-tip-pulse span{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#5de7ff;
+    box-shadow:0 0 12px rgba(93,231,255,.65);
+    animation:fpTipPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes fpManagerFloat{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-13px,14px) scale(1.06)}
+}
+
+@keyframes fpTipPulse{
+    0%,100%{opacity:.45;transform:scale(.85)}
+    50%{opacity:1;transform:scale(1.2)}
+}
+
+@media(max-width:991px){
+    .fp-filter-actions{
+        margin-top:15px;
+        height:auto;
+    }
+}
+
+@media(max-width:768px){
+    .fp-manager-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .fp-manager-add{
+        width:100%;
+    }
+
+    .fp-results-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .fp-expense-row{
+        align-items:flex-start;
+        padding:15px;
+    }
+
+    .fp-expense-right{
+        flex-wrap:wrap;
+        justify-content:flex-end;
+    }
+}
+
+@media(max-width:520px){
+    .fp-expense-manager{
+        padding-top:25px;
+    }
+
+    .fp-filter-panel{
+        padding:15px;
+    }
+
+    .fp-expense-category-icon{
+        width:42px;
+        height:42px;
+        flex-basis:42px;
+        font-size:18px;
+    }
+
+    .fp-expense-details strong{
+        font-size:.73rem;
+    }
+
+    .fp-expense-meta{
+        max-width:42vw;
+    }
+
+    .fp-expense-amount{
+        font-size:.77rem;
+    }
+
+    .fp-expense-action{
+        width:32px;
+        height:32px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.01ms!important;
+    }
+}
+</style>
+
+<div class="fp-expense-manager">
+
+    <div class="fp-manager-orb one"></div>
+    <div class="fp-manager-orb two"></div>
+
+    <div class="container">
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="fp-manager-header">
+
+            <div>
+                <p class="fp-manager-eyebrow">
+                    💸 FINPILOT AI · MONEY TRACKER
+                </p>
+
+                <h1 class="fp-manager-title">
+                    Expense Manager
+                </h1>
+
+                <p class="fp-manager-subtitle">
+                    Search, filter and manage every rupee you spend.
+                </p>
+            </div>
+
+            <a
+                href="{{ url_for('expense.add_expense') }}"
+                class="btn fp-manager-add"
+            >
+                ＋ Add Expense
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             SEARCH + FILTER
+        ================================================== -->
+
+        <div class="fp-filter-panel">
+
+            <form
+                method="GET"
+                action="{{ url_for('expense.expense_list') }}"
+            >
+
+                <div class="fp-filter-search">
+
+                    <span class="fp-filter-search-icon">
+                        🔍
+                    </span>
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        class="form-control"
+                        placeholder="Search expenses, descriptions or categories..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="row g-3">
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="fp-filter-label">
+                            🏷️ Category
+                        </label>
+
+                        <select
+                            name="category"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Categories
+                            </option>
+
+                            {% for item in categories %}
+
+                                <option
+                                    value="{{ item }}"
+                                    {% if selected_category == item %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ item }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="fp-filter-label">
+                            💳 Payment
+                        </label>
+
+                        <select
+                            name="payment_method"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Payments
+                            </option>
+
+                            {% for method in payment_methods %}
+
+                                <option
+                                    value="{{ method }}"
+                                    {% if selected_payment_method == method %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ method }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="fp-filter-label">
+                            📅 Date
+                        </label>
+
+                        <select
+                            name="date_filter"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Time
+                            </option>
+
+                            <option
+                                value="today"
+                                {% if selected_date_filter == "today" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Today
+                            </option>
+
+                            <option
+                                value="week"
+                                {% if selected_date_filter == "week" %}
+                                    selected
+                                {% endif %}
+                            >
+                                This Week
+                            </option>
+
+                            <option
+                                value="month"
+                                {% if selected_date_filter == "month" %}
+                                    selected
+                                {% endif %}
+                            >
+                                This Month
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="fp-filter-label">
+                            ⚡ Actions
+                        </label>
+
+                        <div class="fp-filter-actions">
+
+                            <button
+                                type="submit"
+                                class="btn fp-filter-apply"
+                            >
+                                Apply Filters
+                            </button>
+
+                            <a
+                                href="{{ url_for('expense.expense_list') }}"
+                                class="btn fp-filter-clear"
+                            >
+                                Clear
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             RESULTS HEADER
+        ================================================== -->
+
+        <div class="fp-results-header">
+
+            <div class="fp-results-count">
+
+                <strong>
+                    {{ expenses|length }}
+                </strong>
+
+                {% if expenses|length == 1 %}
+                    expense found
+                {% else %}
+                    expenses found
+                {% endif %}
+
+                {% if search or selected_category
+                   or selected_payment_method
+                   or selected_date_filter %}
+
+                    <span class="fp-active-badge">
+                        ● Filters active
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if expenses %}
+
+                <div class="fp-results-total">
+
+                    Total:
+
+                    <strong>
+                        ₹{{ "%.2f"|format(
+                            expenses|sum(attribute="amount")
+                        ) }}
+                    </strong>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             EXPENSE LIST
+        ================================================== -->
+
+        <div class="fp-expense-list-panel">
+
+            {% if expenses %}
+
+                <div>
+
+                    {% for expense in expenses %}
+
+                        <div class="fp-expense-row">
+
+                            <div class="fp-expense-left">
+
+                                <div class="fp-expense-category-icon">
+
+                                    {% if expense.category == "Food" %}
+                                        🍔
+                                    {% elif expense.category == "Travel" %}
+                                        🚌
+                                    {% elif expense.category == "Shopping" %}
+                                        🛍️
+                                    {% elif expense.category == "Education" %}
+                                        📚
+                                    {% elif expense.category == "Gym" %}
+                                        🏋️
+                                    {% elif expense.category == "Health" %}
+                                        💊
+                                    {% elif expense.category == "Entertainment" %}
+                                        🎮
+                                    {% elif expense.category == "Bills" %}
+                                        📱
+                                    {% elif expense.category == "Investment" %}
+                                        📈
+                                    {% else %}
+                                        💸
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="fp-expense-details">
+
+                                    <strong>
+                                        {{ expense.description or expense.category }}
+                                    </strong>
+
+                                    <div class="fp-expense-meta">
+
+                                        <span class="fp-meta-category">
+                                            {{ expense.category }}
+                                        </span>
+
+                                        <span>•</span>
+
+                                        <span>
+                                            {{ expense.payment_method }}
+                                        </span>
+
+                                        <span>•</span>
+
+                                        <span>
+                                            {{ expense.date }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="fp-expense-right">
+
+                                <strong class="fp-expense-amount">
+                                    - ₹{{ "%.2f"|format(expense.amount) }}
+                                </strong>
+
+
+                                <a
+                                    href="{{ url_for(
+                                        'expense.edit_expense',
+                                        expense_id=expense.id
+                                    ) }}"
+                                    class="btn fp-expense-action edit"
+                                    title="Edit Expense"
+                                    aria-label="Edit Expense"
+                                >
+                                    ✏️
+                                </a>
+
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'expense.delete_expense',
+                                        expense_id=expense.id
+                                    ) }}"
+                                    onsubmit="return confirm('Are you sure you want to delete this expense?');"
+                                    class="m-0"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn fp-expense-action delete"
+                                        title="Delete Expense"
+                                        aria-label="Delete Expense"
+                                    >
+                                        🗑️
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <!-- =================================================
+                     EMPTY STATE
+                ================================================== -->
+
+                <div class="fp-expense-empty">
+
+                    <div class="fp-empty-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        No expenses found
+                    </h3>
+
+                    {% if search or selected_category
+                       or selected_payment_method
+                       or selected_date_filter %}
+
+                        <p>
+                            Nothing matched your current search or filters.
+                            Try changing them and search again.
+                        </p>
+
+                        <a
+                            href="{{ url_for('expense.expense_list') }}"
+                            class="btn fp-empty-btn"
+                        >
+                            Clear Filters
+                        </a>
+
+                    {% else %}
+
+                        <p>
+                            You haven't added any expenses yet.
+                            Start tracking your spending today.
+                        </p>
+
+                        <a
+                            href="{{ url_for('expense.add_expense') }}"
+                            class="btn fp-empty-btn"
+                        >
+                            Add Your First Expense
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             FINPILOT TIP
+        ================================================== -->
+
+        <div class="fp-manager-tip">
+
+            <div class="fp-tip-icon">
+                ✨
+            </div>
+
+            <span class="fp-tip-label">
+                FINPILOT TIP
+            </span>
+
+            <h3>
+                Small expenses can become big patterns.
+            </h3>
+
+            <p>
+                Keep your transactions updated and use the filters
+                to understand where your money is going. Accurate
+                expense data helps FinPilot generate better budget
+                alerts and financial insights.
+            </p>
+
+            <div class="fp-tip-pulse">
+                <span></span>
+                Your spending data is ready to analyze
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

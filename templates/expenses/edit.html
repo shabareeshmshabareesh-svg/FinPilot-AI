@@ -1,0 +1,1389 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | Edit Expense
+{% endblock %}
+
+{% block content %}
+
+<style>
+.fp-edit-expense-page {
+    min-height: calc(100vh - 74px);
+    position: relative;
+    overflow: hidden;
+    padding: 38px 0 65px;
+    color: #eef7ff;
+
+    background:
+        radial-gradient(circle at 7% 8%, rgba(255,91,126,.10), transparent 26%),
+        radial-gradient(circle at 94% 18%, rgba(108,124,255,.10), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(93,231,255,.07), transparent 35%),
+        #050816;
+}
+
+.fp-edit-expense-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(rgba(255,255,255,.021) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.021) 1px, transparent 1px);
+
+    background-size: 45px 45px;
+
+    mask-image: linear-gradient(to bottom, black, transparent 94%);
+}
+
+.fp-edit-expense-page .container {
+    position: relative;
+    z-index: 2;
+}
+
+.fp-edit-expense-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(4px);
+    opacity: .4;
+}
+
+.fp-edit-expense-orb.one {
+    width: 320px;
+    height: 320px;
+    right: -150px;
+    top: 90px;
+    background: rgba(255,91,126,.08);
+
+    animation:
+        fpExpenseFloat
+        9s
+        ease-in-out
+        infinite;
+}
+
+.fp-edit-expense-orb.two {
+    width: 240px;
+    height: 240px;
+    left: -120px;
+    bottom: 90px;
+    background: rgba(93,231,255,.07);
+
+    animation:
+        fpExpenseFloat
+        11s
+        ease-in-out
+        infinite reverse;
+}
+
+
+/* HEADER */
+
+.fp-edit-expense-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.fp-edit-expense-eyebrow {
+    margin: 0 0 8px;
+
+    color: #ff7e9a;
+
+    font-size: .69rem;
+    font-weight: 850;
+
+    letter-spacing: .16em;
+}
+
+.fp-edit-expense-title {
+    margin: 0;
+
+    font-size: clamp(2rem, 4vw, 3rem);
+
+    font-weight: 900;
+
+    letter-spacing: -.045em;
+}
+
+.fp-edit-expense-subtitle {
+    max-width: 700px;
+
+    margin: 9px 0 0;
+
+    color: #8299b1;
+
+    font-size: .86rem;
+
+    line-height: 1.7;
+}
+
+
+/* BACK */
+
+.fp-edit-expense-back {
+    color: #5de7ff !important;
+
+    background:
+        rgba(93,231,255,.035) !important;
+
+    border:
+        1px solid rgba(93,231,255,.20) !important;
+
+    border-radius: 13px !important;
+
+    font-weight: 800 !important;
+
+    padding: 10px 17px !important;
+
+    transition: .25s !important;
+}
+
+.fp-edit-expense-back:hover {
+    transform: translateY(-2px);
+
+    background:
+        rgba(93,231,255,.08) !important;
+
+    box-shadow:
+        0 0 25px rgba(93,231,255,.10);
+}
+
+
+/* CARD */
+
+.fp-edit-expense-card {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 30px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,27,53,.86),
+            rgba(7,14,30,.78)
+        );
+
+    border:
+        1px solid rgba(255,91,126,.14);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.25);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.fp-edit-expense-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 8%;
+    right: 8%;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #ff5b7e,
+            #6c7cff,
+            transparent
+        );
+
+    box-shadow:
+        0 0 15px rgba(255,91,126,.30);
+}
+
+
+/* HEADING */
+
+.fp-edit-expense-heading {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 27px;
+}
+
+.fp-edit-expense-icon {
+    width: 57px;
+    height: 57px;
+
+    flex: 0 0 57px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 18px;
+
+    font-size: 27px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,91,126,.13),
+            rgba(108,124,255,.06)
+        );
+
+    border:
+        1px solid rgba(255,91,126,.18);
+
+    box-shadow:
+        0 0 30px rgba(255,91,126,.08);
+
+    animation:
+        fpExpensePulse
+        3s
+        ease-in-out
+        infinite;
+}
+
+.fp-edit-expense-heading h2 {
+    margin: 0;
+
+    font-size: 1.22rem;
+
+    font-weight: 900;
+}
+
+.fp-edit-expense-heading p {
+    margin: 4px 0 0;
+
+    color: #7189a2;
+
+    font-size: .72rem;
+}
+
+
+/* FORM */
+
+.fp-edit-expense-group {
+    margin-bottom: 20px;
+}
+
+.fp-edit-expense-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #b7c9da;
+
+    font-size: .77rem;
+
+    font-weight: 800;
+}
+
+.fp-edit-expense-required {
+    color: #ff7e9a;
+}
+
+.fp-edit-expense-page .form-control,
+.fp-edit-expense-page .form-select {
+    min-height: 51px;
+
+    color: #eef7ff !important;
+
+    background:
+        rgba(255,255,255,.035) !important;
+
+    border:
+        1px solid rgba(255,255,255,.10) !important;
+
+    border-radius: 13px !important;
+
+    box-shadow: none !important;
+
+    transition: .25s ease;
+}
+
+.fp-edit-expense-page .form-control::placeholder {
+    color: #607891;
+}
+
+.fp-edit-expense-page .form-control:focus,
+.fp-edit-expense-page .form-select:focus {
+    border-color:
+        rgba(93,231,255,.62) !important;
+
+    background:
+        rgba(93,231,255,.035) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(93,231,255,.06),
+        0 0 26px rgba(93,231,255,.08) !important;
+}
+
+.fp-edit-expense-page textarea.form-control {
+    min-height: 105px;
+    resize: vertical;
+}
+
+.fp-edit-expense-page .form-select option {
+    color: #111827;
+    background: #ffffff;
+}
+
+
+/* MONEY */
+
+.fp-edit-expense-money-wrapper {
+    position: relative;
+}
+
+.fp-edit-expense-currency {
+    position: absolute;
+
+    left: 15px;
+    top: 50%;
+
+    z-index: 2;
+
+    transform: translateY(-50%);
+
+    color: #ff7e9a;
+
+    font-size: 1.05rem;
+
+    font-weight: 900;
+
+    pointer-events: none;
+}
+
+.fp-edit-expense-money {
+    padding-left: 42px !important;
+
+    font-weight: 800;
+}
+
+
+/* ERRORS */
+
+.fp-edit-expense-error {
+    margin-top: 7px;
+
+    padding: 8px 10px;
+
+    color: #ff8da0;
+
+    background:
+        rgba(255,95,122,.06);
+
+    border:
+        1px solid rgba(255,95,122,.14);
+
+    border-radius: 9px;
+
+    font-size: .70rem;
+}
+
+.fp-edit-expense-help {
+    margin-top: 6px;
+
+    color: #607891;
+
+    font-size: .65rem;
+
+    line-height: 1.5;
+}
+
+
+/* BUTTONS */
+
+.fp-edit-expense-actions {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 11px;
+
+    margin-top: 25px;
+}
+
+.fp-edit-expense-cancel,
+.fp-edit-expense-submit {
+    min-height: 51px;
+
+    border-radius: 13px !important;
+
+    font-weight: 850 !important;
+
+    transition: .25s !important;
+}
+
+.fp-edit-expense-cancel {
+    color: #9bb0c4 !important;
+
+    background:
+        rgba(255,255,255,.035) !important;
+
+    border:
+        1px solid rgba(255,255,255,.10) !important;
+}
+
+.fp-edit-expense-cancel:hover {
+    color: #fff !important;
+
+    background:
+        rgba(255,255,255,.07) !important;
+
+    transform: translateY(-2px);
+}
+
+.fp-edit-expense-submit {
+    color: #fff !important;
+
+    border: 0 !important;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff5b7e,
+            #6c7cff
+        ) !important;
+
+    box-shadow:
+        0 11px 30px rgba(255,91,126,.17);
+}
+
+.fp-edit-expense-submit:hover {
+    color: #fff !important;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 15px 38px rgba(255,91,126,.27);
+}
+
+
+/* SIDE */
+
+.fp-edit-expense-side {
+    height: 100%;
+
+    padding: 25px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,27,53,.86),
+            rgba(7,14,30,.78)
+        );
+
+    border:
+        1px solid rgba(93,231,255,.14);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.25);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.fp-edit-expense-side-label {
+    color: #5de7ff;
+
+    font-size: .67rem;
+
+    font-weight: 850;
+
+    letter-spacing: .14em;
+}
+
+.fp-edit-expense-side h3 {
+    margin: 8px 0;
+
+    font-size: 1.15rem;
+
+    font-weight: 900;
+}
+
+.fp-edit-expense-side > p {
+    color: #7f96ad;
+
+    font-size: .75rem;
+
+    line-height: 1.7;
+}
+
+
+/* PREVIEW */
+
+.fp-expense-preview {
+    margin-top: 18px;
+
+    padding: 18px;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,91,126,.07),
+            rgba(108,124,255,.035)
+        );
+
+    border:
+        1px solid rgba(255,91,126,.12);
+}
+
+.fp-expense-preview-label {
+    display: block;
+
+    color: #7189a2;
+
+    font-size: .62rem;
+
+    font-weight: 750;
+
+    letter-spacing: .08em;
+}
+
+.fp-expense-preview-amount {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #ff7e9a;
+
+    font-size: 1.65rem;
+
+    font-weight: 900;
+
+    letter-spacing: -.035em;
+}
+
+.fp-expense-preview-category,
+.fp-expense-preview-payment {
+    display: inline-block;
+
+    margin-top: 8px;
+    margin-right: 5px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    color: #5de7ff;
+
+    background:
+        rgba(93,231,255,.05);
+
+    border:
+        1px solid rgba(93,231,255,.11);
+
+    font-size: .62rem;
+
+    font-weight: 800;
+}
+
+
+/* SIDE ITEMS */
+
+.fp-edit-expense-side-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 13px;
+
+    margin-top: 10px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid rgba(255,255,255,.065);
+}
+
+.fp-edit-expense-side-icon {
+    width: 40px;
+    height: 40px;
+
+    flex: 0 0 40px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,91,126,.06);
+}
+
+.fp-edit-expense-side-item strong {
+    display: block;
+
+    font-size: .73rem;
+}
+
+.fp-edit-expense-side-item span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #687f98;
+
+    font-size: .63rem;
+}
+
+
+/* TIP */
+
+.fp-edit-expense-tip {
+    margin-top: 18px;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    background:
+        rgba(93,231,255,.04);
+
+    border:
+        1px solid rgba(93,231,255,.11);
+}
+
+.fp-edit-expense-tip strong {
+    font-size: .73rem;
+}
+
+.fp-edit-expense-tip p {
+    margin: 5px 0 0;
+
+    color: #7189a2;
+
+    font-size: .67rem;
+
+    line-height: 1.55;
+}
+
+
+/* ANIMATION */
+
+@keyframes fpExpenseFloat {
+
+    0%,100% {
+        transform:
+            translate(0,0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate(-14px,13px)
+            scale(1.06);
+    }
+}
+
+@keyframes fpExpensePulse {
+
+    0%,100% {
+        transform:
+            translateY(0);
+
+        box-shadow:
+            0 0 30px
+            rgba(255,91,126,.08);
+    }
+
+    50% {
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0 0 38px
+            rgba(255,91,126,.13);
+    }
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width:991px) {
+
+    .fp-edit-expense-side {
+        height: auto;
+    }
+}
+
+@media(max-width:768px) {
+
+    .fp-edit-expense-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .fp-edit-expense-back {
+        width: 100%;
+    }
+}
+
+@media(max-width:600px) {
+
+    .fp-edit-expense-page {
+        padding-top: 25px;
+    }
+
+    .fp-edit-expense-card,
+    .fp-edit-expense-side {
+        padding: 21px;
+    }
+
+    .fp-edit-expense-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .fp-edit-expense-title {
+        font-size: 2rem;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+
+
+<div class="fp-edit-expense-page">
+
+    <div class="fp-edit-expense-orb one"></div>
+    <div class="fp-edit-expense-orb two"></div>
+
+
+    <div class="container">
+
+
+        <!-- HEADER -->
+
+        <div class="fp-edit-expense-header">
+
+            <div>
+
+                <p class="fp-edit-expense-eyebrow">
+                    ✏️ FINPILOT AI · UPDATE EXPENSE
+                </p>
+
+                <h1 class="fp-edit-expense-title">
+                    Edit Expense
+                </h1>
+
+                <p class="fp-edit-expense-subtitle">
+                    Update your expense details and keep your
+                    spending history accurate.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('expense.expense_list') }}"
+                class="btn fp-edit-expense-back"
+            >
+                ← Back to Expenses
+            </a>
+
+        </div>
+
+
+        <!-- MAIN -->
+
+        <div class="row g-4">
+
+
+            <!-- FORM -->
+
+            <div class="col-lg-8">
+
+                <div class="fp-edit-expense-card">
+
+
+                    <div class="fp-edit-expense-heading">
+
+                        <div class="fp-edit-expense-icon">
+                            ✏️
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Update Expense Details
+                            </h2>
+
+                            <p>
+                                Make your changes and save the updated record.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        novalidate
+                    >
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- AMOUNT -->
+
+                        <div class="fp-edit-expense-group">
+
+                            <label
+                                for="{{ form.amount.id }}"
+                                class="fp-edit-expense-label"
+                            >
+
+                                Amount
+                                <span class="fp-edit-expense-required">
+                                    *
+                                </span>
+
+                            </label>
+
+
+                            <div class="fp-edit-expense-money-wrapper">
+
+                                <span class="fp-edit-expense-currency">
+                                    ₹
+                                </span>
+
+                                {{ form.amount(
+                                    id=form.amount.id,
+                                    class="form-control form-control-lg fp-edit-expense-money",
+                                    min="0.01",
+                                    step="0.01",
+                                    inputmode="decimal"
+                                ) }}
+
+                            </div>
+
+
+                            {% if form.amount.errors %}
+
+                                <div class="fp-edit-expense-error">
+
+                                    {% for error in form.amount.errors %}
+
+                                        <div>
+                                            ⚠️ {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="fp-edit-expense-help">
+                                    Enter the amount you actually spent.
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CATEGORY + PAYMENT -->
+
+                        <div class="row">
+
+
+                            <div class="col-md-6">
+
+                                <div class="fp-edit-expense-group">
+
+                                    <label
+                                        for="{{ form.category.id }}"
+                                        class="fp-edit-expense-label"
+                                    >
+
+                                        Category
+                                        <span class="fp-edit-expense-required">
+                                            *
+                                        </span>
+
+                                    </label>
+
+
+                                    {{ form.category(
+                                        id=form.category.id,
+                                        class="form-select form-select-lg"
+                                    ) }}
+
+
+                                    {% if form.category.errors %}
+
+                                        <div class="fp-edit-expense-error">
+
+                                            {% for error in form.category.errors %}
+
+                                                <div>
+                                                    ⚠️ {{ error }}
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="fp-edit-expense-group">
+
+                                    <label
+                                        for="{{ form.payment_method.id }}"
+                                        class="fp-edit-expense-label"
+                                    >
+
+                                        Payment Method
+                                        <span class="fp-edit-expense-required">
+                                            *
+                                        </span>
+
+                                    </label>
+
+
+                                    {{ form.payment_method(
+                                        id=form.payment_method.id,
+                                        class="form-select form-select-lg"
+                                    ) }}
+
+
+                                    {% if form.payment_method.errors %}
+
+                                        <div class="fp-edit-expense-error">
+
+                                            {% for error in form.payment_method.errors %}
+
+                                                <div>
+                                                    ⚠️ {{ error }}
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="fp-edit-expense-group">
+
+                            <label
+                                for="{{ form.description.id }}"
+                                class="fp-edit-expense-label"
+                            >
+                                Description
+                            </label>
+
+
+                            {{ form.description(
+                                id=form.description.id,
+                                class="form-control form-control-lg",
+                                placeholder="What did you spend on?",
+                                maxlength="255",
+                                rows="3"
+                            ) }}
+
+
+                            {% if form.description.errors %}
+
+                                <div class="fp-edit-expense-error">
+
+                                    {% for error in form.description.errors %}
+
+                                        <div>
+                                            ⚠️ {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="fp-edit-expense-help">
+                                    Optional — add a short note about this expense.
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- DATE -->
+
+                        <div class="fp-edit-expense-group">
+
+                            <label
+                                for="{{ form.date.id }}"
+                                class="fp-edit-expense-label"
+                            >
+
+                                Date
+                                <span class="fp-edit-expense-required">
+                                    *
+                                </span>
+
+                            </label>
+
+
+                            {{ form.date(
+                                id=form.date.id,
+                                class="form-control form-control-lg"
+                            ) }}
+
+
+                            {% if form.date.errors %}
+
+                                <div class="fp-edit-expense-error">
+
+                                    {% for error in form.date.errors %}
+
+                                        <div>
+                                            ⚠️ {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+
+                        <div class="fp-edit-expense-actions">
+
+                            <a
+                                href="{{ url_for('expense.expense_list') }}"
+                                class="btn btn-lg fp-edit-expense-cancel"
+                            >
+                                Cancel
+                            </a>
+
+
+                            {{ form.submit(
+                                value="Update Expense",
+                                class="btn btn-lg fp-edit-expense-submit"
+                            ) }}
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- SIDE PANEL -->
+
+            <div class="col-lg-4">
+
+                <div class="fp-edit-expense-side">
+
+                    <span class="fp-edit-expense-side-label">
+                        EXPENSE PREVIEW
+                    </span>
+
+
+                    <h3>
+                        Keep your spending data accurate.
+                    </h3>
+
+
+                    <p>
+                        Review the updated expense before saving.
+                        FinPilot will use the new information in
+                        your spending analysis and dashboard.
+                    </p>
+
+
+                    <!-- PREVIEW -->
+
+                    <div class="fp-expense-preview">
+
+                        <span class="fp-expense-preview-label">
+                            UPDATED EXPENSE
+                        </span>
+
+                        <strong
+                            class="fp-expense-preview-amount"
+                            id="fpExpensePreviewAmount"
+                        >
+                            ₹0.00
+                        </strong>
+
+
+                        <span
+                            class="fp-expense-preview-category"
+                            id="fpExpensePreviewCategory"
+                        >
+                            Category
+                        </span>
+
+
+                        <span
+                            class="fp-expense-preview-payment"
+                            id="fpExpensePreviewPayment"
+                        >
+                            Payment
+                        </span>
+
+                    </div>
+
+
+                    <!-- SIDE ITEMS -->
+
+                    <div class="fp-edit-expense-side-item">
+
+                        <div class="fp-edit-expense-side-icon">
+                            📊
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Accurate Analytics
+                            </strong>
+
+                            <span>
+                                Keep your spending reports correct
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-edit-expense-side-item">
+
+                        <div class="fp-edit-expense-side-icon">
+                            💳
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Payment Tracking
+                            </strong>
+
+                            <span>
+                                Record how the expense was paid
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-edit-expense-side-item">
+
+                        <div class="fp-edit-expense-side-icon">
+                            🤖
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Smarter Insights
+                            </strong>
+
+                            <span>
+                                Updated expenses improve FinPilot analysis
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TIP -->
+
+                    <div class="fp-edit-expense-tip">
+
+                        <strong>
+                            💡 FinPilot Tip
+                        </strong>
+
+                        <p>
+                            Keeping your expenses accurate helps FinPilot
+                            calculate your budget usage, spending categories
+                            and financial insights more reliably.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     LIVE PREVIEW
+========================================================= -->
+
+<script>
+
+(function () {
+
+    const amountInput =
+        document.getElementById(
+            "{{ form.amount.id }}"
+        );
+
+    const categoryInput =
+        document.getElementById(
+            "{{ form.category.id }}"
+        );
+
+    const paymentInput =
+        document.getElementById(
+            "{{ form.payment_method.id }}"
+        );
+
+    const previewAmount =
+        document.getElementById(
+            "fpExpensePreviewAmount"
+        );
+
+    const previewCategory =
+        document.getElementById(
+            "fpExpensePreviewCategory"
+        );
+
+    const previewPayment =
+        document.getElementById(
+            "fpExpensePreviewPayment"
+        );
+
+
+    if (
+        !amountInput ||
+        !categoryInput ||
+        !paymentInput ||
+        !previewAmount ||
+        !previewCategory ||
+        !previewPayment
+    ) {
+        return;
+    }
+
+
+    function updatePreview() {
+
+        const amount =
+            parseFloat(
+                amountInput.value
+            ) || 0;
+
+
+        const category =
+            categoryInput.options[
+                categoryInput.selectedIndex
+            ]?.text || "Category";
+
+
+        const payment =
+            paymentInput.options[
+                paymentInput.selectedIndex
+            ]?.text || "Payment";
+
+
+        previewAmount.textContent =
+            "₹" +
+            amount.toLocaleString(
+                "en-IN",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+
+        previewCategory.textContent =
+            category;
+
+
+        previewPayment.textContent =
+            payment;
+
+    }
+
+
+    amountInput.addEventListener(
+        "input",
+        updatePreview
+    );
+
+    categoryInput.addEventListener(
+        "change",
+        updatePreview
+    );
+
+    paymentInput.addEventListener(
+        "change",
+        updatePreview
+    );
+
+
+    updatePreview();
+
+})();
+
+</script>
+
+{% endblock %}

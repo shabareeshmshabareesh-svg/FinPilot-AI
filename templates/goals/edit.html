@@ -1,0 +1,938 @@
+{% extends "base.html" %}
+
+{% block title %}
+FinPilot AI | Edit Goal
+{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   FINPILOT AI — EDIT SAVINGS GOAL
+   Step 26N
+========================================================= */
+
+.fp-edit-goal-page{
+    min-height:calc(100vh - 74px);
+    position:relative;
+    overflow:hidden;
+    padding:36px 0 65px;
+    color:#eef7ff;
+    background:
+        radial-gradient(circle at 7% 8%,rgba(108,124,255,.12),transparent 26%),
+        radial-gradient(circle at 94% 18%,rgba(93,231,255,.08),transparent 28%),
+        radial-gradient(circle at 50% 100%,rgba(255,91,126,.06),transparent 34%),
+        #050816;
+}
+
+.fp-edit-goal-page::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(255,255,255,.021) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.021) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom,black,transparent 94%);
+}
+
+.fp-edit-goal-orb{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    filter:blur(4px);
+    opacity:.42;
+}
+
+.fp-edit-goal-orb.one{
+    width:320px;
+    height:320px;
+    right:-145px;
+    top:100px;
+    background:rgba(108,124,255,.09);
+    animation:fpEditGoalFloat 9s ease-in-out infinite;
+}
+
+.fp-edit-goal-orb.two{
+    width:240px;
+    height:240px;
+    left:-120px;
+    bottom:90px;
+    background:rgba(93,231,255,.07);
+    animation:fpEditGoalFloat 11s ease-in-out infinite reverse;
+}
+
+.fp-edit-goal-page .container{
+    position:relative;
+    z-index:2;
+}
+
+.fp-edit-goal-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:25px;
+    margin-bottom:25px;
+}
+
+.fp-edit-goal-eyebrow{
+    margin:0 0 8px;
+    color:#5de7ff;
+    font-size:.69rem;
+    font-weight:850;
+    letter-spacing:.16em;
+}
+
+.fp-edit-goal-title{
+    margin:0;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:900;
+    letter-spacing:-.045em;
+}
+
+.fp-edit-goal-subtitle{
+    max-width:700px;
+    margin:9px 0 0;
+    color:#8299b1;
+    font-size:.86rem;
+    line-height:1.7;
+}
+
+.fp-edit-goal-back{
+    color:#5de7ff!important;
+    background:rgba(93,231,255,.035)!important;
+    border:1px solid rgba(93,231,255,.20)!important;
+    border-radius:13px!important;
+    font-weight:800!important;
+    padding:10px 17px!important;
+    transition:.25s!important;
+}
+
+.fp-edit-goal-back:hover{
+    transform:translateY(-2px);
+    background:rgba(93,231,255,.08)!important;
+    box-shadow:0 0 25px rgba(93,231,255,.10);
+}
+
+.fp-edit-goal-card,
+.fp-edit-goal-side{
+    height:100%;
+    background:linear-gradient(145deg,rgba(17,27,53,.86),rgba(7,14,30,.78));
+    border:1px solid rgba(93,231,255,.14);
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+.fp-edit-goal-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:24px;
+    padding:29px;
+}
+
+.fp-edit-goal-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:8%;
+    right:8%;
+    height:1px;
+    background:linear-gradient(90deg,transparent,#6c7cff,#5de7ff,transparent);
+    box-shadow:0 0 15px rgba(108,124,255,.42);
+}
+
+.fp-edit-goal-heading{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:25px;
+}
+
+.fp-edit-goal-icon{
+    width:57px;
+    height:57px;
+    flex:0 0 57px;
+    display:grid;
+    place-items:center;
+    border-radius:18px;
+    font-size:27px;
+    background:linear-gradient(135deg,rgba(108,124,255,.13),rgba(93,231,255,.06));
+    border:1px solid rgba(108,124,255,.18);
+    box-shadow:0 0 30px rgba(108,124,255,.08);
+    animation:fpEditGoalPulse 3s ease-in-out infinite;
+}
+
+.fp-edit-goal-heading h2{
+    margin:0;
+    font-size:1.22rem;
+    font-weight:900;
+}
+
+.fp-edit-goal-heading p{
+    margin:4px 0 0;
+    color:#7189a2;
+    font-size:.72rem;
+}
+
+.fp-edit-goal-group{
+    margin-bottom:20px;
+}
+
+.fp-edit-goal-label{
+    display:block;
+    margin-bottom:8px;
+    color:#b7c9da;
+    font-size:.77rem;
+    font-weight:800;
+}
+
+.fp-edit-goal-required{
+    color:#ff7e9a;
+}
+
+.fp-edit-goal-page .form-control{
+    min-height:51px;
+    color:#eef7ff!important;
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+    border-radius:13px!important;
+    box-shadow:none!important;
+    transition:.25s ease;
+}
+
+.fp-edit-goal-page .form-control::placeholder{
+    color:#607891;
+}
+
+.fp-edit-goal-page .form-control:focus{
+    border-color:rgba(93,231,255,.62)!important;
+    background:rgba(93,231,255,.035)!important;
+    box-shadow:
+        0 0 0 3px rgba(93,231,255,.06),
+        0 0 26px rgba(93,231,255,.08)!important;
+}
+
+.fp-edit-goal-page textarea.form-control{
+    min-height:105px;
+    resize:vertical;
+}
+
+.fp-edit-goal-input-wrap{
+    position:relative;
+}
+
+.fp-edit-goal-currency{
+    position:absolute;
+    left:15px;
+    top:50%;
+    z-index:2;
+    transform:translateY(-50%);
+    color:#5de7ff;
+    font-size:1.05rem;
+    font-weight:900;
+    pointer-events:none;
+}
+
+.fp-edit-goal-money{
+    padding-left:42px!important;
+    font-weight:800;
+}
+
+.fp-edit-goal-help{
+    margin-top:6px;
+    color:#607891;
+    font-size:.65rem;
+    line-height:1.5;
+}
+
+.fp-edit-goal-error{
+    margin-top:7px;
+    padding:8px 10px;
+    color:#ff8da0;
+    background:rgba(255,95,122,.06);
+    border:1px solid rgba(255,95,122,.14);
+    border-radius:9px;
+    font-size:.7rem;
+}
+
+.fp-edit-goal-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:11px;
+    margin-top:24px;
+}
+
+.fp-edit-goal-cancel,
+.fp-edit-goal-submit{
+    min-height:51px;
+    border-radius:13px!important;
+    font-weight:850!important;
+    transition:.25s!important;
+}
+
+.fp-edit-goal-cancel{
+    color:#9bb0c4!important;
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+}
+
+.fp-edit-goal-cancel:hover{
+    color:#fff!important;
+    background:rgba(255,255,255,.07)!important;
+    transform:translateY(-2px);
+}
+
+.fp-edit-goal-submit{
+    border:0!important;
+    color:#fff!important;
+    background:linear-gradient(90deg,#6c7cff,#5de7ff)!important;
+    box-shadow:0 11px 30px rgba(108,124,255,.17);
+}
+
+.fp-edit-goal-submit:hover{
+    color:#fff!important;
+    transform:translateY(-2px);
+    box-shadow:0 15px 38px rgba(108,124,255,.27);
+}
+
+.fp-edit-goal-side{
+    border-radius:24px;
+    padding:25px;
+}
+
+.fp-edit-goal-side-label{
+    color:#5de7ff;
+    font-size:.67rem;
+    font-weight:850;
+    letter-spacing:.14em;
+}
+
+.fp-edit-goal-side h3{
+    margin:8px 0;
+    font-size:1.15rem;
+    font-weight:900;
+}
+
+.fp-edit-goal-side > p{
+    color:#7f96ad;
+    font-size:.75rem;
+    line-height:1.7;
+}
+
+.fp-edit-goal-progress-box{
+    margin-top:18px;
+    padding:17px;
+    border-radius:16px;
+    background:linear-gradient(135deg,rgba(108,124,255,.07),rgba(93,231,255,.035));
+    border:1px solid rgba(108,124,255,.12);
+}
+
+.fp-edit-goal-progress-label{
+    display:block;
+    color:#7189a2;
+    font-size:.63rem;
+    font-weight:750;
+}
+
+.fp-edit-goal-progress-percent{
+    display:block;
+    margin-top:4px;
+    color:#eef7ff;
+    font-size:1.45rem;
+    font-weight:900;
+}
+
+.fp-edit-goal-progress-bar{
+    height:8px;
+    overflow:hidden;
+    margin-top:10px;
+    border-radius:999px;
+    background:rgba(255,255,255,.06);
+}
+
+.fp-edit-goal-progress-fill{
+    height:100%;
+    width:0;
+    border-radius:999px;
+    background:linear-gradient(90deg,#6c7cff,#5de7ff);
+    box-shadow:0 0 13px rgba(93,231,255,.28);
+    transition:width .3s ease;
+}
+
+.fp-edit-goal-side-item{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:13px;
+    margin-top:10px;
+    border-radius:14px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.065);
+}
+
+.fp-edit-goal-side-icon{
+    width:40px;
+    height:40px;
+    flex:0 0 40px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    background:rgba(108,124,255,.06);
+}
+
+.fp-edit-goal-side-item strong{
+    display:block;
+    font-size:.73rem;
+}
+
+.fp-edit-goal-side-item span{
+    display:block;
+    margin-top:3px;
+    color:#687f98;
+    font-size:.63rem;
+}
+
+.fp-edit-goal-tip{
+    margin-top:18px;
+    padding:15px;
+    border-radius:15px;
+    background:rgba(93,231,255,.04);
+    border:1px solid rgba(93,231,255,.11);
+}
+
+.fp-edit-goal-tip strong{
+    font-size:.73rem;
+}
+
+.fp-edit-goal-tip p{
+    margin:5px 0 0;
+    color:#7189a2;
+    font-size:.67rem;
+    line-height:1.55;
+}
+
+@keyframes fpEditGoalFloat{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-14px,13px) scale(1.06)}
+}
+
+@keyframes fpEditGoalPulse{
+    0%,100%{transform:translateY(0);box-shadow:0 0 30px rgba(108,124,255,.08)}
+    50%{transform:translateY(-3px);box-shadow:0 0 38px rgba(93,231,255,.13)}
+}
+
+@media(max-width:991px){
+    .fp-edit-goal-side{
+        height:auto;
+    }
+}
+
+@media(max-width:768px){
+    .fp-edit-goal-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .fp-edit-goal-back{
+        width:100%;
+    }
+}
+
+@media(max-width:600px){
+    .fp-edit-goal-page{
+        padding-top:25px;
+    }
+
+    .fp-edit-goal-card,
+    .fp-edit-goal-side{
+        padding:21px;
+    }
+
+    .fp-edit-goal-actions{
+        grid-template-columns:1fr;
+    }
+
+    .fp-edit-goal-title{
+        font-size:2rem;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.01ms!important;
+    }
+}
+</style>
+
+<div class="fp-edit-goal-page">
+
+    <div class="fp-edit-goal-orb one"></div>
+    <div class="fp-edit-goal-orb two"></div>
+
+    <div class="container">
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="fp-edit-goal-header">
+
+            <div>
+
+                <p class="fp-edit-goal-eyebrow">
+                    ✏️ FINPILOT AI · UPDATE GOAL
+                </p>
+
+                <h1 class="fp-edit-goal-title">
+                    Edit Your Goal
+                </h1>
+
+                <p class="fp-edit-goal-subtitle">
+                    Update your target, savings and details while keeping
+                    your progress accurate.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('goal.goal_list') }}"
+                class="btn fp-edit-goal-back"
+            >
+                ← Back to Goals
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             MAIN
+        ================================================== -->
+
+        <div class="row g-4">
+
+            <!-- FORM -->
+
+            <div class="col-lg-8">
+
+                <div class="fp-edit-goal-card">
+
+                    <div class="fp-edit-goal-heading">
+
+                        <div class="fp-edit-goal-icon">
+                            ✏️
+                        </div>
+
+                        <div>
+                            <h2>Update Goal Details</h2>
+                            <p>Adjust your plan and save the changes.</p>
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        novalidate
+                    >
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- NAME -->
+
+                        <div class="fp-edit-goal-group">
+
+                            <label
+                                for="{{ form.name.id }}"
+                                class="fp-edit-goal-label"
+                            >
+                                Goal Name <span class="fp-edit-goal-required">*</span>
+                            </label>
+
+                            {{ form.name(
+                                id=form.name.id,
+                                class="form-control form-control-lg"
+                            ) }}
+
+                            {% if form.name.errors %}
+
+                                <div class="fp-edit-goal-error">
+
+                                    {% for error in form.name.errors %}
+                                        <div>⚠️ {{ error }}</div>
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- TARGET + SAVED -->
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="fp-edit-goal-group">
+
+                                    <label
+                                        for="{{ form.target_amount.id }}"
+                                        class="fp-edit-goal-label"
+                                    >
+                                        Target Amount <span class="fp-edit-goal-required">*</span>
+                                    </label>
+
+                                    <div class="fp-edit-goal-input-wrap">
+
+                                        <span class="fp-edit-goal-currency">
+                                            ₹
+                                        </span>
+
+                                        {{ form.target_amount(
+                                            id=form.target_amount.id,
+                                            class="form-control form-control-lg fp-edit-goal-money",
+                                            min="0.01",
+                                            step="0.01",
+                                            inputmode="decimal"
+                                        ) }}
+
+                                    </div>
+
+                                    {% if form.target_amount.errors %}
+
+                                        <div class="fp-edit-goal-error">
+
+                                            {% for error in form.target_amount.errors %}
+                                                <div>⚠️ {{ error }}</div>
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="fp-edit-goal-group">
+
+                                    <label
+                                        for="{{ form.saved_amount.id }}"
+                                        class="fp-edit-goal-label"
+                                    >
+                                        Saved Amount
+                                    </label>
+
+                                    <div class="fp-edit-goal-input-wrap">
+
+                                        <span class="fp-edit-goal-currency">
+                                            ₹
+                                        </span>
+
+                                        {{ form.saved_amount(
+                                            id=form.saved_amount.id,
+                                            class="form-control form-control-lg fp-edit-goal-money",
+                                            min="0",
+                                            step="0.01",
+                                            inputmode="decimal"
+                                        ) }}
+
+                                    </div>
+
+                                    {% if form.saved_amount.errors %}
+
+                                        <div class="fp-edit-goal-error">
+
+                                            {% for error in form.saved_amount.errors %}
+                                                <div>⚠️ {{ error }}</div>
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DATE -->
+
+                        <div class="fp-edit-goal-group">
+
+                            <label
+                                for="{{ form.target_date.id }}"
+                                class="fp-edit-goal-label"
+                            >
+                                Target Date
+                            </label>
+
+                            {{ form.target_date(
+                                id=form.target_date.id,
+                                class="form-control form-control-lg"
+                            ) }}
+
+                            {% if form.target_date.errors %}
+
+                                <div class="fp-edit-goal-error">
+
+                                    {% for error in form.target_date.errors %}
+                                        <div>⚠️ {{ error }}</div>
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="fp-edit-goal-help">
+                                    Optional — change the date you want to achieve the goal.
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="fp-edit-goal-group">
+
+                            <label
+                                for="{{ form.description.id }}"
+                                class="fp-edit-goal-label"
+                            >
+                                Description
+                            </label>
+
+                            {{ form.description(
+                                id=form.description.id,
+                                class="form-control form-control-lg",
+                                maxlength="255",
+                                rows="4"
+                            ) }}
+
+                            {% if form.description.errors %}
+
+                                <div class="fp-edit-goal-error">
+
+                                    {% for error in form.description.errors %}
+                                        <div>⚠️ {{ error }}</div>
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+
+                        <div class="fp-edit-goal-actions">
+
+                            <a
+                                href="{{ url_for('goal.goal_list') }}"
+                                class="btn btn-lg fp-edit-goal-cancel"
+                            >
+                                Cancel
+                            </a>
+
+                            {{ form.submit(
+                                value="Update Goal",
+                                class="btn btn-lg fp-edit-goal-submit"
+                            ) }}
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- SIDE PANEL -->
+
+            <div class="col-lg-4">
+
+                <div class="fp-edit-goal-side">
+
+                    <span class="fp-edit-goal-side-label">
+                        GOAL PROGRESS
+                    </span>
+
+                    <h3>
+                        Keep your target aligned with reality.
+                    </h3>
+
+                    <p>
+                        Updating your saved amount or target will
+                        immediately change the progress FinPilot shows
+                        for this goal.
+                    </p>
+
+
+                    <div class="fp-edit-goal-progress-box">
+
+                        <span class="fp-edit-goal-progress-label">
+                            CURRENT PROGRESS
+                        </span>
+
+                        <strong
+                            class="fp-edit-goal-progress-percent"
+                            id="fpEditGoalPercent"
+                        >
+                            0%
+                        </strong>
+
+                        <div class="fp-edit-goal-progress-bar">
+
+                            <div
+                                class="fp-edit-goal-progress-fill"
+                                id="fpEditGoalProgress"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-edit-goal-side-item">
+
+                        <div class="fp-edit-goal-side-icon">
+                            🎯
+                        </div>
+
+                        <div>
+                            <strong>Target Accuracy</strong>
+                            <span>Keep the final amount realistic</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-edit-goal-side-item">
+
+                        <div class="fp-edit-goal-side-icon">
+                            💰
+                        </div>
+
+                        <div>
+                            <strong>Saved Amount</strong>
+                            <span>Reflect your latest savings</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-edit-goal-side-item">
+
+                        <div class="fp-edit-goal-side-icon">
+                            📈
+                        </div>
+
+                        <div>
+                            <strong>Live Progress</strong>
+                            <span>See your updated completion level</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="fp-edit-goal-tip">
+
+                        <strong>
+                            💡 FinPilot Tip
+                        </strong>
+
+                        <p>
+                            Your saved amount should not be greater than
+                            the target amount. If you increase the target,
+                            make sure your savings plan still feels achievable.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+(function () {
+
+    const targetInput = document.getElementById(
+        "{{ form.target_amount.id }}"
+    );
+
+    const savedInput = document.getElementById(
+        "{{ form.saved_amount.id }}"
+    );
+
+    const progressText = document.getElementById(
+        "fpEditGoalPercent"
+    );
+
+    const progressBar = document.getElementById(
+        "fpEditGoalProgress"
+    );
+
+    if (!targetInput || !savedInput || !progressText || !progressBar) {
+        return;
+    }
+
+    function updateProgress() {
+
+        const target = parseFloat(targetInput.value) || 0;
+        const saved = parseFloat(savedInput.value) || 0;
+
+        let progress = 0;
+
+        if (target > 0) {
+            progress = (saved / target) * 100;
+        }
+
+        progress = Math.min(Math.max(progress, 0), 100);
+
+        progressText.textContent =
+            progress.toFixed(1) + "%";
+
+        progressBar.style.width =
+            progress + "%";
+    }
+
+    targetInput.addEventListener(
+        "input",
+        updateProgress
+    );
+
+    savedInput.addEventListener(
+        "input",
+        updateProgress
+    );
+
+    updateProgress();
+
+})();
+</script>
+
+{% endblock %}

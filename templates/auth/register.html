@@ -1,0 +1,1092 @@
+{% extends "base.html" %}
+
+{% block title %}
+Register | FinPilot AI
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   FINPILOT NEON REGISTER
+========================================================= */
+
+.fp-register-page {
+
+    min-height: calc(100vh - 80px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 60px 20px;
+
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(0, 238, 255, 0.13),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(90, 0, 255, 0.14),
+            transparent 35%
+        ),
+        #030609;
+}
+
+
+/* =========================================================
+   BACKGROUND GLOW
+========================================================= */
+
+.fp-register-page::before,
+.fp-register-page::after {
+
+    content: "";
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter: blur(80px);
+
+    pointer-events: none;
+
+    animation:
+        fpRegisterGlow
+        7s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+
+.fp-register-page::before {
+
+    width: 280px;
+    height: 280px;
+
+    top: 5%;
+    left: 7%;
+
+    background:
+        rgba(0, 238, 255, 0.12);
+}
+
+
+.fp-register-page::after {
+
+    width: 320px;
+    height: 320px;
+
+    bottom: 2%;
+    right: 5%;
+
+    background:
+        rgba(0, 90, 255, 0.12);
+
+    animation-delay: 1.5s;
+}
+
+
+@keyframes fpRegisterGlow {
+
+    from {
+
+        transform:
+            translate(0, 0)
+            scale(1);
+
+    }
+
+    to {
+
+        transform:
+            translate(35px, -25px)
+            scale(1.12);
+
+    }
+
+}
+
+
+/* =========================================================
+   WRAPPER
+========================================================= */
+
+.fp-register-wrapper {
+
+    width: 100%;
+
+    max-width: 480px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   REGISTER CARD
+========================================================= */
+
+.fp-register-card {
+
+    position: relative;
+
+    padding: 40px 38px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(11, 16, 24, 0.97),
+            rgba(3, 7, 12, 0.99)
+        );
+
+    border:
+        1px solid
+        rgba(0, 238, 255, 0.45);
+
+    box-shadow:
+
+        0 0 20px
+        rgba(0, 238, 255, 0.18),
+
+        0 0 55px
+        rgba(0, 238, 255, 0.08),
+
+        inset 0 0 35px
+        rgba(0, 238, 255, 0.025);
+
+    backdrop-filter: blur(18px);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+
+    animation:
+        fpRegisterCardEnter
+        0.8s
+        ease
+        both;
+}
+
+
+.fp-register-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(0, 238, 255, 0.9);
+
+    box-shadow:
+
+        0 0 25px
+        rgba(0, 238, 255, 0.35),
+
+        0 0 70px
+        rgba(0, 238, 255, 0.14),
+
+        inset 0 0 40px
+        rgba(0, 238, 255, 0.04);
+}
+
+
+@keyframes fpRegisterCardEnter {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(30px)
+            scale(0.97);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+/* =========================================================
+   TOP NEON LINE
+========================================================= */
+
+.fp-register-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: -1px;
+
+    left: 12%;
+    right: 12%;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #00eeff,
+            #008cff,
+            #00eeff,
+            transparent
+        );
+
+    box-shadow:
+
+        0 0 10px
+        #00eeff,
+
+        0 0 25px
+        rgba(0, 238, 255, 0.6);
+
+    animation:
+        fpRegisterLine
+        2.5s
+        ease-in-out
+        infinite;
+}
+
+
+@keyframes fpRegisterLine {
+
+    0%,
+    100% {
+
+        opacity: 0.5;
+
+    }
+
+    50% {
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.fp-register-logo {
+
+    width: 72px;
+    height: 72px;
+
+    margin:
+        0 auto 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    font-size: 34px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 238, 255, 0.12),
+            rgba(0, 110, 255, 0.16)
+        );
+
+    border:
+        1px solid
+        rgba(0, 238, 255, 0.4);
+
+    box-shadow:
+
+        0 0 20px
+        rgba(0, 238, 255, 0.2),
+
+        inset 0 0 20px
+        rgba(0, 238, 255, 0.05);
+
+    animation:
+        fpRegisterLogoFloat
+        3s
+        ease-in-out
+        infinite;
+}
+
+
+@keyframes fpRegisterLogoFloat {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-6px);
+
+    }
+
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.fp-register-title {
+
+    margin: 0;
+
+    text-align: center;
+
+    color: #ffffff;
+
+    font-size:
+        clamp(30px, 5vw, 40px);
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+
+.fp-register-title span {
+
+    color: #00eeff;
+
+    text-shadow:
+
+        0 0 8px
+        rgba(0, 238, 255, 0.6),
+
+        0 0 22px
+        rgba(0, 238, 255, 0.25);
+}
+
+
+.fp-register-subtitle {
+
+    margin:
+        10px 0 32px;
+
+    text-align: center;
+
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   FORM FIELD
+========================================================= */
+
+.fp-register-field {
+
+    margin-bottom: 21px;
+}
+
+
+.fp-register-field label {
+
+    display: block;
+
+    margin-bottom: 9px;
+
+    color:
+        rgba(255, 255, 255, 0.82);
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.fp-register-input-wrapper {
+
+    position: relative;
+}
+
+
+.fp-register-input-icon {
+
+    position: absolute;
+
+    left: 15px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    color: #00eeff;
+
+    font-size: 16px;
+
+    pointer-events: none;
+
+    transition:
+        0.3s ease;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.fp-register-input {
+
+    width: 100%;
+
+    height: 52px;
+
+    padding:
+        0
+        15px
+        0
+        45px;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    color: #ffffff;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.22);
+
+    font-size: 14px;
+
+    transition:
+
+        border-color 0.3s ease,
+
+        box-shadow 0.3s ease,
+
+        background 0.3s ease;
+}
+
+
+.fp-register-input::placeholder {
+
+    color:
+        rgba(255, 255, 255, 0.35);
+}
+
+
+.fp-register-input:hover {
+
+    border-color:
+        rgba(0, 238, 255, 0.5);
+}
+
+
+.fp-register-input:focus {
+
+    border-color:
+        #00eeff;
+
+    background:
+        rgba(0, 238, 255, 0.045);
+
+    box-shadow:
+
+        0 0 0 3px
+        rgba(0, 238, 255, 0.08),
+
+        0 0 18px
+        rgba(0, 238, 255, 0.18);
+}
+
+
+.fp-register-input-wrapper:focus-within
+.fp-register-input-icon {
+
+    text-shadow:
+        0 0 8px #00eeff;
+
+    transform:
+        translateY(-50%)
+        scale(1.1);
+}
+
+
+/* =========================================================
+   VALIDATION ERRORS
+========================================================= */
+
+.fp-register-error {
+
+    display: block;
+
+    margin-top: 7px;
+
+    color:
+        #ff5f6d;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   PASSWORD HINT
+========================================================= */
+
+.fp-password-hint {
+
+    margin-top: 7px;
+
+    color:
+        rgba(255, 255, 255, 0.35);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   REGISTER BUTTON
+========================================================= */
+
+.fp-register-button {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 54px;
+
+    margin-top: 8px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    color: #001015;
+
+    background:
+        linear-gradient(
+            90deg,
+            #00eaff,
+            #00b7ff,
+            #00eaff
+        );
+
+    background-size:
+        200% auto;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.4px;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 0 15px
+        rgba(0, 238, 255, 0.35);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+    animation:
+        fpRegisterButtonGradient
+        3s
+        linear
+        infinite;
+}
+
+
+@keyframes fpRegisterButtonGradient {
+
+    0% {
+
+        background-position:
+            0% center;
+
+    }
+
+    100% {
+
+        background-position:
+            200% center;
+
+    }
+
+}
+
+
+.fp-register-button::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    left: -120%;
+
+    width: 70%;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.5),
+            transparent
+        );
+
+    transform:
+        skewX(-20deg);
+
+    transition:
+        left 0.6s ease;
+}
+
+
+.fp-register-button:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+
+        0 0 20px
+        rgba(0, 238, 255, 0.6),
+
+        0 0 45px
+        rgba(0, 238, 255, 0.2);
+}
+
+
+.fp-register-button:hover::before {
+
+    left: 140%;
+}
+
+
+.fp-register-button:active {
+
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   LOGIN LINK
+========================================================= */
+
+.fp-login-area {
+
+    margin-top: 27px;
+
+    padding-top: 23px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    text-align: center;
+
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    font-size: 13px;
+}
+
+
+.fp-login-area a {
+
+    color: #00eeff;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        0.25s ease;
+}
+
+
+.fp-login-area a:hover {
+
+    color: #ffffff;
+
+    text-shadow:
+        0 0 10px
+        rgba(0, 238, 255, 0.8);
+}
+
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+.fp-register-security {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 20px;
+
+    color:
+        rgba(255, 255, 255, 0.35);
+
+    font-size: 11px;
+}
+
+
+.fp-register-security-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background:
+        #00ee88;
+
+    box-shadow:
+        0 0 8px
+        #00ee88;
+
+    animation:
+        fpRegisterSecurityPulse
+        1.8s
+        infinite;
+}
+
+
+@keyframes fpRegisterSecurityPulse {
+
+    0%,
+    100% {
+
+        opacity: 0.5;
+
+    }
+
+    50% {
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .fp-register-page {
+
+        padding:
+            40px 15px;
+
+    }
+
+    .fp-register-card {
+
+        padding:
+            34px 23px;
+
+        border-radius:
+            16px;
+
+    }
+
+    .fp-register-title {
+
+        font-size:
+            30px;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .fp-register-card,
+    .fp-register-logo,
+    .fp-register-button,
+    .fp-register-page::before,
+    .fp-register-page::after,
+    .fp-register-security-dot {
+
+        animation: none;
+
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     REGISTER PAGE
+========================================================= -->
+
+<section class="fp-register-page">
+
+    <div class="fp-register-wrapper">
+
+        <div class="fp-register-card">
+
+
+            <!-- =================================================
+                 LOGO
+            ================================================== -->
+
+            <div class="fp-register-logo">
+                🚀
+            </div>
+
+
+            <!-- =================================================
+                 TITLE
+            ================================================== -->
+
+            <h1 class="fp-register-title">
+
+                Join
+                <span>FinPilot</span>
+
+            </h1>
+
+
+            <p class="fp-register-subtitle">
+
+                Create your account and start taking control
+                of your money with AI.
+
+            </p>
+
+
+            <!-- =================================================
+                 REGISTER FORM
+            ================================================== -->
+
+            <form
+                method="POST"
+                novalidate
+            >
+
+                {{ form.hidden_tag() }}
+
+
+                <!-- =============================================
+                     USERNAME
+                ============================================== -->
+
+                <div class="fp-register-field">
+
+                    {{ form.username.label }}
+
+                    <div class="fp-register-input-wrapper">
+
+                        <span class="fp-register-input-icon">
+                            👤
+                        </span>
+
+                        {{ form.username(
+                            class="fp-register-input",
+                            placeholder="Enter your name",
+                            autocomplete="username"
+                        ) }}
+
+                    </div>
+
+
+                    {% for error in form.username.errors %}
+
+                        <span class="fp-register-error">
+                            {{ error }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- =============================================
+                     EMAIL
+                ============================================== -->
+
+                <div class="fp-register-field">
+
+                    {{ form.email.label }}
+
+                    <div class="fp-register-input-wrapper">
+
+                        <span class="fp-register-input-icon">
+                            ✉
+                        </span>
+
+                        {{ form.email(
+                            class="fp-register-input",
+                            placeholder="Enter your email",
+                            autocomplete="email"
+                        ) }}
+
+                    </div>
+
+
+                    {% for error in form.email.errors %}
+
+                        <span class="fp-register-error">
+                            {{ error }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- =============================================
+                     PASSWORD
+                ============================================== -->
+
+                <div class="fp-register-field">
+
+                    {{ form.password.label }}
+
+                    <div class="fp-register-input-wrapper">
+
+                        <span class="fp-register-input-icon">
+                            🔒
+                        </span>
+
+                        {{ form.password(
+                            class="fp-register-input",
+                            placeholder="Create a password",
+                            autocomplete="new-password"
+                        ) }}
+
+                    </div>
+
+
+                    {% for error in form.password.errors %}
+
+                        <span class="fp-register-error">
+                            {{ error }}
+                        </span>
+
+                    {% endfor %}
+
+
+                    <div class="fp-password-hint">
+
+                        🔐 Keep your password private and secure.
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     SUBMIT
+                ============================================== -->
+
+                {{ form.submit(
+                    class="fp-register-button",
+                    value="Create My FinPilot Account"
+                ) }}
+
+            </form>
+
+
+            <!-- =================================================
+                 LOGIN LINK
+            ================================================== -->
+
+            <div class="fp-login-area">
+
+                Already have a FinPilot AI account?
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                >
+                    Login here
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 SECURITY
+            ================================================== -->
+
+            <div class="fp-register-security">
+
+                <span class="fp-register-security-dot"></span>
+
+                <span>
+                    Secure FinPilot AI account creation
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
